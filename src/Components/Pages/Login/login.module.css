@@ -1,0 +1,17 @@
+.bg-image {
+  background-image: url("../../../images/bg-signup.jpg");
+
+  /* Control the height of the image */
+  min-height: 100vh;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+.form-register {
+  margin: 20px;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
