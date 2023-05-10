@@ -1,0 +1,44 @@
+.bg-image {
+    background-image: url("../../../images/vietquat.jpg");
+    background-color: rgba(0, 0, 0, 0.25);
+    /* Control the height of the image */
+    min-height: 89vh;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* background-size: 100% 100%;   */
+    position: relative;
+}
+
+.form-register {
+    margin-top: 5%;
+    background-color: white;
+    padding: 50px 70px;
+    border-radius: 25px;
+    opacity: 85%;
+}
+
+.fz-14 {
+    font-size: 14px;
+}
+
+.border-black {
+    border: 1px solid rgb(39, 36, 36) !important;
+    box-shadow: none !important;
+}
+
+.btn-register {
+    text-decoration: none;
+    color: white !important;
+    font-weight: 900;
+    text-align: center;
+    border: 1px #463a42;
+    background-image: linear-gradient(to right, #062090, black);
+  }
+  
+  .btn-register:hover {
+    border: 1px #062090;
+    background-image: linear-gradient(to right, black, #d34949);
+    color: white;
+  }
