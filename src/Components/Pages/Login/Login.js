@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames/bind";
 
-import style from "./login.module.css";
+import style from "./Login.module.css";
 import { Link } from "react-router-dom";
 
 const cx = classNames.bind(style);
