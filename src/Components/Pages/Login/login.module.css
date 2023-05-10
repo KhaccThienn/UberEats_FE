@@ -1,17 +1,48 @@
 .bg-image {
   background-image: url("../../../images/bg-signup.jpg");
-
+  background-color: rgba(0, 0, 0, 0.25);
   /* Control the height of the image */
-  min-height: 100vh;
-
+  min-height: 89vh;
   /* Center and scale the image nicely */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  /* background-size: 100% 100%;   */
   position: relative;
 }
-.form-register {
-  margin: 20px;
-  padding: 16px;
-  background-color: rgba(255, 255, 255, 0.8);
+
+.btn-login {
+  text-decoration: none;
+  color: white !important;
+  font-weight: 900;
+  text-align: center;
+  border: 1px #463a42;
+  background-image: linear-gradient(to right, #d34949, black);
+}
+
+.btn-login:hover {
+  border: 1px #062090;
+  background-image: linear-gradient(to right, black, #062090);
+  color: white;
+}
+
+.form-login {
+  margin-top: 33%;
+  background-color:white;
+  padding: 50px 70px;
+  border-radius: 25px;
+  opacity: 85%;
+}
+
+.shadow-login {
+  box-shadow: 8px 18px 27px #000;
+}
+
+.fz-14{
+  font-size: 14px;
+}
+
+.border-black{
+  border: 1px solid rgb(39, 36, 36) !important;
+  box-shadow: none !important;
 }

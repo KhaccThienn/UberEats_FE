@@ -10,8 +10,8 @@ const cx = classNames.bind(style);
 
 function Header() {
   return (
-    <header>
-      <div className="container px-5 mx-auto d-flex justify-content-between align-items-center">
+    <header className={cx('bg-white','sticky-top')}>
+      <div className="container-fluid px-5 d-flex justify-content-between align-items-center">
         <Link to="/" className={cx('logo')}>
           <img src="https://logos-world.net/wp-content/uploads/2020/11/Uber-Eats-Logo.png" className="card-img" alt="Nuber Eats" />
         </Link>
