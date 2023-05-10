@@ -44,4 +44,5 @@
 
 .border-black{
   border: 1px solid rgb(39, 36, 36) !important;
+  box-shadow: none !important;
 }
