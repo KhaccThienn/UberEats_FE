@@ -1,5 +1,4 @@
 import React from "react";
-import { Button, Checkbox, Form, Input } from "antd";
 import classNames from "classnames/bind";
 
 import style from "./login.module.css";
@@ -8,70 +7,32 @@ import { Link } from "react-router-dom";
 const cx = classNames.bind(style);
 
 function Login() {
-  const onFinish = (values) => {
-    console.log("Success:", values);
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
   return (
-    <div className={cx("container")}>
-      <div className="h-100 row justify-content-between align-items-center h-100 p-5">
-        <div className={cx("col-lg-12")}>
-          <Form
-            className="login-form"
-            name="basic"
-            labelCol={{}}
-            wrapperCol={{}}
-            style={{
-              alignSelf: "center",
-            }}
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <Form.Item
-              style={{
-                color: "white",
-              }}
-              label="Username"
-              name="username"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your username!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your password!",
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-              >
-                Log in
-              </Button>
-              Or <Link to="">register now!</Link>
-            </Form.Item>
-          </Form>
+    <div className={cx('bg-image')}>
+      <div className={cx("container")}>
+        <div className="row align-items-center">
+          <div className="col-lg-6">
+            <form className={cx('form-login')}>
+              <div className="form-group">
+                <label for="">Email: </label>
+                <input type="text" name="" id="" className={cx("form-control rounded-pill",'fz-14','border-black')} placeholder="Enter your email..." aria-describedby="helpId" />
+                {/* <small id="helpId" className="text-muted">Help text</small> */}
+              </div>
+              <div className="form-group">
+                <label for="">Password: </label>
+                <input type="password" name="" id="" className={cx("form-control rounded-pill",'fz-14','border-black')} placeholder="Enter your password..." aria-describedby="helpId" />
+                {/* <small id="helpId" className="text-muted">Help text</small> */}
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class={cx('form-check-input')} name="" id="" value="checkedValue" />
+                  Remember me
+                </label>
+              </div>
+              <button type="submit" className={cx("btn btn-block mt-4 rounded-pill",'btn-login')}>Login</button>
+              <small>Have  no account? <Link to={''} >Register here</Link></small>
+            </form>
+          </div>
         </div>
       </div>
     </div>
