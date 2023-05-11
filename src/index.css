@@ -19,5 +19,6 @@ code {
 }
 *{
   font-family: 'quattrocento';
+  letter-spacing: 0.05rem !important;
 }
 
