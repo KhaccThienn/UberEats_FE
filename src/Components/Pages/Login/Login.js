@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames/bind";
 
 import style from "./login.module.css";
@@ -7,20 +7,29 @@ import { Link } from "react-router-dom";
 const cx = classNames.bind(style);
 
 function Login() {
+  const [loginData,setLoginData] = useState([]);
+    const handleChange = async (e) => {
+        const {name,value} = await e.target;
+        setLoginData({...loginData,[name]:value})
+    }
+    const handleSubmit =  (e) => {
+        e.preventDefault();  
+        console.log(loginData);
+    }
   return (
     <div className={cx('bg-image')}>
       <div className={cx("container")}>
         <div className={cx("row align-items-center")}>
           <div className={cx("col-lg-6")}>
-            <form className={cx('form-login')}>
+            <form className={cx('form-login')} method="POST" onSubmit={handleSubmit}>
               <div className={cx("form-group")}>
-                <label for="">Email: </label>
-                <input type="text" name="" id="" className={cx("form-control rounded-pill", 'fz-14', 'border-black')} placeholder="Enter your email..." aria-describedby="helpId" />
+                <label htmlFor="">Email: </label>
+                <input type="email" name="email" id="email" className={cx("form-control rounded-pill", 'fz-14', 'border-black')} placeholder="Enter your email..." onChange={handleChange}/>
                 {/* <small id="helpId" className="text-muted">Help text</small> */}
               </div>
               <div className={cx("form-group")}>
-                <label for="">Password: </label>
-                <input type="password" name="" id="" className={cx("form-control rounded-pill", 'fz-14', 'border-black')} placeholder="Enter your password..." aria-describedby="helpId" />
+                <label htmlFor="">Password: </label>
+                <input type="password" name="password" id="password" className={cx("form-control rounded-pill", 'fz-14', 'border-black')} placeholder="Enter your password..." onChange={handleChange}/>
                 {/* <small id="helpId" className="text-muted">Help text</small> */}
               </div>
               <div className={cx("form-check")}>
