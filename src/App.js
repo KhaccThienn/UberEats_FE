@@ -4,6 +4,7 @@ import MainLayout from "./Components/Layouts/MainLayout";
 import Login from "./Components/Pages/Login/Login";
 import Register from "./Components/Pages/Register/Register";
 import jwt_decode from "jwt-decode";
+import Home from "./Components/Pages/Client/Home/Home";
 
 function App() {
   const getToken = () => {
@@ -24,11 +25,9 @@ function App() {
   // ];
   return (
     <Routes>
-      <Route path="/login" element={<MainLayout children={<Login />} />} />
-      <Route
-        path="/register"
-        element={<MainLayout children={<Register />} />}
-      />
+      <Route path="/" element={<MainLayout children={<Home />} />}  />
+      <Route path="/login" element={<MainLayout children={<Login />} />}  />
+      <Route path="/register" element={<MainLayout children={<Register />} />}  />
     </Routes>
   );
 }
