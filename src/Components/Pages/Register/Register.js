@@ -12,7 +12,7 @@ function Register() {
             <div className={cx('container')}>
                 <div className={cx('row', 'align-items-center')}>
                     <div className={cx('col-lg-6')}>
-                        </div>
+                    </div>
                     <div className={cx('col-lg-6')}>
                         <form className={cx('form-register')}>
                             <div className={cx('form-group')}>
@@ -40,8 +40,16 @@ function Register() {
                                 <input type="text" name="" id="" className={cx("form-control rounded-pill", 'fz-14', 'border-black')} placeholder="Enter phone number..." aria-describedby="helpId" />
                                 {/* <small id="helpId" className="text-muted">Help text</small> */}
                             </div>
+                            <div className={cx("form-group")}>
+                                <label for="">Role:</label>
+                                <select className={cx("form-control rounded-pill custom-select", 'fz-14', 'border-black')} name="role_id" id="">
+                                    <option value="">Customers</option>
+                                    <option value="">Restaurants</option>
+                                    <option value="">Delivers</option>
+                                </select>
+                            </div>
                             <button type="submit" className={cx("btn btn-block mt-4 rounded-pill", 'btn-register')}>Register</button>
-                            <small>Already have an account? <Link to={'/login'} >Login here</Link></small>
+                            <small>Already have an account? <Link to={'/login'} >Login now</Link></small>
                         </form>
                     </div>
                 </div>
