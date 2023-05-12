@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const getToken = () => {
   const token = localStorage.getItem("access_token")
     ? localStorage.getItem("access_token")

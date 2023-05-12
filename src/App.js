@@ -1,6 +1,3 @@
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
-import MainLayout from "./Components/Layouts/MainLayout";
 import { useSelector } from "react-redux";
 import { selectUserData } from "./redux/reducers/users";
 import {
@@ -61,6 +58,7 @@ function App() {
           element={route.component}
         />
       ))}
+      <Route path="*" element={<Error />} />
     </Routes>
   );
 }
