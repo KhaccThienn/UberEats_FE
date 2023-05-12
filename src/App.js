@@ -1,36 +1,66 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import MainLayout from "./Components/Layouts/MainLayout";
-import Login from "./Components/Pages/Login/Login";
-import Register from "./Components/Pages/Register/Register";
-import jwt_decode from "jwt-decode";
-import Home from "./Components/Pages/Client/Home/Home";
+import { useSelector } from "react-redux";
+import { selectUserData } from "./redux/reducers/users";
+import {
+  clientRoute,
+  deliveryRoute,
+  restaurantRoute,
+  unLoginRoute,
+} from "./routes/Routes";
+
+const getDataFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem("users"))
+    ? JSON.parse(localStorage.getItem("users"))
+    : {};
+};
 
 function App() {
-  const getToken = () => {
-    const token = localStorage.getItem("access_token");
-    return token.toString();
-  };
+  const user = getDataFromLocalStorage();
+  const userData = useSelector(selectUserData);
 
-  const decoded = jwt_decode(getToken());
+  console.log(user);
+  console.log(userData);
 
-  console.log(decoded);
-  // idea:
-  // const clientRoute = [
-  //   {
-  //     path: "/",
-  //     elelemt: <Login />,
-  //   },
-
-  // ];
   return (
     <Routes>
-      <Route path="/" element={<MainLayout children={<Home />} />} />
-      <Route path="/login" element={<MainLayout children={<Login />} />} />
-      <Route
-        path="/register"
-        element={<MainLayout children={<Register />} />}
-      />
+      {(userData.role === 1 || user.role === 1) &&
+        clientRoute.map((route) => (
+          <Route
+            exact
+            key={route.path}
+            path={route.path}
+            element={route.component}
+          />
+        ))}
+      {(userData.role === 2 || user.role === 2) &&
+        restaurantRoute.map((route) => (
+          <Route
+            exact
+            key={route.path}
+            path={route.path}
+            element={route.component}
+          />
+        ))}
+      {(userData.role === 3 || user.role === 3) &&
+        deliveryRoute.map((route) => (
+          <Route
+            exact
+            key={route.path}
+            path={route.path}
+            element={route.component}
+          />
+        ))}
+
+      {restaurantRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))}
     </Routes>
   );
 }

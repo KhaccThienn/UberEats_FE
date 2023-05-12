@@ -1,33 +1,58 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, clearUser, selectUserData } from "../../../redux/reducers/users";
+import jwt from "jwt-decode";
 import * as LoginService from "../../../services/LoginService";
-
 import style from "./login.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(style);
 
 function Login() {
+  const userData = useSelector(selectUserData);
+  const dispatch = useDispatch();
   const [loginData, setLoginData] = useState([]);
   const [errs, setErrs] = useState([]);
+  const navigate = useNavigate();
 
   const handleChange = async (e) => {
     const { name, value } = await e.target;
     setLoginData({ ...loginData, [name]: value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(loginData);
+    // LoginService.register(loginData)
+    //   .then((res) => {
+    //     console.log("Response Data when login: ", res);
+    //     const token = res.accessToken;
+    //     const user = jwt(token);
+    //     console.log("Decoded Token: ", user);
+    //     localStorage.setItem("access_token", res.accessToken);
+    //     localStorage.setItem('users', JSON.stringify(user))
+    //     navigate("/");
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     // setErrs(err.response.data.message);
+    //   });
 
-    LoginService.register(loginData)
-      .then((res) => {
-        console.log(res);
-        localStorage.setItem('access_token', res.accessToken);
-      })
-      .catch((err) => {
-        setErrs(err.response.data.message);
-      });
+    const [data, error] = await LoginService.login(loginData);
+    if (error) {
+      // show error
+    }
+    if (data) {
+      console.log("Response Data when login: ", data);
+      const token = data.accessToken;
+      const user = jwt(token);
+      console.log("Decoded Token: ", user);
+      localStorage.setItem("access_token", data.accessToken);
+      localStorage.setItem("users", JSON.stringify(user));
+      dispatch(setUser(user));
+
+      navigate("/");
+    }
   };
   return (
     <div className={cx("bg-image")}>
