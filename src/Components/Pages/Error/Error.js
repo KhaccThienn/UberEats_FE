@@ -15,7 +15,7 @@ function Error() {
                     <div className={cx('col-lg-6','pr-5')}>
                         <img src={logo} className={cx('logo-err','float-right')}  />
                     </div>
-                    <div className={cx('col-lg-4','bg-white','border','py-3')}>
+                    <div className={cx('col-lg-4','border','py-3')}>
                         <h1 className={cx('font-weight-bold')}>Sorry... </h1>
                         <p>Something is wrong here. That was definitely not Uber Eats of us!</p>
                         <p>This page was not found.&nbsp;<Link to='/' className={cx('back-to-home')} >Back to home</Link></p>
