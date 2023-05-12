@@ -30,7 +30,7 @@ function Header() {
                 <input
                   type="text"
                   className="text search-input"
-                  placeholder="Tìm kiếm sản phẩm..."
+                  placeholder="Tap here to search..."
                 />
                 <Link className="search-link" to="">
                   <i className="ri-search-line"></i>

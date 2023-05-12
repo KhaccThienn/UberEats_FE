@@ -16,18 +16,9 @@ function SideBar() {
               alt=""
             />
             <div className="logo-title">
-              <span className="text-primary text-uppercase">Uber Eats</span>
+              <span className="text-primary text-uppercase">Uber Eats - Restaurant</span>
             </div>
           </Link>
-          <div className="iq-menu-bt-sidebar">
-            <div className="iq-menu-bt align-self-center">
-              <div className="wrapper-menu">
-                <div className="main-circle">
-                  <i className="las la-bars"></i>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <div id="sidebar-scrollbar">
           <nav className="iq-sidebar-menu">
