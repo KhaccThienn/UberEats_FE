@@ -3,8 +3,11 @@ import ResMainLayout from "../Components/Layouts/RestaurantLayout/ResMainLayout"
 import Home from "../Components/Pages/Client/Home/Home";
 import Login from "../Components/Pages/Login/Login";
 import Register from "../Components/Pages/Register/Register";
+import AddRestaurant from "../Components/Pages/Restaurant/AddRestaurant/AddRestaurant";
 import Dashboard from "../Components/Pages/Restaurant/Dashboard/Dashboard";
+import AddProduct from "../Components/Pages/Restaurant/Product/AddProduct";
 import ListProduct from "../Components/Pages/Restaurant/Product/ListProduct";
+import UpdateProduct from "../Components/Pages/Restaurant/Product/UpdateProduct";
 
 export const unLoginRoute = [
   {
@@ -34,8 +37,20 @@ export const restaurantRoute = [
     component: <ResMainLayout child={<Dashboard />} />,
   },
   {
+    path: "/add-restaurant",
+    component: <AddRestaurant />,
+  },
+  {
     path: "/product",
     component: <ResMainLayout child={<ListProduct />} />,
+  },
+  {
+    path: "/product/add",
+    component: <ResMainLayout child={<AddProduct />} />,
+  },
+  {
+    path: "/product/update/:id",
+    component: <ResMainLayout child={<UpdateProduct />} />,
   },
 ];
 
