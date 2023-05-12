@@ -1,18 +1,18 @@
 import axios from "axios";
 
-const getToken = () => {
-  const token = localStorage.getItem("access_token");
-  return token.toString();
-};
+// const getToken = () => {
+//   const token = localStorage.getItem("access_token");
+//   return token.toString();
+// };
 
 // console.log(getToken());
 
 const http = axios.create({
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${getToken()}`,
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  //   Accept: "application/json",
+  //   Authorization: `Bearer ${getToken()}`,
+  // },
 });
 
 export const get = async (url, config = {}) => {
