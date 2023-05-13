@@ -3,6 +3,8 @@ import { selectUserData } from "./redux/reducers/users";
 import { clientRoute, deliveryRoute, restaurantRoute } from "./routes/Routes";
 import { Route, Routes } from "react-router";
 import Error from "./Components/Pages/Error/Error";
+import MainLayout from "./Components/Layouts/MainLayout";
+import Register from "./Components/Pages/Register/Register";
 
 const getDataFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem("users"))
@@ -55,6 +57,10 @@ function App() {
           element={route.component}
         />
       ))}
+      <Route
+        path="/register"
+        element={<MainLayout children={<Register />} />}
+      />
       <Route path="*" element={<Error />} />
     </Routes>
   );

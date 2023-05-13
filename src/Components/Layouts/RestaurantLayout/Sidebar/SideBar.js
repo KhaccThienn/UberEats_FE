@@ -38,14 +38,14 @@ function SideBar() {
               </li>
 
               <li>
-                <Link to={"/"}>
+                <Link to={"/voucher"}>
                   <RiCoupon3Line />
                   &nbsp; Voucher Management
                 </Link>
               </li>
 
               <li>
-                <Link to={"/"}>
+                <Link to={"/order"}>
                   <RiListOrdered />
                   &nbsp; Order Management
                 </Link>
