@@ -8,6 +8,9 @@ import Dashboard from "../Components/Pages/Restaurant/Dashboard/Dashboard";
 import AddProduct from "../Components/Pages/Restaurant/Product/AddProduct";
 import ListProduct from "../Components/Pages/Restaurant/Product/ListProduct";
 import UpdateProduct from "../Components/Pages/Restaurant/Product/UpdateProduct";
+import ListVoucher from "./../Components/Pages/Restaurant/Voucher/ListVoucher";
+import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
+import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 
 export const unLoginRoute = [
   {
@@ -51,6 +54,19 @@ export const restaurantRoute = [
   {
     path: "/product/update/:id",
     component: <ResMainLayout child={<UpdateProduct />} />,
+  },
+
+  {
+    path: "/voucher",
+    component: <ResMainLayout child={<ListVoucher />} />,
+  },
+  {
+    path: "/voucher/add",
+    component: <ResMainLayout child={<AddVoucher />} />,
+  },
+  {
+    path: "/voucher/update/:id",
+    component: <ResMainLayout child={<UpdateVoucher />} />,
   },
 ];
 

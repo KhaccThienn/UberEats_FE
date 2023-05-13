@@ -20,14 +20,21 @@ function Register() {
     e.preventDefault();
     console.log(registerData);
 
-    RegisterService.register(registerData)
-      .then((res) => {
-        console.log(res);
-        navigate('/login');
-      })
-      .catch((err) => {
-        setErrs(err.response.data.message);
-      });
+    // RegisterService.register(registerData)
+    //   .then((res) => {
+    //     console.log(res);
+    //     navigate('/login');
+    //   })
+    //   .catch((err) => {
+    //     setErrs(err.response.data.message);
+    //   });
+    const [data, error] = await RegisterService.register(registerData);
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      navigate("/login");
+    }
   };
 
 
@@ -46,8 +53,8 @@ function Register() {
                 <label htmlFor="">User name: </label>
                 <input
                   type="text"
-                  name="userName"
-                  id="userName"
+                  name="username"
+                  id="username"
                   className={cx(
                     "form-control rounded-pill",
                     "fz-14",
