@@ -11,6 +11,7 @@ import UpdateProduct from "../Components/Pages/Restaurant/Product/UpdateProduct"
 import ListVoucher from "./../Components/Pages/Restaurant/Voucher/ListVoucher";
 import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
+import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 
 export const unLoginRoute = [
   {
@@ -68,6 +69,11 @@ export const restaurantRoute = [
     path: "/voucher/update/:id",
     component: <ResMainLayout child={<UpdateVoucher />} />,
   },
+
+  {
+    path: "/restaurant/profile",
+    component: <ResMainLayout child={<Profile />} />
+  }
 ];
 
 export const deliveryRoute = [

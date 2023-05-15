@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
-import * as RegisterService from "../../../services/RegisterService";
+import * as RegisterService from "../../../services/UserService";
 import style from "./register.module.css";
 import { Link, useNavigate } from "react-router-dom";
-
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.css";
 const cx = classNames.bind(style);
 
 function Register() {
@@ -15,7 +16,6 @@ function Register() {
     const { name, value } = await e.target;
     setRegisterData({ ...registerData, [name]: value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(registerData);
@@ -30,13 +30,16 @@ function Register() {
     //   });
     const [data, error] = await RegisterService.register(registerData);
     if (error) {
-      console.log(error);
+      // error.response.data.message.foreach((e) => {
+      //   Swal.fire("Error", e.toString(), "error");
+      // });
+
+      setErrs(error.response.data.message);
     }
     if (data) {
       navigate("/login");
     }
   };
-
 
   return (
     <div className={cx("bg-image")}>
