@@ -1,26 +1,49 @@
 import { useSelector } from "react-redux";
 import { selectUserData } from "./redux/reducers/users";
-import { clientRoute, deliveryRoute, restaurantRoute } from "./routes/Routes";
+import {
+  clientRoute,
+  deliveryRoute,
+  restaurantRoute,
+  unLoginRoute,
+} from "./routes/Routes";
 import { Route, Routes } from "react-router";
 import Error from "./Components/Pages/Error/Error";
+import MainLayout from "./Components/Layouts/MainLayout";
 import Register from "./Components/Pages/Register/Register";
-import Login from "./Components/Pages/Login/Login";
+import { useCookies } from "react-cookie";
 
-const getDataFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("users"))
-    ? JSON.parse(localStorage.getItem("users"))
-    : {};
-};
+// const getDataFromLocalStorage = () => {
+//   return JSON.parse(localStorage.getItem("users"))
+//     ? JSON.parse(localStorage.getItem("users"))
+//     : {};
+// };
 
 function App() {
-  const user = getDataFromLocalStorage();
+  const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
+
+  const getUserDataFromCookie = () => {
+    return cookies["user_data"];
+  };
+
+  const user = getUserDataFromCookie();
   const userData = useSelector(selectUserData);
 
-  console.log(user);
-  console.log(userData);
+  const expiredAt = new Date(user.exp * 1000);
+
+  const isExpired = new Date() > expiredAt || true;
+
+  console.log(isExpired);
 
   return (
     <Routes>
+      {unLoginRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))}
       {(userData.role === 1 || user.role === 1) &&
         clientRoute.map((route) => (
           <Route
@@ -49,21 +72,9 @@ function App() {
           />
         ))}
 
-      {clientRoute.map((route) => (
-        <Route
-          exact
-          key={route.path}
-          path={route.path}
-          element={route.component}
-        />
-      ))}
       <Route
         path="/register"
-        element={<Register />}
-      />
-      <Route
-        path="/login"
-        element={<Login />}
+        element={<MainLayout children={<Register />} />}
       />
       <Route path="*" element={<Error />} />
     </Routes>

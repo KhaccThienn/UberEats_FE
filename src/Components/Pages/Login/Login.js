@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser, clearUser, selectUserData } from "../../../redux/reducers/users";
+import {
+  setUser,
+  clearUser,
+  selectUserData,
+} from "../../../redux/reducers/users";
 import jwt from "jwt-decode";
-import * as LoginService from "../../../services/LoginService";
+import * as LoginService from "../../../services/UserService";
 import style from "./login.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import moment from "moment";
+import { useCookies } from "react-cookie";
 import Header from "../../Layouts/Header/Header";
 
 const cx = classNames.bind(style);
@@ -14,6 +20,7 @@ function Login() {
   const userData = useSelector(selectUserData);
   const dispatch = useDispatch();
   const [loginData, setLoginData] = useState([]);
+  const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
   const [errs, setErrs] = useState([]);
   const navigate = useNavigate();
 
@@ -23,33 +30,23 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(loginData);
-    // LoginService.register(loginData)
-    //   .then((res) => {
-    //     console.log("Response Data when login: ", res);
-    //     const token = res.accessToken;
-    //     const user = jwt(token);
-    //     console.log("Decoded Token: ", user);
-    //     localStorage.setItem("access_token", res.accessToken);
-    //     localStorage.setItem('users', JSON.stringify(user))
-    //     navigate("/");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     // setErrs(err.response.data.message);
-    //   });
-
     const [data, error] = await LoginService.login(loginData);
     if (error) {
-      // show error
+      console.log(error.response.data.message);
     }
     if (data) {
-      console.log("Response Data when login: ", data);
+      // console.log("Response Data when login: ", data);
       const token = data.accessToken;
       const user = jwt(token);
+
       console.log("Decoded Token: ", user);
+
       localStorage.setItem("access_token", data.accessToken);
-      localStorage.setItem("users", JSON.stringify(user));
+      // localStorage.setItem("users", JSON.stringify(user));
+      // const expires = moment.unix(user.exp).format("YYYY-MM-DD HH:mm:ss");
+
+      setCookie("user_data", user);
+
       dispatch(setUser(user));
 
       navigate("/");
