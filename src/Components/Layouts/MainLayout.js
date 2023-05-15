@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
-import "../../global/restaurant/css/typography.css";
+import '../../global/restaurant/css/typography.css'
 
 function MainLayout({ children }) {
   return (

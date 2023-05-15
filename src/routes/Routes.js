@@ -12,6 +12,7 @@ import ListVoucher from "./../Components/Pages/Restaurant/Voucher/ListVoucher";
 import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 import Profile from "../Components/Pages/Restaurant/Profile/Profile";
+import Food from "../Components/Pages/Client/Food/Food";
 
 export const unLoginRoute = [
   {
@@ -20,11 +21,11 @@ export const unLoginRoute = [
   },
   {
     path: "/login",
-    component: <MainLayout children={<Login />} />,
+    component: <Login />,
   },
   {
     path: "/register",
-    component: <MainLayout children={<Register />} />,
+    component: <Register />,
   },
 ];
 
@@ -33,6 +34,10 @@ export const clientRoute = [
     path: "/",
     component: <MainLayout children={<Home />} />,
   },
+  {
+    path: "/id_name-restaurant",
+    component: <MainLayout children={<Food />} />,
+  }
 ];
 
 export const restaurantRoute = [
