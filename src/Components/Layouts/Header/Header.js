@@ -1,7 +1,7 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faUser } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind";
-import React from "react";
+import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import * as UserService from "../../../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +9,8 @@ import logo from "../../../images/logo.png";
 import style from "./header.module.css";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../redux/reducers/users";
+import { AiOutlineShoppingCart, AiOutlineUser } from 'react-icons/ai'
+import Cart from "../../Pages/Client/Cart/Cart";
 
 const cx = classNames.bind(style);
 
@@ -33,7 +35,7 @@ function Header() {
 
   const expiredAt = new Date(user.exp * 1000) || new Date(userData.exp * 1000);
 
-  const isExpired = new Date() > (expiredAt || new Date());
+  const isExpired = true;
 
   console.log(new Date() > expiredAt);
   console.log(accessToken);
@@ -51,32 +53,45 @@ function Header() {
   };
 
   return (
-    <header className={cx("bg-white", "sticky-top")}>
-      <div className="container-fluid px-5 d-flex justify-content-between align-items-center">
-        <Link to="/" className={cx("logo")}>
-          <img src={logo} className="card-img" alt="Nuber Eats" />
-        </Link>
-        {isExpired && (
-          <span className="text-xs">
-            <Link to="/login">
-              <FontAwesomeIcon icon={faUser} className={cx("user")} />
-            </Link>
-          </span>
-        )}
-        {/* <span className="text-xs">
-          <Link to="/login">
-            <FontAwesomeIcon icon={faUser} className={cx("user")} />
+    <>
+      <header className={cx("bg-white", "sticky-top")}>
+        <div className="container-fluid px-5 d-flex justify-content-between align-items-center">
+          <Link to="/" className={cx("logo")}>
+            <img src={logo} className="card-img" alt="Nuber Eats" />
           </Link>
-        </span> */}
-        {isExpired === false && (
-          <span className="text-xs">
-            <button className="border-0 bg-white" onClick={handleLogout}>
-              <FontAwesomeIcon icon={faUser} className={cx("user")} />
-            </button>
-          </span>
-        )}
-      </div>
-    </header>
+          <div>
+            {isExpired && (
+              <span>
+                <Link to="/login" className={cx('btn')}>
+                  <AiOutlineUser className={cx('icon-header')} />
+                </Link>
+              </span>
+            )}
+            {/* <span>
+              <Link to="/login" className={cx('btn')}>
+                <AiOutlineUser className={cx('icon-header')} />
+              </Link>
+            </span> */}
+            {isExpired === false && (
+              <span>
+                <button className={cx('btn')} onClick={handleLogout}>
+                  <AiOutlineUser className={cx('icon-header')} />
+                </button>
+              </span>
+            )}
+            <span>
+              <Link to='/cart' className={cx('btn')}>
+                <AiOutlineShoppingCart className={cx('icon-header')} />
+                <sup className={cx('number-cart')}>
+                  3
+                </sup>
+              </Link>
+            </span>
+          </div>
+        </div>
+      </header>
+    </>
+
   );
 }
 
