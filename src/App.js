@@ -12,11 +12,11 @@ import MainLayout from "./Components/Layouts/MainLayout";
 import Register from "./Components/Pages/Register/Register";
 import { useCookies } from "react-cookie";
 
-const getDataFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("users"))
-    ? JSON.parse(localStorage.getItem("users"))
-    : {};
-};
+// const getDataFromLocalStorage = () => {
+//   return JSON.parse(localStorage.getItem("users"))
+//     ? JSON.parse(localStorage.getItem("users"))
+//     : {};
+// };
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);

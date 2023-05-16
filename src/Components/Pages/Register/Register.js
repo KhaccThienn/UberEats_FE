@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.css";
 import Header from "../../Layouts/Header/Header";
-
 const cx = classNames.bind(style);
 
 function Register() {
@@ -41,7 +40,6 @@ function Register() {
       navigate("/login");
     }
   };
-
   return (
     <>
       <Header />
