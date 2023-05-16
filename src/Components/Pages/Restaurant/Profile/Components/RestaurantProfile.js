@@ -5,7 +5,7 @@ function RestaurantProfile() {
     <>
       <div
         className="tab-pane fade active show"
-        id="personal-information"
+        id="restaurant-information"
         role="tabpanel"
       >
         <div className="iq-card">

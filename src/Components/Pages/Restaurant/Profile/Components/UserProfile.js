@@ -1,15 +1,11 @@
 import React from "react";
 
-import classNames from "classnames/bind";
-
-import style from "./userprofile.module.css";
-
-const cx = classNames.bind(style);
+import ChangePassword from "./ChangePassword";
 
 function UserProfile() {
   return (
     <>
-      <div className="tab-pane fade" id="chang-pwd" role="tabpanel">
+      <div className="tab-pane fade" id="personal-information" role="tabpanel">
         <div
           className="tab-pane fade active show"
           id="personal-information"
@@ -64,20 +60,6 @@ function UserProfile() {
                       rows="5"
                     ></textarea>
                   </div>
-
-                  <p className="px-3">Change Password </p>
-                  <div className="form-group col-sm-12">
-                    <label htmlFor="uname">Old Password:</label>
-                    <input type="text" className="form-control" id="name" />
-                  </div>
-                  <div className="form-group col-sm-6">
-                    <label htmlFor="cname">New Password:</label>
-                    <input type="text" className="form-control" id="address" />
-                  </div>
-                  <div className="form-group col-sm-6">
-                    <label htmlFor="cname">Confirm Password:</label>
-                    <input type="text" className="form-control" id="email" />
-                  </div>
                 </div>
                 <button type="submit" className="btn btn-primary mr-2">
                   Submit
@@ -88,6 +70,7 @@ function UserProfile() {
               </div>
             </div>
           </div>
+          <ChangePassword />
         </div>
       </div>
     </>

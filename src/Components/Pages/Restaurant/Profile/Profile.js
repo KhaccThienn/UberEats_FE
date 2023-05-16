@@ -1,6 +1,7 @@
 import React from "react";
 import RestaurantProfile from "./Components/RestaurantProfile";
 import UserProfile from "./Components/UserProfile";
+import ChangePassword from "./Components/ChangePassword";
 
 function Profile() {
   return (
@@ -15,7 +16,7 @@ function Profile() {
                     <a
                       className="nav-link active"
                       data-toggle="pill"
-                      href="#personal-information"
+                      href="#restaurant-information"
                     >
                       Restaurant Profile
                     </a>
@@ -24,7 +25,7 @@ function Profile() {
                     <a
                       className="nav-link"
                       data-toggle="pill"
-                      href="#chang-pwd"
+                      href="#personal-information"
                     >
                       User Profile
                     </a>
