@@ -12,11 +12,11 @@ import MainLayout from "./Components/Layouts/MainLayout";
 import Register from "./Components/Pages/Register/Register";
 import { useCookies } from "react-cookie";
 
-// const getDataFromLocalStorage = () => {
-//   return JSON.parse(localStorage.getItem("users"))
-//     ? JSON.parse(localStorage.getItem("users"))
-//     : {};
-// };
+const getDataFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem("users"))
+    ? JSON.parse(localStorage.getItem("users"))
+    : {};
+};
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
@@ -71,6 +71,14 @@ function App() {
             element={route.component}
           />
         ))}
+      {clientRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))}
 
       <Route
         path="/register"
