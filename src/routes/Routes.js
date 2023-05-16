@@ -13,6 +13,8 @@ import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
+import Order from "../Components/Pages/Restaurant/Order/Order";
+import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
 
 export const unLoginRoute = [
   {
@@ -37,7 +39,7 @@ export const clientRoute = [
   {
     path: "/id_name-restaurant",
     component: <MainLayout children={<Food />} />,
-  }
+  },
 ];
 
 export const restaurantRoute = [
@@ -77,8 +79,17 @@ export const restaurantRoute = [
 
   {
     path: "/profile",
-    component: <ResMainLayout child={<Profile />} />
-  }
+    component: <ResMainLayout child={<Profile />} />,
+  },
+
+  {
+    path: "/order",
+    component: <ResMainLayout child={<Order />} />,
+  },
+  {
+    path: "/order/:id",
+    component: <ResMainLayout child={<OrderDetails />} />,
+  },
 ];
 
 export const deliveryRoute = [
