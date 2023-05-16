@@ -22,17 +22,17 @@ function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
 
   const getUserDataFromCookie = () => {
-    return cookies["user_data"];
+    return cookies["user_data"] ? cookies["user_data"] : {};
   };
 
-  const user = getUserDataFromCookie();
+  const user = getUserDataFromCookie() || getDataFromLocalStorage();
   const userData = useSelector(selectUserData);
 
-  const expiredAt = new Date(user.exp * 1000);
+  const expiredAt = new Date(user.exp * 1000) || new Date(userData.exp * 1000);
 
   const isExpired = new Date() > expiredAt || true;
 
-  console.log(isExpired);
+  console.log(expiredAt);
 
   return (
     <Routes>

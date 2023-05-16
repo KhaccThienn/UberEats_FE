@@ -20,9 +20,9 @@ export const login = async (data) => {
   }
 };
 
-export const logout = async () => {
+export const logout = async (config) => {
   try {
-    const res = await http.get(`${urlAPI}/auth/logout`);
+    const res = await http.get(`${urlAPI}/auth/logout`, config);
     return [res, null];
   } catch (error) {
     return [null, error];
