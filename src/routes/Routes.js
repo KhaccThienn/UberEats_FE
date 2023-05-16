@@ -13,6 +13,7 @@ import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
+import Cart from "../Components/Pages/Client/Cart/Cart";
 
 export const unLoginRoute = [
   {
@@ -33,6 +34,10 @@ export const clientRoute = [
   {
     path: "/",
     component: <MainLayout children={<Home />} />,
+  },
+  {
+    path: "/cart",
+    component: <MainLayout children={<Cart />} />,
   },
   {
     path: "/id_name-restaurant",

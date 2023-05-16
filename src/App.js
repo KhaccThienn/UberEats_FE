@@ -72,6 +72,14 @@ function App() {
             element={route.component}
           />
         ))}
+      {clientRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))}
 
       <Route
         path="/register"
