@@ -76,7 +76,7 @@ export const restaurantRoute = [
   },
 
   {
-    path: "/restaurant/profile",
+    path: "/profile",
     component: <ResMainLayout child={<Profile />} />
   }
 ];

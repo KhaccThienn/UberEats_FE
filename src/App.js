@@ -36,7 +36,7 @@ function App() {
 
   return (
     <Routes>
-      {unLoginRoute.map((route) => (
+      {restaurantRoute.map((route) => (
         <Route
           exact
           key={route.path}

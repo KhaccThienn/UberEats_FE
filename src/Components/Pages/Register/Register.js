@@ -21,20 +21,15 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(registerData);
-
-    // RegisterService.register(registerData)
-    //   .then((res) => {
-    //     console.log(res);
-    //     navigate('/login');
-    //   })
-    //   .catch((err) => {
-    //     setErrs(err.response.data.message);
-    //   });
     const [data, error] = await RegisterService.register(registerData);
     if (error) {
-      // error.response.data.message.foreach((e) => {
-      //   Swal.fire("Error", e.toString(), "error");
-      // });
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "All Field Are Required",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       console.log(error);
     }
     if (data) {
@@ -59,7 +54,7 @@ function Register() {
                   <label htmlFor="">User name: </label>
                   <input
                     type="text"
-                    name="username"
+                    name="userName"
                     id="username"
                     className={cx(
                       "form-control rounded-pill",
