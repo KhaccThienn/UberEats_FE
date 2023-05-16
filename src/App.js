@@ -19,6 +19,7 @@ const getDataFromLocalStorage = () => {
 };
 
 function App() {
+
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
 
   const getUserDataFromCookie = () => {
@@ -74,6 +75,7 @@ function App() {
 
       <Route
         path="/register"
+        element={<MainLayout children={<Register />} />}
         element={<MainLayout children={<Register />} />}
       />
       <Route path="*" element={<Error />} />
