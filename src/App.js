@@ -12,13 +12,14 @@ import MainLayout from "./Components/Layouts/MainLayout";
 import Register from "./Components/Pages/Register/Register";
 import { useCookies } from "react-cookie";
 
-// const getDataFromLocalStorage = () => {
-//   return JSON.parse(localStorage.getItem("users"))
-//     ? JSON.parse(localStorage.getItem("users"))
-//     : {};
-// };
+const getDataFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem("users"))
+    ? JSON.parse(localStorage.getItem("users"))
+    : {};
+};
 
 function App() {
+
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
 
   const getUserDataFromCookie = () => {
@@ -36,7 +37,7 @@ function App() {
 
   return (
     <Routes>
-      {unLoginRoute.map((route) => (
+      {restaurantRoute.map((route) => (
         <Route
           exact
           key={route.path}
@@ -74,6 +75,7 @@ function App() {
 
       <Route
         path="/register"
+        element={<MainLayout children={<Register />} />}
         element={<MainLayout children={<Register />} />}
       />
       <Route path="*" element={<Error />} />

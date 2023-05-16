@@ -10,7 +10,6 @@ import style from "./header.module.css";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../redux/reducers/users";
 
-
 const cx = classNames.bind(style);
 
 const getDataFromLocalStorage = () => {

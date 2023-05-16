@@ -83,15 +83,8 @@ function SideBar() {
 
               <li>
                 <Link to={"/profile"}>
-                  <RiUser2Fill />
-                  &nbsp; User Profile
-                </Link>
-              </li>
-
-              <li>
-                <Link to={"/restaurant/profile"}>
                   <RiUser6Fill />
-                  &nbsp; Restaurant Profile
+                  &nbsp; Profile
                 </Link>
               </li>
 
