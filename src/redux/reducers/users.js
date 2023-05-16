@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initState = {};
+const initState = {
+  subject: "",
+  role: "",
+  iat: 0,
+  exp: 0,
+};
 
 export const userSlice = createSlice({
   name: "user",

@@ -42,7 +42,7 @@ function Login() {
       console.log("Decoded Token: ", user);
 
       localStorage.setItem("access_token", data.accessToken);
-      // localStorage.setItem("users", JSON.stringify(user));
+      localStorage.setItem("users", JSON.stringify(user));
       // const expires = moment.unix(user.exp).format("YYYY-MM-DD HH:mm:ss");
 
       setCookie("user_data", user);
