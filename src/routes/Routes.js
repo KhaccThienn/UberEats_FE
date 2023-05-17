@@ -18,7 +18,6 @@ import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
 import Search from "../Components/Pages/Client/Search/Search";
 import Order from "../Components/Pages/Client/Order/Order";
 
-
 export const unLoginRoute = [
   {
     path: "/",
@@ -104,6 +103,12 @@ export const restaurantRoute = [
   {
     path: "/order/:id",
     component: <ResMainLayout child={<OrderDetails />} />,
+  },
+
+  // Just Demo
+  {
+    path: "/login",
+    component: <Login />,
   },
 ];
 

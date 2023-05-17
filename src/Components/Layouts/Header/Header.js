@@ -9,7 +9,7 @@ import logo from "../../../images/logo.png";
 import style from "./header.module.css";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../redux/reducers/users";
-import { AiOutlineShoppingCart, AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
 import Cart from "../../Pages/Client/Cart/Cart";
 
 const cx = classNames.bind(style);
@@ -37,8 +37,8 @@ function Header() {
 
   const isExpired = true;
 
-  console.log(new Date() > expiredAt);
-  console.log(accessToken);
+  // console.log(new Date() > expiredAt);
+  // console.log(accessToken);
 
   const handleLogout = async () => {
     const [data, error] = await UserService.logout({});
@@ -62,8 +62,8 @@ function Header() {
           <div>
             {isExpired && (
               <span>
-                <Link to="/login" className={cx('btn')}>
-                  <AiOutlineUser className={cx('icon-header')} />
+                <Link to="/login" className={cx("btn")}>
+                  <AiOutlineUser className={cx("icon-header")} />
                 </Link>
               </span>
             )}
@@ -74,24 +74,21 @@ function Header() {
             </span> */}
             {isExpired === false && (
               <span>
-                <button className={cx('btn')} onClick={handleLogout}>
-                  <AiOutlineUser className={cx('icon-header')} />
+                <button className={cx("btn")} onClick={handleLogout}>
+                  <AiOutlineUser className={cx("icon-header")} />
                 </button>
               </span>
             )}
             <span>
-              <Link to='/cart' className={cx('btn')}>
-                <AiOutlineShoppingCart className={cx('icon-header')} />
-                <sup className={cx('number-cart')}>
-                  3
-                </sup>
+              <Link to="/cart" className={cx("btn")}>
+                <AiOutlineShoppingCart className={cx("icon-header")} />
+                <sup className={cx("number-cart")}>3</sup>
               </Link>
             </span>
           </div>
         </div>
       </header>
     </>
-
   );
 }
 

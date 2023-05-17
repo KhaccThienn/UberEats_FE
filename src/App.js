@@ -33,7 +33,7 @@ function App() {
 
   const isExpired = new Date() > expiredAt || true;
 
-  console.log(expiredAt);
+  // console.log(expiredAt);
 
   return (
     <Routes>

@@ -37,7 +37,6 @@ function Register() {
   };
   return (
     <>
-      <Header />
       <div className={cx("bg-image")}>
         <div className={cx("container")}>
           <div className={cx("row", "align-items-center")}>
