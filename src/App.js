@@ -11,6 +11,7 @@ import Error from "./Components/Pages/Error/Error";
 import MainLayout from "./Components/Layouts/MainLayout";
 import Register from "./Components/Pages/Register/Register";
 import { useCookies } from "react-cookie";
+import Login from "./Components/Pages/Login/Login";
 
 const getDataFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem("users"))
@@ -36,14 +37,14 @@ function App() {
 
   return (
     <Routes>
-      {restaurantRoute.map((route) => (
+      {/* {restaurantRoute.map((route) => (
         <Route
           exact
           key={route.path}
           path={route.path}
           element={route.component}
         />
-      ))}
+      ))} */}
       {(userData.role === 1 || user.role === 1) &&
         clientRoute.map((route) => (
           <Route
@@ -81,8 +82,12 @@ function App() {
       ))}
 
       <Route
+        path="/login"
+        element={<Login  />}
+      />
+      <Route
         path="/register"
-        element={<MainLayout children={<Register />} />}
+        element={<Register  />}
       />
       <Route path="*" element={<Error />} />
     </Routes>

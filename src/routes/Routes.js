@@ -16,6 +16,7 @@ import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
 import Order from "../Components/Pages/Restaurant/Order/Order";
 import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
+import Search from "../Components/Pages/Client/Search/Search";
 
 
 export const unLoginRoute = [
@@ -41,6 +42,10 @@ export const clientRoute = [
   {
     path: "/cart",
     component: <MainLayout children={<Cart />} />,
+  },
+  {
+    path: "/search",
+    component: <MainLayout children={<Search />} />,
   },
   {
     path: "/id_name-restaurant",
