@@ -1,5 +1,6 @@
 import MainLayout from "../Components/Layouts/MainLayout";
 import ResMainLayout from "../Components/Layouts/RestaurantLayout/ResMainLayout";
+import Cart from "../Components/Pages/Client/Cart/Cart";
 import Home from "../Components/Pages/Client/Home/Home";
 import Login from "../Components/Pages/Login/Login";
 import Register from "../Components/Pages/Register/Register";
@@ -15,7 +16,6 @@ import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
 import Order from "../Components/Pages/Restaurant/Order/Order";
 import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
-import Cart from "../Components/Pages/Client/Cart/Cart";
 import Search from "../Components/Pages/Client/Search/Search";
 
 

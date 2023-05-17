@@ -20,7 +20,6 @@ const getDataFromLocalStorage = () => {
 };
 
 function App() {
-
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
 
   const getUserDataFromCookie = () => {

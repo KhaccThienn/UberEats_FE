@@ -21,7 +21,14 @@ function AddVoucher() {
                 <label>Product's Discount (Percent):</label>
                 <input type="text" className="form-control" />
               </div>
-
+              <div className="form-group">
+                <label htmlFor="">Restaurant ?</label>
+                <select className="form-control" name="restaurantId" id="">
+                  <option></option>
+                  <option></option>
+                  <option></option>
+                </select>
+              </div>
               <button type="submit" className="btn btn-primary">
                 Submit
               </button>
