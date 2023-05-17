@@ -1,0 +1,45 @@
+.bg-image {
+    background-image: url('../../../../images/banner.png');
+    min-height: 95vh;
+    background-size: 100% 100%;
+
+}
+
+.fz-60 {
+    font-size: 60px;
+}
+
+.input-banner {
+    width: 75vh !important;
+    height: 7vh !important;
+    padding: 0px 15px !important;
+    box-shadow: none !important;
+}
+
+.select-banner {
+    margin-left: 15px;
+    width: 30vh !important;
+    height: 7vh !important;
+    padding: 0px 15px !important;
+    box-shadow: none !important;
+}
+
+.btn-banner {
+    margin-left: 15px;
+    background-color: black !important;
+    height: 7vh !important;
+    border-radius: 10px !important;
+}
+
+.form-banner {
+    padding-top: 17%;
+}
+
+.text-black{
+    color: black !important;
+}
+
+.link-card{
+    color: black !important;
+    text-decoration: underline !important;
+}

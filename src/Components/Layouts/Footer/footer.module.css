@@ -1,0 +1,22 @@
+footer {
+    font-size: 15px;
+}
+.logo{
+    width: 20%;
+}
+.app-store{
+    width: 20%;
+}
+.gg-play{
+    width: 25%;
+}
+.link-footer{
+    color: black !important;
+}
+.download-footer{
+    margin-top: 15%;
+}
+.social-footer{
+    font-size: 20px !important;
+    color: black !important;
+}
