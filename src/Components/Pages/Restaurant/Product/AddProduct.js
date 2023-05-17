@@ -67,6 +67,14 @@ function AddProduct() {
                 </div>
               </div>
               <div className="form-group">
+                <label htmlFor="">Restaurant ?</label>
+                <select className="form-control" name="restaurantId" id="">
+                  <option></option>
+                  <option></option>
+                  <option></option>
+                </select>
+              </div>
+              <div className="form-group">
                 <label>Product's Description:</label>
 
                 <textarea

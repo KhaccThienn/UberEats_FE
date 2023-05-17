@@ -1,0 +1,33 @@
+.head-cart{
+    margin: 0 !important;
+    padding: 0 2vh !important;
+    width: 100% !important;
+}
+.body-cart{
+    padding: 2vh 2vh !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+.food-img{
+    max-height: 75px !important;
+}
+.input-quantity{
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.border-quantity{
+    border: 2px solid lightgrey;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.btn-order{
+    background-color: #00c444 !important;
+    color: white !important;
+}
+.btn-order:hover{
+    background-color: #048732 !important;
+    color: white !important;
+}

@@ -1,0 +1,36 @@
+.img-food{
+    object-fit: cover;
+    width: 100%;
+    height: 25vh;
+}
+.text-black{
+    color: black !important;
+}
+.input-price{
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.card-food{
+    border: 0 !important;
+    border-radius: 0% !important;
+}
+.card-food:hover{
+    box-shadow: 5px 8px 15px;
+}
+.add-btn{
+    position: relative;
+    bottom: -50%;
+    right: -75%;
+}
+.add-icon-size{
+    font-size: 50px;
+    border-radius: 50%;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.add-icon-size:hover{
+opacity: 80%;
+}
+.mh-163{
+    max-height: 163px !important;
+}

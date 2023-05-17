@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
+
   return (
     <div>
       <div className="iq-top-navbar">
@@ -30,7 +31,7 @@ function Header() {
                 <input
                   type="text"
                   className="text search-input"
-                  placeholder="Tìm kiếm sản phẩm..."
+                  placeholder="Tap here to search..."
                 />
                 <Link className="search-link" to="">
                   <i className="ri-search-line"></i>

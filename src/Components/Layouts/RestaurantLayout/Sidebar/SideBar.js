@@ -2,9 +2,37 @@ import React from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiLogOut } from "react-icons/bi";
 import { IoFastFoodOutline } from "react-icons/io5";
-import { RiCoupon3Line, RiListOrdered } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import {
+  RiCoupon3Line,
+  RiListOrdered,
+  RiUser2Fill,
+  RiUser6Fill,
+} from "react-icons/ri";
+import * as UserService from "../../../../services/UserService";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+
+const getDataFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem("access_token"))
+    ? JSON.parse(localStorage.getItem("access_token"))
+    : "";
+};
+
 function SideBar() {
+  const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    const [data, error] = await UserService.logout();
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      removeCookie("user_data");
+      navigate("/");
+    }
+  };
+
   return (
     <div>
       <div className="iq-sidebar">
@@ -16,18 +44,11 @@ function SideBar() {
               alt=""
             />
             <div className="logo-title">
-              <span className="text-primary text-uppercase">Uber Eats</span>
+              <span className="text-primary text-uppercase">
+                Uber Eats - Restaurant
+              </span>
             </div>
           </Link>
-          <div className="iq-menu-bt-sidebar">
-            <div className="iq-menu-bt align-self-center">
-              <div className="wrapper-menu">
-                <div className="main-circle">
-                  <i className="las la-bars"></i>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <div id="sidebar-scrollbar">
           <nav className="iq-sidebar-menu">
@@ -47,21 +68,28 @@ function SideBar() {
               </li>
 
               <li>
-                <Link to={"/"}>
+                <Link to={"/voucher"}>
                   <RiCoupon3Line />
                   &nbsp; Voucher Management
                 </Link>
               </li>
 
               <li>
-                <Link to={"/"}>
+                <Link to={"/order"}>
                   <RiListOrdered />
                   &nbsp; Order Management
                 </Link>
               </li>
 
               <li>
-                <Link to={"/logout"}>
+                <Link to={"/profile"}>
+                  <RiUser6Fill />
+                  &nbsp; Profile
+                </Link>
+              </li>
+
+              <li onClick={handleLogout}>
+                <Link>
                   <BiLogOut />
                   &nbsp; Log Out
                 </Link>
