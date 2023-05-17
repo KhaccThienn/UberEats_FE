@@ -14,9 +14,9 @@ import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
-import Order from "../Components/Pages/Restaurant/Order/Order";
 import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
 import Search from "../Components/Pages/Client/Search/Search";
+import Order from "../Components/Pages/Client/Order/Order";
 
 
 export const unLoginRoute = [
@@ -46,6 +46,10 @@ export const clientRoute = [
   {
     path: "/search",
     component: <MainLayout children={<Search />} />,
+  },
+  {
+    path: "/order",
+    component: <MainLayout children={<Order />} />,
   },
   {
     path: "/id_name-restaurant",
