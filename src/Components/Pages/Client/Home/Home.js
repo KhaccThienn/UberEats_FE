@@ -19,9 +19,8 @@ function Home() {
                 <div className={cx('d-flex', 'flex-column', 'form-banner')}>
                     <div className={cx('fz-60', 'font-weight-bold', 'text-black')}>Order food to your door</div>
                     <div>
-                        <form className={cx('form-inline')} method='GET'>
+                        <form className={cx('form-inline')} method='GET' action='/search'>
                             <div className={cx("form-group")}>
-                                <label htmlFor=""></label>
                                 <input type="text" name="keyword" id="keyword" className={cx("form-control", 'rounded-0', 'input-banner')} placeholder={'Enter food you wanna find...'} />
                             </div>
                             <button type="submit" className={cx("btn btn-dark", 'btn-banner')}>Find food</button>
