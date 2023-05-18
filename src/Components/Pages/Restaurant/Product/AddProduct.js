@@ -24,6 +24,7 @@ function AddProduct() {
   const [postImage, setPostImage] = useState();
   const [postData, setPostData] = useState(initState);
   const navigate = useNavigate();
+
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     setPostData({ ...postData, [name]: value });
@@ -58,10 +59,7 @@ function AddProduct() {
     formData.append("status", postData.status);
     formData.append("description", postData.description);
 
-    const [result, error] = await ProductService.createProduct(
-      postData.restaurantId,
-      formData
-    );
+    const [result, error] = await ProductService.createProduct(formData);
     if (result) {
       navigate("/product");
     }

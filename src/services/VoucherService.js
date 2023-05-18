@@ -11,20 +11,20 @@ export const getAllRestaurantByUser = async (userID) => {
     }
 }
 
-export const createProduct = async (data) => {
+export const getAllVouchers = async (params) => {
     try {
-        const res = await http.post(`${urlAPI}/product`, data);
+        const res = await http.get(`${urlAPI}/voucher?${params}`);
         return [res, null]
     } catch (error) {
         return [null, error]
     }
 }
 
-export const getAllProduct = async (params) => {
+export const createVoucher = async (data) => {
     try {
-        const res = await http.get(`${urlAPI}/product?${params}`);
-        return [res, null];
+        const res = await http.post(`${urlAPI}/voucher`, data);
+        return [res, null]
     } catch (error) {
-        return [null, error];
+        return [null, error]
     }
 }

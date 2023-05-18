@@ -37,14 +37,14 @@ function App() {
 
   return (
     <Routes>
-      {/* {restaurantRoute.map((route) => (
+      {restaurantRoute.map((route) => (
         <Route
           exact
           key={route.path}
           path={route.path}
           element={route.component}
         />
-      ))} */}
+      ))}
       {(userData.role === 1 || user.role === 1) &&
         clientRoute.map((route) => (
           <Route
@@ -72,14 +72,14 @@ function App() {
             element={route.component}
           />
         ))}
-      {clientRoute.map((route) => (
+      {/* {clientRoute.map((route) => (
         <Route
           exact
           key={route.path}
           path={route.path}
           element={route.component}
         />
-      ))}
+      ))} */}
 
       <Route
         path="/login"
