@@ -16,7 +16,7 @@ function Order() {
               <div className="table-responsive">
                 <div class="row">
                   <div class="form-group col-lg-3 m-0">
-                    <label for="">Sort By: </label>
+                    <label htmlFor="">Sort By: </label>
                     <select class="form-control" name="" id="">
                       <option>Name (A-Z)</option>
                       <option>Name (Z-A)</option>
