@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import MainLayout from "../Components/Layouts/MainLayout";
 import ResMainLayout from "../Components/Layouts/RestaurantLayout/ResMainLayout";
 import Cart from "../Components/Pages/Client/Cart/Cart";
@@ -17,6 +18,7 @@ import Food from "../Components/Pages/Client/Food/Food";
 import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
 import Search from "../Components/Pages/Client/Search/Search";
 import Order from "../Components/Pages/Client/Order/Order";
+import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
 
 export const unLoginRoute = [
   {
@@ -49,6 +51,10 @@ export const clientRoute = [
   {
     path: "/order",
     component: <MainLayout children={<Order />} />,
+  },
+  {
+    path: "/profile",
+    component: <MainLayout children={<ClientProfile.default />} />,
   },
   {
     path: "/id_name-restaurant",

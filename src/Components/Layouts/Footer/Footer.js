@@ -14,9 +14,9 @@ let cx = classNames.bind(styles)
 
 function Footer() {
     return (
-        <footer>
+        <footer className={cx('py-5')}>
             <hr />
-            <div className={cx('container-fluid', 'px-5', 'py-5')}>
+            <div className={cx('container-fluid', 'px-5')}>
                 <div className={cx('row')}>
                     <div className={cx('col-lg-6')}>
                         <img src={logo} className={cx('logo')} />

@@ -25,25 +25,25 @@ function Order() {
                                     </div>
                                     <div className={cx("card-body p-0 pt-3")}>
                                         <div className={cx("form-group")}>
-                                            <label for="" className={cx("h5 text-black mb-1")}>Name: </label>
+                                            <label htmlFor="" className={cx("h5 text-black mb-1")}>Name: </label>
                                             <input type="text"
                                                 className={cx("form-control rounded-0 mt-1")}
                                                 name="" placeholder="Enter name..." />
                                         </div>
                                         <div className={cx("form-group")}>
-                                            <label for="" className={cx("h5 text-black mb-1")}>Address: </label>
+                                            <label htmlFor="" className={cx("h5 text-black mb-1")}>Address: </label>
                                             <input type="text"
                                                 className={cx("form-control rounded-0 mt-1")}
                                                 name="" placeholder="Enter address..." />
                                         </div>
                                         <div className={cx("form-group")}>
-                                            <label for="" className={cx("h5 text-black mb-1")}>Phone number: </label>
+                                            <label htmlFor="" className={cx("h5 text-black mb-1")}>Phone number: </label>
                                             <input type="text"
                                                 className={cx("form-control rounded-0 mt-1")}
                                                 name="" placeholder="Enter phone number..." />
                                         </div>
                                         <div className={cx("form-group")}>
-                                            <label for="" className={cx("h5 text-black mb-1")}>Note:</label>
+                                            <label htmlFor="" className={cx("h5 text-black mb-1")}>Note:</label>
                                             <textarea className={cx("form-control rounded-0 mt-1")} name="" rows="3" placeholder='note'></textarea>
                                         </div>
                                     </div>
