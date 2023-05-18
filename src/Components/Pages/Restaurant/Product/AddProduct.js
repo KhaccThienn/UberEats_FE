@@ -5,14 +5,16 @@ import * as ProductService from "../../../../services/ProductService";
 import style from "./AddProduct.module.css";
 import classNames from "classnames/bind";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import Toast from "../Components/ShowError/Toast";
 
 const cx = classNames.bind(style);
 
 function AddProduct() {
   const initState = {
     name: "",
-    price: "",
     image: {},
+    price: "",
     sale_price: 0,
     status: 1,
     description: "",
@@ -24,13 +26,16 @@ function AddProduct() {
   const [postImage, setPostImage] = useState();
   const [postData, setPostData] = useState(initState);
   const navigate = useNavigate();
+
+  const [errData, setErrData] = useState([]);
+
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     setPostData({ ...postData, [name]: value });
   };
 
   const handleChangeFile = (e) => {
-    console.log(e.target.files[0]);
+    // console.log(e.target.files[0]);
     setPostImage(e.target.files[0]);
   };
 
@@ -43,6 +48,7 @@ function AddProduct() {
         setRestaurant(data.restaurant);
       }
       if (error) {
+        console.log(error.response.data.message);
       }
     };
     getAPIData();
@@ -57,22 +63,27 @@ function AddProduct() {
     formData.append("sale_price", postData.sale_price);
     formData.append("status", postData.status);
     formData.append("description", postData.description);
+    formData.append("restaurantId", postData.restaurantId);
 
-    const [result, error] = await ProductService.createProduct(
-      postData.restaurantId,
-      formData
-    );
+    const [result, error] = await ProductService.createProduct(formData);
     if (result) {
       navigate("/product");
     }
     if (error) {
-      console.log(error);
+      console.log(error.response.data.message);
+      setErrData(error.response.data.message);
     }
   };
   return (
     <div>
       <div className="col-sm-12">
         <div className="iq-card">
+          {errData &&
+            errData.forEach((e, i) => {
+              setInterval(() => {
+                return <Toast title={"Heheh"} />;
+              }, 10);
+            })}
           <div className="iq-card-header d-flex justify-content-between">
             <div className="iq-header-title">
               <h4 className="card-title">Add New</h4>
