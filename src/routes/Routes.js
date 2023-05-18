@@ -15,10 +15,10 @@ import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
-import OrderDetails from "../Components/Pages/Restaurant/Order/OrderDetails";
 import Search from "../Components/Pages/Client/Search/Search";
 import Order from "../Components/Pages/Client/Order/Order";
 import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
+import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
 
 export const unLoginRoute = [
   {
@@ -55,6 +55,10 @@ export const clientRoute = [
   {
     path: "/profile",
     component: <MainLayout children={<ClientProfile.default />} />,
+  },
+  {
+    path: "/order_details",
+    component: <MainLayout children={<OrderDetails />} />,
   },
   {
     path: "/id_name-restaurant",
