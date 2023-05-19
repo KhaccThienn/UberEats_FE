@@ -1,15 +1,15 @@
 // import { faUser } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind";
-import React, { useState } from "react";
+import React from "react";
 import { useCookies } from "react-cookie";
 import * as UserService from "../../../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../images/logo.png";
-import style from "./header.module.css";
+import style from "../Header/header.module.css";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../redux/reducers/users";
-import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
+import { AiOutlineUser } from "react-icons/ai";
 
 const cx = classNames.bind(style);
 
@@ -19,7 +19,7 @@ const getDataFromLocalStorage = () => {
     : {};
 };
 
-function Header() {
+function DeliverHeader() {
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
   const navigate = useNavigate();
 
@@ -61,7 +61,7 @@ function Header() {
           <div>
             {isExpired && (
               <span>
-                <Link to="/login" className={cx("btn")}>
+                <Link to="/profile" className={cx("btn")}>
                   <AiOutlineUser className={cx("icon-header")} />
                 </Link>
               </span>
@@ -78,12 +78,6 @@ function Header() {
                 </button>
               </span>
             )}
-            <span>
-              <Link to="/cart" className={cx("btn")}>
-                <AiOutlineShoppingCart className={cx("icon-header")} />
-                <sup className={cx("number-cart")}>3</sup>
-              </Link>
-            </span>
           </div>
         </div>
       </header>
@@ -91,4 +85,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default DeliverHeader;
