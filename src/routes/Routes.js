@@ -20,6 +20,8 @@ import Order from "../Components/Pages/Client/Order/Order";
 import OrderMgmt from './../Components/Pages/Restaurant/Order/Order';
 import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
 import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
+import Deliver from "../Components/Pages/Deliver/Deliver";
+import DeliverLayout from "../Components/Layouts/DeliverLayout";
 
 
 export const unLoginRoute = [
@@ -127,6 +129,10 @@ export const restaurantRoute = [
 export const deliveryRoute = [
   {
     path: "/",
-    component: "",
+    component: <DeliverLayout children={<Deliver />} />,
+  },
+  {
+    path: "/profile",
+    component: <DeliverLayout children={<ClientProfile.default />} />,
   },
 ];

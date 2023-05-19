@@ -1,0 +1,5 @@
+.bg-order{
+    background-image: linear-gradient(to top, black, darkslategray) !important;
+    background-color: transparent !important;
+    color: white !important;
+}
