@@ -1,23 +1,28 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigateSearch } from "./../../../../hooks/useNavigateSearch";
 import * as ProductService from "../../../../services/ProductService";
+import Swal from "sweetalert2";
 
 function ListProduct() {
   // init the state of all product
   const [allProd, setAllProd] = useState([]);
+
+  const [loadPage, setLoadPage] = useState(false);
 
   // init the state of filter values
   const initState = {};
   const [filterValues, setFilterValues] = useState(initState);
 
   // init state for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [totalPages, setTotalPages] = useState(10);
 
   // init state for search
   const [keySearch, setKeySearch] = useState("");
 
+  // useNavigate search
   const navigateSearch = useNavigateSearch();
 
   const handleSubmit = () => {
@@ -30,19 +35,71 @@ function ListProduct() {
     setKeySearch("");
   };
 
-  const queryParams = new URLSearchParams(window.location.search).toString();
+  const getQueryParams = () => {
+    return new URLSearchParams(window.location.search).toString();
+  };
+
+  const queryParams = getQueryParams();
 
   const handleChange = async (e) => {
     const { name, value } = await e.target;
     setFilterValues({ ...filterValues, [name]: value });
   };
 
+  // generate slugs string
+  const slugsGenerator = (string) => {
+    return string.replaceAll(" ", "_");
+  };
+
+  const handleDelete = async (id) => {
+    const choose = await Swal.fire({
+      title: "Do you want to delete this product ?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+    });
+    console.log(choose.isConfirmed);
+    if (choose.isConfirmed) {
+      const [data, error] = await ProductService.deleteProduct(id);
+      if (error) {
+        Swal.fire("Having Error !", "", "error");
+      }
+      if (data) {
+        setLoadPage(true);
+        console.log(data);
+        Swal.fire("Delete Successfully!", "", "success");
+      }
+    }
+
+    console.log(id);
+  };
+
+  // const handleChangePage = async (e) => {
+  //   const name = e.target.name;
+  //   if (name === "next") {
+  //     setCurrentPage(currentPage + 1);
+  //     setFilterValues({ ...filterValues, page: currentPage });
+  //     console.log(filterValues);
+  //     setLoadPage(true);
+  //     navigateSearch("/product", { ...filterValues });
+  //   }
+  //   if (name === "previous") {
+  //     setCurrentPage(currentPage - 1);
+  //     setFilterValues({ ...filterValues, page: currentPage });
+  //     console.log(filterValues);
+  //     setLoadPage(true);
+  //     navigateSearch("/product", { ...filterValues });
+  //   }
+  // };
+
   useEffect(() => {
     const getAllProductFromAPI = async () => {
       const [data, error] = await ProductService.getAllProduct(queryParams);
       if (data) {
-        console.log(data);
+        // console.log(data);
         setTotalPages(Math.round(data.length / 2));
+        console.log("Data Length: ", data.length);
+        console.log("Total Page: ", Math.round(data.length / 2));
         queryParams
           ? setAllProd(data)
           : setAllProd(data.sort((a, b) => b.id - a.id));
@@ -52,7 +109,7 @@ function ListProduct() {
       }
     };
     getAllProductFromAPI();
-  }, [queryParams]);
+  }, [queryParams, loadPage, currentPage]);
 
   return (
     <div>
@@ -142,13 +199,18 @@ function ListProduct() {
                               >
                                 <Link
                                   className="dropdown-item"
-                                  to={`/product/update/${e.id}`}
+                                  to={`/product/update/${e.id}-${slugsGenerator(
+                                    e.name
+                                  )}`}
                                 >
                                   Update
                                 </Link>
-                                <Link className="dropdown-item" to={"#"}>
+                                <button
+                                  className="dropdown-item"
+                                  onClick={() => handleDelete(e.id)}
+                                >
                                   Delete
-                                </Link>
+                                </button>
                               </div>
                             </div>
                           </td>
@@ -158,33 +220,30 @@ function ListProduct() {
                   </tbody>
                 </table>
                 <nav aria-label="Page navigation example">
-                  <ul className="pagination">
+                  <ul className="pagination justify-content-center">
                     <li className="page-item">
-                      <a className="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span className="sr-only">Previous</span>
-                      </a>
+                      <button
+                        className="page-link"
+                        aria-label="Previous"
+                        // onClick={(e) => handleChangePage(e)}
+                        name="previous"
+                        // disabled={currentPage === 1}
+                      >
+                        &laquo; Previous
+                      </button>
                     </li>
+
                     <li className="page-item">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        2
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        3
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span className="sr-only">Next</span>
-                      </a>
+                      <button
+                        className="page-link"
+                        href="#"
+                        aria-label="Next"
+                        // onClick={(e) => handleChangePage(e)}
+                        name="next"
+                        // disabled={currentPage === totalPages}
+                      >
+                        Next &raquo;
+                      </button>
                     </li>
                   </ul>
                 </nav>

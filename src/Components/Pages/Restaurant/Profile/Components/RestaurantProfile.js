@@ -24,14 +24,11 @@ function RestaurantProfile() {
                       src="images/user/1.jpg"
                       alt="profile-pic"
                     />
-                    <div className="p-image">
-                      <i className="ri-pencil-line upload-button"></i>
-                      <input
-                        className="file-upload"
-                        type="file"
-                        accept="image/*"
-                      />
-                    </div>
+                    <input
+                      className="form-control"
+                      type="file"
+                      accept="image/*"
+                    />
                   </div>
                 </div>
               </div>

@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
 import * as VoucherService from "../../../../services/VoucherService";
+import Swal from "sweetalert2";
 
 function ListVoucher() {
-  // init the state of all product
+  // init the state of all voucher
   const [allVouchers, setAllVouchers] = useState([]);
+
+  const [loadPage, setLoadPage] = useState(false);
 
   // init the state of filter values
   const initState = {};
@@ -22,11 +25,11 @@ function ListVoucher() {
 
   const handleSubmit = () => {
     console.log({ ...filterValues });
-    navigateSearch("/product", { ...filterValues });
+    navigateSearch("/voucher", { ...filterValues });
   };
 
   const clearFilter = () => {
-    navigateSearch("/product", initState);
+    navigateSearch("/voucher", initState);
     setKeySearch("");
   };
 
@@ -36,12 +39,32 @@ function ListVoucher() {
     const { name, value } = await e.target;
     setFilterValues({ ...filterValues, [name]: value });
   };
+  const handleDelete = async (id) => {
+    const choose = await Swal.fire({
+      title: "Do you want to delete this voucher ?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+    });
+    console.log(choose.isConfirmed);
+    if (choose.isConfirmed) {
+      const [data, error] = await VoucherService.deleteVoucher(id);
+      if (error) {
+        Swal.fire("Having Error !", error, "error");
+      }
+      if (data) {
+        setLoadPage(true);
+        Swal.fire("Delete Successfully!", "", "success");
+      }
+    }
 
+    console.log(id);
+  };
   useEffect(() => {
     const getAllProductFromAPI = async () => {
       const [data, error] = await VoucherService.getAllVouchers(queryParams);
       if (data) {
-        console.log(data);
+        // console.log(data.slice(1, 2));
         setTotalPages(Math.round(data.length / 2));
         queryParams
           ? setAllVouchers(data)
@@ -52,7 +75,7 @@ function ListVoucher() {
       }
     };
     getAllProductFromAPI();
-  }, [queryParams]);
+  }, [queryParams, loadPage]);
   return (
     <div>
       <div className="row">
@@ -109,46 +132,51 @@ function ListVoucher() {
                   </thead>
                   <tbody>
                     {allVouchers &&
-                      allVouchers.map((e, i) => {
-                        return (
-                          <tr>
-                            <td>{e.id}</td>
-                            <td>{e.name}</td>
-                            <td>{e.discount} %</td>
-                            <td>{e.restaurant.name}</td>
-                            <td>
-                              <div className="dropdown">
+                      allVouchers.map((e, i) => (
+                        <tr key={i}>
+                          <td>{e.id}</td>
+                          <td>{e.name}</td>
+                          <td>{e.discount} %</td>
+                          <td>{e.restaurant.name}</td>
+                          <td>
+                            <div className="dropdown">
+                              <button
+                                className="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                              >
+                                Actions
+                              </button>
+                              <div
+                                className="dropdown-menu"
+                                aria-labelledby="dropdownMenuButton"
+                              >
+                                <Link
+                                  className="dropdown-item"
+                                  to={`/voucher/update/${e.id}`}
+                                >
+                                  Update
+                                </Link>
                                 <button
-                                  className="btn btn-primary dropdown-toggle"
-                                  type="button"
-                                  id="dropdownMenuButton"
-                                  data-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
+                                  onClick={() => {
+                                    handleDelete(e.id);
+                                  }}
+                                  className="dropdown-item"
                                 >
-                                  Actions
+                                  Delete
                                 </button>
-                                <div
-                                  className="dropdown-menu"
-                                  aria-labelledby="dropdownMenuButton"
-                                >
-                                  <Link
-                                    className="dropdown-item"
-                                    to={`/voucher/update/${e.id}`}
-                                  >
-                                    Update
-                                  </Link>
-                                  <Link className="dropdown-item" to={"#"}>
-                                    Delete
-                                  </Link>
-                                </div>
                               </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    {/* <PaginatedItems items={allVouchers} itemsPerPage={2}  /> */}
                   </tbody>
                 </table>
+
                 <nav aria-label="Page navigation example">
                   <ul className="pagination">
                     <li className="page-item">
