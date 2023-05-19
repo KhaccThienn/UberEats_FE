@@ -74,19 +74,23 @@ function ListProduct() {
     console.log(id);
   };
 
-  const handleChangePage = async (e) => {
-    const name = e.target.name;
-    if (name === "next") {
-      setCurrentPage(currentPage + 1);
-      await setFilterValues({ ...filterValues, page: currentPage });
-      console.log(filterValues);
-      handleSubmit();
-    }
-    setCurrentPage(currentPage - 1);
-    await setFilterValues({ ...filterValues, page: currentPage });
-    console.log(filterValues);
-    handleSubmit();
-  };
+  // const handleChangePage = async (e) => {
+  //   const name = e.target.name;
+  //   if (name === "next") {
+  //     setCurrentPage(currentPage + 1);
+  //     setFilterValues({ ...filterValues, page: currentPage });
+  //     console.log(filterValues);
+  //     setLoadPage(true);
+  //     navigateSearch("/product", { ...filterValues });
+  //   }
+  //   if (name === "previous") {
+  //     setCurrentPage(currentPage - 1);
+  //     setFilterValues({ ...filterValues, page: currentPage });
+  //     console.log(filterValues);
+  //     setLoadPage(true);
+  //     navigateSearch("/product", { ...filterValues });
+  //   }
+  // };
 
   useEffect(() => {
     const getAllProductFromAPI = async () => {
@@ -221,7 +225,7 @@ function ListProduct() {
                       <button
                         className="page-link"
                         aria-label="Previous"
-                        onClick={(e) => handleChangePage(e)}
+                        // onClick={(e) => handleChangePage(e)}
                         name="previous"
                         // disabled={currentPage === 1}
                       >
@@ -234,7 +238,7 @@ function ListProduct() {
                         className="page-link"
                         href="#"
                         aria-label="Next"
-                        onClick={(e) => handleChangePage(e)}
+                        // onClick={(e) => handleChangePage(e)}
                         name="next"
                         // disabled={currentPage === totalPages}
                       >
