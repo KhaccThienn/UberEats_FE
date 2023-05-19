@@ -17,12 +17,12 @@ import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import Food from "../Components/Pages/Client/Food/Food";
 import Search from "../Components/Pages/Client/Search/Search";
 import Order from "../Components/Pages/Client/Order/Order";
-import OrderMgmt from './../Components/Pages/Restaurant/Order/Order';
+import OrderMgmt from "./../Components/Pages/Restaurant/Order/Order";
 import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
 import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
 import Deliver from "../Components/Pages/Deliver/Deliver";
 import DeliverLayout from "../Components/Layouts/DeliverLayout";
-
+import ListRestaurant from "../Components/Pages/Restaurant/Profile/Components/ListRestaurant";
 
 export const unLoginRoute = [
   {
@@ -109,6 +109,10 @@ export const restaurantRoute = [
     path: "/profile",
     component: <ResMainLayout child={<Profile />} />,
   },
+  {
+    path: "/profile/:id",
+    component: <ResMainLayout child={<Profile />} />,
+  },
 
   {
     path: "/order",
@@ -123,6 +127,10 @@ export const restaurantRoute = [
   {
     path: "/login",
     component: <Login />,
+  },
+  {
+    path: "/listRestaurant",
+    component: <ResMainLayout child={<ListRestaurant />} />,
   },
 ];
 

@@ -1,6 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import * as RestaurantService from "./../../../../../services/RestaurantService";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../../../../../redux/reducers/users";
+import { useNavigate } from "react-router";
 
-function RestaurantProfile() {
+function RestaurantProfile({ resID }) {
+  console.log("Restaurant ID: ", resID);
+  const initProfileState = {
+    avatar: "",
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+  };
+  const initPostData = {
+    avatar: {},
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+  };
+  const userData = useSelector(selectUserData);
+  const [profile, setProfile] = useState(initProfileState);
+
+  const [postImage, setPostImage] = useState();
+  const [postData, setPostData] = useState(initPostData);
+
+  const navigate = useNavigate();
+
+  const handleChangeFile = (e) => {
+    setPostImage(e.target.files[0]);
+  };
+
+  const handleChangeValue = (e) => {
+    const { name, value } = e.target;
+    setPostData({ ...postData, [name]: value });
+  };
+
+  useEffect(() => {
+    const getRestaurantData = async (id) => {
+      const [data, err] = await RestaurantService.getRestaurantByID(id);
+      if (data) {
+        console.log("Restaurant Data: ", data);
+        setProfile(data);
+      }
+      if (err) {
+        console.log(err);
+      }
+    };
+    getRestaurantData(resID);
+  }, [resID, userData.user.subject]);
+
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("avatar", postImage ? postImage : {});
+    formData.append("name", postData.name ? postData.name : profile.name);
+    formData.append("phone", postData.phone ? postData.phone : profile.phone);
+    formData.append("email", postData.email ? postData.email : profile.email);
+    formData.append(
+      "address",
+      postData.address ? postData.address : profile.address
+    );
+
+    const [res, rej] = await RestaurantService.updateRestaurantData(
+      userData.user.subject,
+      resID,
+      formData
+    );
+    if (res) {
+      console.log(res);
+      navigate('/profile');
+    }
+    if (rej) {
+      console.log(rej);
+    }
+  };
+
   return (
     <>
       <div
@@ -15,19 +92,36 @@ function RestaurantProfile() {
             </div>
           </div>
           <div className="iq-card-body">
-            <div>
+            <form
+              method="POST"
+              onSubmit={(e) => {
+                handleSubmitForm(e);
+              }}
+            >
               <div className="form-group row align-items-center">
                 <div className="col-md-12">
-                  <div className="profile-img-edit">
-                    <img
-                      className="profile-pic"
-                      src="images/user/1.jpg"
-                      alt="profile-pic"
-                    />
+                  <div className="profile-img-edit w-25">
+                    {!profile.avatar ? (
+                      <img
+                        className="card-img"
+                        src={postImage && URL.createObjectURL(postImage)}
+                        alt={`Avatar of ${profile.name}`}
+                      />
+                    ) : (
+                      <img
+                        className="card-img"
+                        src={profile.avatar}
+                        alt={`Avatar of ${profile.name}`}
+                      />
+                    )}
                     <input
+                      onChange={(e) => {
+                        handleChangeFile(e);
+                      }}
                       className="form-control"
                       type="file"
                       accept="image/*"
+                      name="avatar"
                     />
                   </div>
                 </div>
@@ -35,15 +129,36 @@ function RestaurantProfile() {
               <div className=" row align-items-center">
                 <div className="form-group col-sm-12">
                   <label htmlFor="uname">Company Name:</label>
-                  <input type="text" className="form-control" id="name" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="name"
+                    defaultValue={profile.name}
+                    onChange={handleChangeValue}
+                    name="name"
+                  />
                 </div>
                 <div className="form-group col-sm-6">
                   <label htmlFor="cname">Phone:</label>
-                  <input type="text" className="form-control" id="address" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="address"
+                    defaultValue={profile.phone}
+                    onChange={handleChangeValue}
+                    name="phone"
+                  />
                 </div>
                 <div className="form-group col-sm-6">
                   <label htmlFor="cname">Email:</label>
-                  <input type="text" className="form-control" id="email" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="email"
+                    defaultValue={profile.email}
+                    onChange={handleChangeValue}
+                    name="email"
+                  />
                 </div>
 
                 <div className="form-group col-sm-12">
@@ -52,6 +167,8 @@ function RestaurantProfile() {
                     className="form-control"
                     name="address"
                     rows="5"
+                    defaultValue={profile.address}
+                    onChange={handleChangeValue}
                   ></textarea>
                 </div>
               </div>
@@ -61,7 +178,7 @@ function RestaurantProfile() {
               <button type="reset" className="btn iq-bg-danger">
                 Reset
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
