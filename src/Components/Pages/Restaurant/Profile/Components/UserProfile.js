@@ -6,6 +6,7 @@ import { selectUserData } from "../../../../../redux/reducers/users";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
+
 function UserProfile() {
   const initProfileState = {
     avatar: "",
