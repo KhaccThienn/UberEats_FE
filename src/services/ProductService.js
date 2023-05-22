@@ -22,7 +22,7 @@ export const createProduct = async (data) => {
 
 export const getAllProduct = async (params) => {
     try {
-        const res = await http.get(`${urlAPI}/product?${params}&page=1`);
+        const res = await http.get(`${urlAPI}/product?${params}`);
         return [res, null];
     } catch (error) {
         return [null, error];
