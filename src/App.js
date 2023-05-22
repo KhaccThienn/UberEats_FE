@@ -8,7 +8,7 @@ import {
 } from "./routes/Routes";
 import { Route, Routes } from "react-router";
 import Error from "./Components/Pages/Error/Error";
-import MainLayout from "./Components/Layouts/MainLayout";
+import MainLayout from "./Components/Layouts/ClientLayout/MainLayout";
 import Register from "./Components/Pages/Register/Register";
 import { useCookies } from "react-cookie";
 import Login from "./Components/Pages/Login/Login";
@@ -37,7 +37,7 @@ function App() {
 
   return (
     <Routes>
-      {restaurantRoute.map((route) => (
+      {clientRoute.map((route) => (
         <Route
           exact
           key={route.path}
@@ -45,7 +45,31 @@ function App() {
           element={route.component}
         />
       ))}
-      {/* {(userData.role === 1 || user.role === 1) &&
+      {/* {restaurantRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))} */}
+      {/* {deliveryRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))} */}
+      {/* {unLoginRoute.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          element={route.component}
+        />
+      ))} */}
+      {(userData.role === 1 || user.role === 1) &&
         clientRoute.map((route) => (
           <Route
             exact
@@ -53,7 +77,7 @@ function App() {
             path={route.path}
             element={route.component}
           />
-        ))} */}
+        ))}
       {(userData.role === 2 || user.role === 2) &&
         restaurantRoute.map((route) => (
           <Route
@@ -72,31 +96,6 @@ function App() {
             element={route.component}
           />
         ))}
-      {deliveryRoute.map((route) => (
-        <Route
-          exact
-          key={route.path}
-          path={route.path}
-          element={route.component}
-        />
-      ))}
-      {/* {clientRoute.map((route) => (
-        <Route
-          exact
-          key={route.path}
-          path={route.path}
-          element={route.component}
-        />
-      ))} */}
-
-      <Route
-        path="/login"
-        element={<Login  />}
-      />
-      <Route
-        path="/register"
-        element={<Register  />}
-      />
       <Route path="*" element={<Error />} />
     </Routes>
   );

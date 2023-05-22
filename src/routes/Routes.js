@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-pascal-case */
-import MainLayout from "../Components/Layouts/MainLayout";
+import MainLayout from "../Components/Layouts/ClientLayout/MainLayout";
 import ResMainLayout from "../Components/Layouts/RestaurantLayout/ResMainLayout";
 import Cart from "../Components/Pages/Client/Cart/Cart";
 import Home from "../Components/Pages/Client/Home/Home";
@@ -21,8 +21,8 @@ import OrderMgmt from "./../Components/Pages/Restaurant/Order/Order";
 import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
 import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
 import Deliver from "../Components/Pages/Deliver/Deliver";
-import DeliverLayout from "../Components/Layouts/DeliverLayout";
 import ListRestaurant from "../Components/Pages/Restaurant/Profile/Components/ListRestaurant";
+import DeliverLayout from "../Components/Layouts/DeliverLayout/DeliverLayout";
 
 export const unLoginRoute = [
   {
@@ -65,7 +65,7 @@ export const clientRoute = [
     component: <MainLayout children={<OrderDetails />} />,
   },
   {
-    path: "/id_name-restaurant",
+    path: "/restaurant/:id",
     component: <MainLayout children={<Food />} />,
   },
 ];

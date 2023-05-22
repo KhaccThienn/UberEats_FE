@@ -10,7 +10,7 @@ import * as LoginService from "../../../services/UserService";
 import style from "./login.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import Header from "../../Layouts/Header/Header";
+import Header from "../../Layouts/ClientLayout/Header/Header";
 
 const cx = classNames.bind(style);
 

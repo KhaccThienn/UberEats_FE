@@ -5,11 +5,14 @@ import styles from './home.module.css'
 import { Link } from 'react-router-dom'
 import Restaurant from '../Restaurant/Restaurant'
 import HomeFeature from '../HomeFeature/HomeFeature'
+import { useSelector } from 'react-redux'
+import { selectUserData } from '../../../../redux/reducers/users'
 
 
 let cx = classNames.bind(styles);
 
 function Home() {
+    const userData = useSelector(selectUserData);
     return (
         <>
             <div className={cx('bg-image', 'container-fluid px-5')}>
@@ -25,8 +28,12 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <HomeFeature />
-            <Restaurant />
+            {
+                userData.user.subject && <HomeFeature />
+            }
+            {
+                !userData.user.subject && <Restaurant />
+            }
             <div className={cx('container-fluid', 'px-5')}>
                 <p className={cx('h1', 'font-weight-bold', 'text-black')}>Cities near me</p>
                 <hr />

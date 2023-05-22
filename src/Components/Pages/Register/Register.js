@@ -5,7 +5,7 @@ import style from "./register.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.css";
-import Header from "../../Layouts/Header/Header";
+import Header from "../../Layouts/ClientLayout/Header/Header";
 const cx = classNames.bind(style);
 
 function Register() {

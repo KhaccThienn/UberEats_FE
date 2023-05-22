@@ -3,12 +3,12 @@
 import classNames from "classnames/bind";
 import React from "react";
 import { useCookies } from "react-cookie";
-import * as UserService from "../../../services/UserService";
+import * as UserService from "../../../../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../../images/logo.png";
-import style from "../Header/header.module.css";
+import logo from "../../../../images/logo.png";
+import style from "../../ClientLayout/Header/header.module.css";
 import { useSelector } from "react-redux";
-import { selectUserData } from "../../../redux/reducers/users";
+import { selectUserData } from "../../../../redux/reducers/users";
 import { AiOutlineUser } from "react-icons/ai";
 
 const cx = classNames.bind(style);
