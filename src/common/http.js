@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const getToken = () => {
   const token = localStorage.getItem("access_token")
     ? localStorage.getItem("access_token")
@@ -15,9 +14,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = await getToken();
+    const token = getToken();
     if (token) {
-      config.headers.accessToken =  token;
+      config.headers.accessToken = token;
     }
     return config;
   },

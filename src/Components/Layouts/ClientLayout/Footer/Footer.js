@@ -2,9 +2,9 @@
 import React from 'react'
 import classNames from 'classnames/bind'
 import styles from './footer.module.css'
-import logo from '../../../images/logo.png'
-import appstore from '../../../images/appstore.png'
-import ggplay from '../../../images/ggplay.png'
+import logo from '../../../../images/logo.png'
+import appstore from '../../../../images/appstore.png'
+import ggplay from '../../../../images/ggplay.png'
 import { Link } from 'react-router-dom'
 import { HiLanguage } from 'react-icons/hi2'
 import { FiFacebook, FiGithub, FiInstagram } from 'react-icons/fi'
@@ -14,9 +14,9 @@ let cx = classNames.bind(styles)
 
 function Footer() {
     return (
-        <footer>
+        <footer className={cx('py-5')}>
             <hr />
-            <div className={cx('container-fluid', 'px-5', 'py-5')}>
+            <div className={cx('container-fluid', 'px-5')}>
                 <div className={cx('row')}>
                     <div className={cx('col-lg-6')}>
                         <img src={logo} className={cx('logo')} />

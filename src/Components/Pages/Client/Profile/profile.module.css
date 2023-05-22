@@ -1,0 +1,33 @@
+.avatar {
+    border-radius: 50% !important;
+    width: 200px !important;
+    height: 200px !important;
+    object-fit: cover;
+}
+
+.text-profile {
+    text-shadow: 2px 2px #999 !important;
+    text-transform: uppercase !important;
+    font-weight: 900 !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.btn-avatar {
+    font-size: 25px;
+}
+
+.text-black {
+    color: black !important;
+}
+
+.input-info {
+    box-shadow: none !important;
+    border: 1px solid black !important;
+    border-radius: 15px !important;
+}
+.input-info:focus {
+    border: 2.5px solid black !important;
+}

@@ -1,8 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import { Link } from "react-router-dom";
+import { selectUserData } from "../../../../redux/reducers/users";
 
 function Header() {
+
   return (
     <div>
       <div className="iq-top-navbar">
@@ -30,7 +33,7 @@ function Header() {
                 <input
                   type="text"
                   className="text search-input"
-                  placeholder="Tìm kiếm sản phẩm..."
+                  placeholder="Tap here to search..."
                 />
                 <Link className="search-link" to="">
                   <i className="ri-search-line"></i>
