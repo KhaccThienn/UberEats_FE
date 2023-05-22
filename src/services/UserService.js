@@ -28,3 +28,30 @@ export const logout = async (config) => {
     return [null, error];
   }
 };
+
+export const getUserProfile = async (userID) => {
+  try {
+    const res = await http.get(`${urlAPI}/user/${userID}`);
+    return [res, null];
+  } catch (error) {
+    return [null, error];
+  }
+};
+
+export const updateUserData = async (userId, data) => {
+  try {
+    const res = await http.put(`${urlAPI}/user/${userId}`, data);
+    return [res, null];
+  } catch (error) {
+    return [null, error];
+  }
+};
+
+export const changePassword = async (userId, data) => {
+  try {
+    const res = await http.put(`${urlAPI}/user/password/${userId}`, data);
+    return [res, null];
+  } catch (error) {
+    return [null, error];
+  }
+};

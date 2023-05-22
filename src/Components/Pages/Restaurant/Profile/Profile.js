@@ -2,8 +2,11 @@ import React from "react";
 import RestaurantProfile from "./Components/RestaurantProfile";
 import UserProfile from "./Components/UserProfile";
 import ChangePassword from "./Components/ChangePassword";
+import { useParams } from "react-router";
+import ListRestaurant from "./Components/ListRestaurant";
 
 function Profile() {
+  const { id } = useParams();
   return (
     <div>
       <div className="row">
@@ -39,7 +42,7 @@ function Profile() {
           <div className="iq-edit-list-data">
             <div className="tab-content">
               {/* Restaurant Profile */}
-              <RestaurantProfile />
+              {id ? <RestaurantProfile resID={id} /> : <ListRestaurant />}
               {/* User Profile */}
               <UserProfile />
             </div>
