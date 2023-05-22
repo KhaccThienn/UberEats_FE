@@ -4,6 +4,7 @@ import * as UserService from "./../../../../../services/UserService";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../../../redux/reducers/users";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 function UserProfile() {
   const initProfileState = {
@@ -50,35 +51,44 @@ function UserProfile() {
     getProfileData(userData.user.subject);
   }, [userData.user.subject]);
 
-  console.log("Profile Data", profile);
-
   const handlePostData = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    formData.append(
+    const formDataa = new FormData();
+    formDataa.append(
       "userName",
       postData.userName ? postData.userName : profile.userName
     );
-    formData.append("avatar", postAvatar ? postAvatar : {});
-    formData.append("phone", postData.phone ? postData.phone : profile.phone);
-    formData.append("email", postData.email ? postData.email : profile.email);
-    formData.append(
+    formDataa.append("avatar", postAvatar ? postAvatar : {});
+    formDataa.append("phone", postData.phone ? postData.phone : profile.phone);
+    formDataa.append("email", postData.email ? postData.email : profile.email);
+    formDataa.append(
       "address",
       postData.address ? postData.address : profile.address
     );
-    console.log("formData: ", formData);
-
     const [res, rej] = await UserService.updateUserData(
       userData.user.subject,
-      formData
+      formDataa
     );
     if (res) {
       console.log(res);
-      navigate("/profile");
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Update Profile Successfully',
+        showConfirmButton: false,
+        timer: 1500
+      })
+      navigate("/");
     }
     if (rej) {
       console.log(rej);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Invalid Account',
+        showConfirmButton: false,
+        timer: 1500
+      })
     }
   };
 
@@ -102,6 +112,7 @@ function UserProfile() {
                 onSubmit={(e) => {
                   handlePostData(e);
                 }}
+                encType="multipart/form-data"
               >
                 <div className="form-group row align-items-center">
                   <div className="col-md-12">
