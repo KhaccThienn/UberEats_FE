@@ -53,15 +53,20 @@ function Header() {
               </Link>
             </span> */}
 
-            {
+            {/* {
               !userData.user && (<span>
                 <Link to="/cart" className={cx("btn")}>
                   <AiOutlineShoppingCart className={cx("icon-header")} />
                   <sup className={cx("number-cart")}>3</sup>
                 </Link>
               </span>)
-            }
-
+            } */}
+            <span>
+              <Link to="/cart" className={cx("btn")}>
+                <AiOutlineShoppingCart className={cx("icon-header")} />
+                <sup className={cx("number-cart")}>3</sup>
+              </Link>
+            </span>
           </div>
         </div>
       </header>

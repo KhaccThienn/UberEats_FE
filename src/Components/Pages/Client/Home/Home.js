@@ -1,27 +1,57 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import React from 'react'
+import React, { useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './home.module.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Restaurant from '../Restaurant/Restaurant'
 import HomeFeature from '../HomeFeature/HomeFeature'
 import { useSelector } from 'react-redux'
 import { selectUserData } from '../../../../redux/reducers/users'
-
+import { useNavigateSearch } from './../../../../hooks/useNavigateSearch';
+import Swal from 'sweetalert2'
 
 let cx = classNames.bind(styles);
 
 function Home() {
     const userData = useSelector(selectUserData);
+    const [keyWord, setKeyWord] = useState('');
+    const [filterValue, setFilterValue] = useState({});
+
+    const navigate = useNavigate();
+    const navigateSearch = useNavigateSearch();
+
+    const handleChangeValue = async (e) => {
+        const { name, value } = e.target;
+        setKeyWord({ [name]: value });
+        setFilterValue({ ...filterValue, [name]: value });
+    }
+
+    const handleSubmitForm = (e) => {
+        e.preventDefault();
+        if (!keyWord) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Please enter a name or keyword',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true
+            })
+            return;
+        }
+        console.log(keyWord);
+        navigateSearch(`/search/${keyWord.keyWord}`);
+    }
+
     return (
         <>
             <div className={cx('bg-image', 'container-fluid px-5')}>
                 <div className={cx('d-flex', 'flex-column', 'form-banner')}>
                     <div className={cx('fz-60', 'font-weight-bold', 'text-black')}>Order food to your door</div>
                     <div>
-                        <form className={cx('form-inline')} method='GET' action='/search'>
+                        <form className={cx('form-inline')} method='GET' onSubmit={(e) => { handleSubmitForm(e) }}>
                             <div className={cx("form-group")}>
-                                <input type="text" name="keyword" id="keyword" className={cx("form-control", 'rounded-0', 'input-banner')} placeholder={'Enter food you wanna find...'} />
+                                <input type="text" name="keyWord" onChange={handleChangeValue} id="keyWord" className={cx("form-control", 'rounded-0', 'input-banner')} placeholder={'Enter food you wanna find...'} />
                             </div>
                             <button type="submit" className={cx("btn btn-dark", 'btn-banner')}>Find food</button>
                         </form>
