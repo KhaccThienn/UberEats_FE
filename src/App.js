@@ -1,17 +1,13 @@
+import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";
+import { Route, Routes } from "react-router";
+import Error from "./Components/Pages/Error/Error";
 import { selectUserData } from "./redux/reducers/users";
 import {
   clientRoute,
   deliveryRoute,
-  restaurantRoute,
-  unLoginRoute,
+  restaurantRoute
 } from "./routes/Routes";
-import { Route, Routes } from "react-router";
-import Error from "./Components/Pages/Error/Error";
-import MainLayout from "./Components/Layouts/ClientLayout/MainLayout";
-import Register from "./Components/Pages/Register/Register";
-import { useCookies } from "react-cookie";
-import Login from "./Components/Pages/Login/Login";
 
 const getDataFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem("users"))

@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import classNames from 'classnames/bind'
-import styles from './restaurant.module.css'
-import store1 from '../../../../images/store1.png'
-import { TbTruckDelivery } from 'react-icons/tb'
-import { Link } from 'react-router-dom'
+import classNames from 'classnames/bind';
+import React, { useEffect, useState } from 'react';
+import { CiLocationOn } from 'react-icons/ci';
+import { Link } from 'react-router-dom';
 import { useNavigateSearch } from '../../../../hooks/useNavigateSearch';
 import * as HomePageService from "../../../../services/HomePageService";
-import { CiLocationOn } from 'react-icons/ci'
+import styles from './restaurant.module.css';
+import Swal from 'sweetalert2';
 let cx = classNames.bind(styles)
 
 function Restaurant() {
@@ -26,6 +25,7 @@ function Restaurant() {
         return new URLSearchParams(window.location.search).toString();
     };
     const queryParams = getQueryParams();
+
     const clearFilter = () => {
         navigateSearch("/", initState);
         setFilterValues(initState);

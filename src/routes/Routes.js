@@ -49,7 +49,7 @@ export const clientRoute = [
     component: <MainLayout children={<Cart />} />,
   },
   {
-    path: "/search",
+    path: "/search/:keyWord",
     component: <MainLayout children={<Search />} />,
   },
   {

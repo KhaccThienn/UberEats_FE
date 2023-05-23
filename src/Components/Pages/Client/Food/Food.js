@@ -3,31 +3,60 @@ import React, { useEffect, useState } from 'react'
 import { FaLocationArrow } from 'react-icons/fa'
 import { IoAddCircle } from 'react-icons/io5'
 import { AiOutlinePhone } from 'react-icons/ai'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { TfiArrowRight } from 'react-icons/tfi'
 import { useNavigateSearch } from '../../../../hooks/useNavigateSearch'
-import food1 from '../../../../images/food1.png'
 import img_food from '../../../../images/img-food.jpeg'
 import * as HomePageService from "../../../../services/HomePageService"
 import styles from './food.module.css'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '../../../../redux/reducers/cart'
 
 let cx = classNames.bind(styles)
 
 function Food() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { id } = useParams();
-    console.log(id.split('-')[0]);
 
     const [allProduct, setAllProduct] = useState([]);
     const [restaurant, setRestaurant] = useState({});
     const navigateSearch = useNavigateSearch();
-
+    const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     // init the state of filter values
     const initState = {};
     const [filterValues, setFilterValues] = useState(initState);
 
+    const handleSubmit = () => {
+        console.log({ ...filterValues });
+        navigateSearch(`/restaurant/${id}`, { ...filterValues, price: priceRange.min + '-' + priceRange.max });
+    };
+
     const handleChange = async (e) => {
         const { name, value } = await e.target;
         setFilterValues({ ...filterValues, [name]: value });
+    };
+
+    const handleAddToCart = (items) => {
+        dispatch(addToCart(items));
+        navigate('/cart');
+    }
+
+    const handleChangePrice = async (e) => {
+        var { name, value } = await e.target;
+        console.log({ name, value });
+        if (name === "min") {
+            setPriceRange((priceRange) => ({
+                ...priceRange,
+                min: value > 0 ? value : 0,
+            }));
+        }
+        if (name === "max") {
+            setPriceRange((priceRange) => ({
+                ...priceRange,
+                max: value > 0 ? value : 1000000000,
+            }));
+        }
     };
 
     const getQueryParams = () => {
@@ -35,29 +64,23 @@ function Food() {
     };
     const queryParams = getQueryParams();
 
-    const handleSubmit = () => {
-        console.log({ ...filterValues });
-        navigateSearch("/", { ...filterValues });
-    };
+
     const clearFilter = () => {
         navigateSearch(`/restaurant/${id}`, initState);
         setFilterValues(initState)
     };
+
     const slugsGenerator = (string) => {
         return string.replaceAll(" ", "_");
     };
 
     useEffect(() => {
         const getAllProductFromAPI = async () => {
-            const [data, error] = await HomePageService.getProductByRestaurant(id.split('-')[0], queryParams);
+            const [data, error] = await HomePageService.getProductByRestaurant(id.split('-')[0], id.split('-')[1], queryParams);
             if (data) {
                 console.log(data);
                 setRestaurant(data);
-                // console.log("Data Length: ", data.length);
-                // console.log("Total Page: ", Math.round(data.length / 2));
-                queryParams
-                    ? setAllProduct(data.products)
-                    : setAllProduct(data.products.sort((a, b) => b.id - a.id));
+                setAllProduct(data.products)
             }
             if (error) {
                 console.log(error);
@@ -79,55 +102,64 @@ function Food() {
                     <div className={cx('col-lg-3')}>
                         <p className={cx('h4', 'font-weight-bold')}>Picked for you</p>
                         <hr />
-                        <button type='submit' onClick={clearFilter} className='btn btn-outline-warning rounded-0'>Clear Filter</button>
+                        {
+                            queryParams &&
+                            <button type='submit' onClick={clearFilter} className='btn btn-outline-warning rounded-0'>Clear Filter</button>
+                        }
                         <div className={cx("form-group")}>
                             <label htmlFor=""> Sort:</label>
-                            <select className={cx("form-control", 'custom-select', 'rounded-0', 'shadow')} name="" id="">
+                            <select className={cx("form-control", 'custom-select', 'rounded-0', 'shadow')} name="sort" id="" onChange={handleChange}>
                                 <option>Choose option</option>
-                                <option value=''>By name (A - Z)</option>
-                                <option value=''>By name (Z - A)</option>
-                                <option value=''>By cost (Low - Hight)</option>
-                                <option value=''>By cost (High - Low)</option>
+                                <option value='name-ASC'>By name (A - Z)</option>
+                                <option value='name-DESC'>By name (Z - A)</option>
+                                <option value='sale_price-ASC'>By cost (Low - High)</option>
+                                <option value='sale_price-DESC'>By cost (High - Low)</option>
                             </select>
                         </div>
                         <div className={cx("form-group")}>
                             <label htmlFor="">Search by name:</label>
-                            <input type="text" name="" id="" className={cx("form-control", 'rounded-0', 'shadow')} placeholder="Enter food name..." />
+                            <input type="text" name="keyWord" id="" className={cx("form-control", 'rounded-0', 'shadow')} onChange={handleChange} placeholder="Enter food name..." />
                             {/* <small id="helpId" className="text-muted">Help text</small> */}
                         </div>
                         <div className={cx("form-group")}>
                             <label htmlFor="">Search by price:</label>
                             <div className={cx('d-flex', 'align-items-center', 'border', 'shadow', 'px-2')}>
                                 <p className={cx('text-muted', 'm-0')}>From:</p>
-                                <input type="text" name="" id="" className={cx("form-control", 'rounded-0', 'input-price')} placeholder="..." />
+                                <input type="number" name="min" id="" onChange={handleChangePrice} className={cx("form-control", 'rounded-0', 'input-price')} placeholder="..." />
                                 <p className={cx('text-muted', 'm-0')}>To:</p>
-                                <input type="text" name="" id="" className={cx("form-control", 'rounded-0', 'input-price')} placeholder="..." />
+                                <input type="number" name="max" id="" onChange={handleChangePrice} className={cx("form-control", 'rounded-0', 'input-price')} placeholder="..." />
                             </div>
+                        </div>
+                        <div className="form-group">
+                            <button className='btn btn-block btn-outline-success rounded-0' onClick={(e) => handleSubmit(e)}>Submit</button>
                         </div>
                     </div>
                     <div className={cx('col-lg-9')}>
                         <div className={cx('row')}>
                             {
-                                allProduct && allProduct.map((e, i) => {
+                                allProduct && allProduct.length > 0 ? allProduct.map((e, i) => {
                                     return (
-                                        <div className={cx('col-3', 'my-3')}>
+                                        <div className={cx('col-3', 'my-3')} key={i}>
                                             <div className={cx("card", 'card-food')}>
                                                 <img className={cx('card-img-top', 'p-1', 'mh-163')} src={e.image} alt="..." />
-                                                <div className={cx('card-img-overlay')}>
-                                                    <button className={cx('btn', 'add-btn')} title='Add food'>
+
+                                                <div className={cx("card-body", "d-flex", "align-items-center", "justify-content-between")}>
+                                                    <div>
+                                                        <h5 className={cx("card-text", 'm-0')}>{e.name}</h5>
+                                                        <p className={cx("card-title", 'm-0')}>
+                                                            {e.sale_price === 0 ? `$${e.price}` : <><del className='text-muted'>${e.price}</del><TfiArrowRight />${e.sale_price}</>}
+                                                        </p>
+                                                    </div>
+                                                    <button className={cx('btn', 'add-btn', "p-0")} onClick={() => handleAddToCart
+                                                        (e)} title='Add food'>
                                                         <IoAddCircle className={cx('add-icon-size')} />
                                                     </button>
-                                                </div>
-                                                <div className={cx("card-body")}>
-                                                    <p className={cx("card-title", 'm-0')}>${e.price} <TfiArrowRight /> ${e.sale_price}</p>
-                                                    <p className={cx("card-text", 'text-muted', 'm-0')}>{e.name}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     )
-                                })
+                                }) : <p>Nothing To Show</p>
                             }
-
                         </div>
                     </div>
                 </div>

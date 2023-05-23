@@ -11,12 +11,12 @@ export const getAllRestaurantByUser = async (userID) => {
     }
 }
 
-export const createProduct = async (data) => {
+export const getProductByName = async (name, params) => {
     try {
-        const res = await http.post(`${urlAPI}/product`, data);
-        return [res, null]
+        const res = await http.get(`${urlAPI}/product?keyWord=${name}&${params}`);
+        return [res, null];
     } catch (error) {
-        return [null, error]
+        return [null, error];
     }
 }
 
@@ -38,6 +38,15 @@ export const getProductByID = async (id, slugs) => {
     }
 }
 
+export const createProduct = async (data) => {
+    try {
+        const res = await http.post(`${urlAPI}/product`, data);
+        return [res, null]
+    } catch (error) {
+        return [null, error]
+    }
+}
+
 export const updateProduct = async (id, data) => {
     try {
         const res = await http.put(`${urlAPI}/product/${id}`, data);
@@ -45,7 +54,7 @@ export const updateProduct = async (id, data) => {
     } catch (error) {
         return [null, error]
     }
-} 
+}
 
 export const deleteProduct = async (id) => {
     try {
