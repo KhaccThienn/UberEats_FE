@@ -53,7 +53,7 @@ function ListVoucher() {
         Swal.fire("Having Error !", error, "error");
       }
       if (data) {
-        setLoadPage(true);
+        setLoadPage(!loadPage);
         Swal.fire("Delete Successfully!", "", "success");
       }
     }

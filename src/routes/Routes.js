@@ -68,6 +68,16 @@ export const clientRoute = [
     path: "/restaurant/:id",
     component: <MainLayout children={<Food />} />,
   },
+
+  // just demo
+  {
+    path: "/login",
+    component: <Login />,
+  },
+  {
+    path: "/register",
+    component: <Register />,
+  },
 ];
 
 export const restaurantRoute = [
