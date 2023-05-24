@@ -1,26 +1,30 @@
 import classNames from 'classnames/bind'
 import React, { useEffect, useState } from 'react'
+import { AiOutlinePhone } from 'react-icons/ai'
 import { FaLocationArrow } from 'react-icons/fa'
 import { IoAddCircle } from 'react-icons/io5'
-import { AiOutlinePhone } from 'react-icons/ai'
-import { useNavigate, useParams } from 'react-router-dom'
 import { TfiArrowRight } from 'react-icons/tfi'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useNavigateSearch } from '../../../../hooks/useNavigateSearch'
 import img_food from '../../../../images/img-food.jpeg'
+import { selectUserData } from '../../../../redux/reducers/users'
+import * as CartService from "../../../../services/CartService"
 import * as HomePageService from "../../../../services/HomePageService"
 import styles from './food.module.css'
-import { useDispatch } from 'react-redux'
-import { addToCart } from '../../../../redux/reducers/cart'
 
 let cx = classNames.bind(styles)
 
 function Food() {
+    const userData = useSelector(selectUserData);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
 
     const [allProduct, setAllProduct] = useState([]);
     const [restaurant, setRestaurant] = useState({});
+    const [carts, setCarts] = useState([]);
     const navigateSearch = useNavigateSearch();
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     // init the state of filter values
@@ -37,9 +41,24 @@ function Food() {
         setFilterValues({ ...filterValues, [name]: value });
     };
 
-    const handleAddToCart = (items) => {
-        dispatch(addToCart(items));
-        navigate('/cart');
+    const handleAddToCart = async (items) => {
+        console.log("Post Items To Cart", items);
+        console.log("In Id", id.split('-')[0]);
+        const restaurant_existed = carts.find((item) => item.product.restaurant.id === id.split('-')[0]);
+        console.log(carts.find((item) => item.product.restaurant.id === id.split('-')[0]));
+        console.log(carts.filter((item) => console.log(item.product.restaurant.id === id.split('-')[0])));
+        // const [data, error] = await CartService.saveDataToCart({
+        //     userId: userData.user.subject,
+        //     productId: items.id,
+        //     quantity: 1
+        // });
+        // if (data) {
+        //     console.log("Cart Data", data);
+        //     navigate('/cart');
+        // }
+        // if (error) {
+        //     console.log(error)
+        // }
     }
 
     const handleChangePrice = async (e) => {
@@ -86,8 +105,19 @@ function Food() {
                 console.log(error);
             }
         };
+        const getCartFromAPI = async () => {
+            const [data, error] = await CartService.getAllCartByUser(userData.user.subject);
+            if (data) {
+                console.log("Cart Data:", data);
+                setCarts(data.carts);
+            }
+            if (error) {
+                console.log(error);
+            }
+        }
+        getCartFromAPI();
         getAllProductFromAPI();
-    }, [id, queryParams]);
+    }, [id, queryParams, userData.user.subject]);
     return (
         <>
             <div>
@@ -150,8 +180,8 @@ function Food() {
                                                             {e.sale_price === 0 ? `$${e.price}` : <><del className='text-muted'>${e.price}</del><TfiArrowRight />${e.sale_price}</>}
                                                         </p>
                                                     </div>
-                                                    <button className={cx('btn', 'add-btn', "p-0")} onClick={() => handleAddToCart
-                                                        (e)} title='Add food'>
+                                                    <button className={cx('btn', 'add-btn', "p-0")}
+                                                        onClick={() => handleAddToCart(e)} title='Add food'>
                                                         <IoAddCircle className={cx('add-icon-size')} />
                                                     </button>
                                                 </div>

@@ -23,7 +23,6 @@ function Header() {
   const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
   const userData = useSelector(selectUserData);
   const navigate = useNavigate();
-  // console.log(userData.user.subject);
 
   return (
     <>

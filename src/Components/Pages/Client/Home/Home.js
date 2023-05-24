@@ -59,10 +59,10 @@ function Home() {
                 </div>
             </div>
             {
-                userData.user.subject && <HomeFeature />
+                !userData.user.subject && <HomeFeature />
             }
             {
-                !userData.user.subject && <Restaurant />
+                userData.user.subject && <Restaurant />
             }
             <div className={cx('container-fluid', 'px-5')}>
                 <p className={cx('h1', 'font-weight-bold', 'text-black')}>Cities near me</p>

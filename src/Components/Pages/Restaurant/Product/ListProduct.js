@@ -65,7 +65,7 @@ function ListProduct() {
         Swal.fire("Having Error !", "", "error");
       }
       if (data) {
-        setLoadPage(true);
+        setLoadPage(!loadPage);
         console.log(data);
         Swal.fire("Delete Successfully!", "", "success");
       }
@@ -227,7 +227,7 @@ function ListProduct() {
                         aria-label="Previous"
                         // onClick={(e) => handleChangePage(e)}
                         name="previous"
-                        // disabled={currentPage === 1}
+                      // disabled={currentPage === 1}
                       >
                         &laquo; Previous
                       </button>
@@ -240,7 +240,7 @@ function ListProduct() {
                         aria-label="Next"
                         // onClick={(e) => handleChangePage(e)}
                         name="next"
-                        // disabled={currentPage === totalPages}
+                      // disabled={currentPage === totalPages}
                       >
                         Next &raquo;
                       </button>

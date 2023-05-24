@@ -30,14 +30,13 @@ function Login() {
     e.preventDefault();
     const [data, error] = await LoginService.login(loginData);
     if (error) {
-      console.log(error.response.data.message);
+      console.log(error);
     }
     if (data) {
       const token = data.accessToken;
       const user = jwt(token);
 
       localStorage.setItem("access_token", data.accessToken);
-      // const expires = moment.unix(user.exp).format("YYYY-MM-DD HH:mm:ss");
 
       setCookie("user_data", user);
 
