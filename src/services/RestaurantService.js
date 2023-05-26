@@ -20,6 +20,15 @@ export const getRestaurantByID = async (id) => {
     }
 }
 
+export const createRestaurant = async (userID, data) => {
+    try {
+        const res = await http.post(`${urlAPI}/restaurant/${userID}`, data);
+        return [res, null];
+    } catch (error) {
+        return [null, error];
+    }
+}
+
 export const updateRestaurantData = async (userId, id, data) => {
     try {
         try {
@@ -29,6 +38,6 @@ export const updateRestaurantData = async (userId, id, data) => {
             return [null, error];
         }
     } catch (error) {
-        
+
     }
 }

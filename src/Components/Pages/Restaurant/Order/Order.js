@@ -1,7 +1,78 @@
-import React from "react";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+import { selectUserData } from "../../../../redux/reducers/users";
+import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
+import * as OrderService from "../../../../services/OrderService";
 
 function Order() {
+  const userData = useSelector(selectUserData);
+
+  // init the state of all product
+  const [allOrders, setAllOrders] = useState([]);
+
+  const [loadPage, setLoadPage] = useState(false);
+
+  // init the state of filter values
+  const initState = {};
+  const [filterValues, setFilterValues] = useState(initState);
+
+  // init state for pagination
+  const [currentPage, setCurrentPage] = useState(2);
+  const [totalPages, setTotalPages] = useState(10);
+
+  // init state for search
+  const [keySearch, setKeySearch] = useState("");
+
+  // useNavigate search
+  const navigateSearch = useNavigateSearch();
+
+  const handleSubmit = () => {
+    console.log({ ...filterValues });
+    navigateSearch("/product", { ...filterValues });
+  };
+
+  const clearFilter = () => {
+    navigateSearch("/product", initState);
+    setKeySearch("");
+  };
+
+  const getQueryParams = () => {
+    return new URLSearchParams(window.location.search).toString();
+  };
+
+  const queryParams = getQueryParams();
+
+  const handleChange = async (e) => {
+    const { name, value } = await e.target;
+    setFilterValues({ ...filterValues, [name]: value });
+  };
+
+  // generate slugs string
+  const slugsGenerator = (string) => {
+    return string.replaceAll(" ", "_");
+  };
+
+
+  useEffect(() => {
+    const getAllProductFromAPI = async () => {
+      const [data, error] = await OrderService.getAllOrderByResOwner(userData.user.subject, queryParams);
+      if (data) {
+        console.log(data);
+        setTotalPages(Math.round(data.length / 2));
+
+        queryParams
+          ? setAllOrders(data)
+          : setAllOrders(data.sort((a, b) => b.id - a.id));
+      }
+      if (error) {
+        console.log(error);
+      }
+    };
+    getAllProductFromAPI();
+  }, [queryParams, loadPage, currentPage, userData.user.subject]);
   return (
     <>
       <div className="row">
@@ -29,59 +100,64 @@ function Order() {
                 <table className="table table-striped table-bordered">
                   <thead>
                     <tr>
-                      <th>No.</th>
                       <th>OrderID</th>
                       <th>Customers</th>
-                      <th>Delevery Date</th>
                       <th>Delevery Address</th>
                       <th>Delevery Phone</th>
                       <th>Status</th>
                       <th>Voucher</th>
+                      <th>Total Price</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>binding_data</td>
-                      <td>
-                        <div className="dropdown">
-                          <button
-                            className="btn btn-primary dropdown-toggle"
-                            type="button"
-                            id="dropdownMenuButton"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            Actions
-                          </button>
-                          <div
-                            className="dropdown-menu"
-                            aria-labelledby="dropdownMenuButton"
-                          >
-                            <Link
-                              className="dropdown-item"
-                              to={"/order/1"}
-                            >
-                              View Details
-                            </Link>
-                            <Link
-                              className="dropdown-item"
-                              to={""}
-                            >
-                              {"Update Status"}
-                            </Link>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+                    {
+                      allOrders && allOrders.map((e, i) => {
+                        return (
+                          <tr key={i}>
+                            <td>{e.id}</td>
+                            <td>{e.delivered_user}</td>
+                            <td>{e.delivered_address}</td>
+                            <td>{e.delivered_phone}</td>
+                            <td>{e.status}</td>
+                            <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>Null</>}</td>
+                            <td>{e.total_price}</td>
+                            <td>
+                              <div className="dropdown">
+                                <button
+                                  className="btn btn-primary dropdown-toggle"
+                                  type="button"
+                                  id="dropdownMenuButton"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                                >
+                                  Actions
+                                </button>
+                                <div
+                                  className="dropdown-menu"
+                                  aria-labelledby="dropdownMenuButton"
+                                >
+                                  <Link
+                                    className="dropdown-item"
+                                    to={`/order/${e.id}`}
+                                  >
+                                    View Details
+                                  </Link>
+                                  <Link
+                                    className="dropdown-item"
+                                    to={""}
+                                  >
+                                    {"Update Status"}
+                                  </Link>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    }
+
                   </tbody>
                 </table>
                 <nav aria-label="Page navigation example">

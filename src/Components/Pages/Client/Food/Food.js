@@ -6,6 +6,7 @@ import { IoAddCircle } from 'react-icons/io5'
 import { TfiArrowRight } from 'react-icons/tfi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import { useNavigateSearch } from '../../../../hooks/useNavigateSearch'
 import img_food from '../../../../images/img-food.jpeg'
 import { selectUserData } from '../../../../redux/reducers/users'
@@ -25,6 +26,8 @@ function Food() {
     const [allProduct, setAllProduct] = useState([]);
     const [restaurant, setRestaurant] = useState({});
     const [carts, setCarts] = useState([]);
+    const [reload, setReload] = useState(false)
+
     const navigateSearch = useNavigateSearch();
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     // init the state of filter values
@@ -42,23 +45,68 @@ function Food() {
     };
 
     const handleAddToCart = async (items) => {
-        console.log("Post Items To Cart", items);
-        console.log("In Id", id.split('-')[0]);
-        const restaurant_existed = carts.find((item) => item.product.restaurant.id === id.split('-')[0]);
-        console.log(carts.find((item) => item.product.restaurant.id === id.split('-')[0]));
-        console.log(carts.filter((item) => console.log(item.product.restaurant.id === id.split('-')[0])));
-        // const [data, error] = await CartService.saveDataToCart({
-        //     userId: userData.user.subject,
-        //     productId: items.id,
-        //     quantity: 1
-        // });
-        // if (data) {
-        //     console.log("Cart Data", data);
-        //     navigate('/cart');
-        // }
-        // if (error) {
-        //     console.log(error)
-        // }
+        if (carts.length > 0) {
+            const restaurant_existed = carts.find((item) => item.product.restaurant.id == id.split('-')[0]);
+            if (!restaurant_existed) {
+                const choose = await Swal.fire({
+                    title: "You are adding a product to another restaurant's cart, you want to delete the old order?",
+                    showDenyButton: true,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "No",
+                });
+                if (choose.isConfirmed) {
+                    const [res, rej] = await CartService.removeAllDataCartByUserID(userData.user.subject);
+                    if (res) {
+                        setReload(!reload);
+                        const [data, error] = await CartService.saveDataToCart({
+                            userId: userData.user.subject,
+                            productId: items.id,
+                            quantity: 1
+                        });
+                        if (data) {
+                            navigate('/cart');
+                        }
+                        if (error) {
+                            console.log(error)
+                        }
+                    }
+                    if (rej) {
+                        console.log(rej)
+                    }
+                }
+            } else {
+                const [data, error] = await CartService.saveDataToCart({
+                    userId: userData.user.subject,
+                    productId: items.id,
+                    quantity: 1
+                });
+                if (data) {
+                    navigate('/cart');
+                }
+                if (error) {
+                    console.log(error)
+                }
+            }
+        } else {
+            const [data, error] = await CartService.saveDataToCart({
+                userId: userData.user.subject,
+                productId: items.id,
+                quantity: 1
+            });
+            if (data) {
+                navigate('/cart');
+            }
+            if (error) {
+                Swal.fire({
+                    title: "Having Some Errors When Add To Cart",
+                    position: 'top-left',
+                    timer: 1500,
+                    timerProgressBar: true
+                })
+            }
+        }
+
+
     }
 
     const handleChangePrice = async (e) => {
@@ -97,7 +145,7 @@ function Food() {
         const getAllProductFromAPI = async () => {
             const [data, error] = await HomePageService.getProductByRestaurant(id.split('-')[0], id.split('-')[1], queryParams);
             if (data) {
-                console.log(data);
+                // console.log(data);
                 setRestaurant(data);
                 setAllProduct(data.products)
             }
@@ -117,7 +165,7 @@ function Food() {
         }
         getCartFromAPI();
         getAllProductFromAPI();
-    }, [id, queryParams, userData.user.subject]);
+    }, [id, queryParams, userData.user.subject, reload]);
     return (
         <>
             <div>

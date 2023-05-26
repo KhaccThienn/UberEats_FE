@@ -4,8 +4,12 @@ import { Link } from "react-router-dom";
 import { useNavigateSearch } from "./../../../../hooks/useNavigateSearch";
 import * as ProductService from "../../../../services/ProductService";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../../../../redux/reducers/users";
 
 function ListProduct() {
+  const userData = useSelector(selectUserData);
+
   // init the state of all product
   const [allProd, setAllProd] = useState([]);
 
@@ -73,33 +77,13 @@ function ListProduct() {
 
     console.log(id);
   };
-
-  // const handleChangePage = async (e) => {
-  //   const name = e.target.name;
-  //   if (name === "next") {
-  //     setCurrentPage(currentPage + 1);
-  //     setFilterValues({ ...filterValues, page: currentPage });
-  //     console.log(filterValues);
-  //     setLoadPage(true);
-  //     navigateSearch("/product", { ...filterValues });
-  //   }
-  //   if (name === "previous") {
-  //     setCurrentPage(currentPage - 1);
-  //     setFilterValues({ ...filterValues, page: currentPage });
-  //     console.log(filterValues);
-  //     setLoadPage(true);
-  //     navigateSearch("/product", { ...filterValues });
-  //   }
-  // };
-
   useEffect(() => {
     const getAllProductFromAPI = async () => {
-      const [data, error] = await ProductService.getAllProduct(queryParams);
+      const [data, error] = await ProductService.getAllProduct(userData.user.subject, queryParams);
       if (data) {
         // console.log(data);
         setTotalPages(Math.round(data.length / 2));
-        console.log("Data Length: ", data.length);
-        console.log("Total Page: ", Math.round(data.length / 2));
+
         queryParams
           ? setAllProd(data)
           : setAllProd(data.sort((a, b) => b.id - a.id));
@@ -109,7 +93,7 @@ function ListProduct() {
       }
     };
     getAllProductFromAPI();
-  }, [queryParams, loadPage, currentPage]);
+  }, [queryParams, loadPage, currentPage, userData.user.subject]);
 
   return (
     <div>

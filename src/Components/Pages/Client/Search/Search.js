@@ -1,28 +1,34 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useEffect, useState } from 'react'
-import styles from './search.module.css'
 import classNames from 'classnames/bind'
-import { Link, useLocation, useParams } from 'react-router-dom'
-import food1 from '../../../../images/food1.png'
+import React, { useEffect, useState } from 'react'
+import { BsCartPlus } from 'react-icons/bs'
 import { HiOutlineBuildingStorefront } from 'react-icons/hi2'
 import { TfiArrowRight } from 'react-icons/tfi'
-import { BsCartPlus } from 'react-icons/bs'
+import { useSelector } from 'react-redux'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import { useNavigateSearch } from '../../../../hooks/useNavigateSearch'
-import * as ProductService from "../../../../services/ProductService";
+import { selectUserData } from '../../../../redux/reducers/users'
+import * as CartService from "../../../../services/CartService"
+import * as ProductService from "../../../../services/ProductService"
+import styles from './search.module.css'
 
 let cx = classNames.bind(styles)
 
 function Search() {
+    const userData = useSelector(selectUserData);
     const { keyWord } = useParams();
-    console.log(keyWord);
-
+    const [reload, setReload] = useState(false)
+    const [carts, setCarts] = useState([]);
     const [allProduct, setAllProduct] = useState([]);
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     // init the state of filter values
     const initState = {};
     const [filterValues, setFilterValues] = useState(initState);
+
     const navigateSearch = useNavigateSearch();
+    const navigate = useNavigate();
     const getQueryParams = () => {
         return new URLSearchParams(window.location.search).toString();
     };
@@ -59,6 +65,71 @@ function Search() {
         }
     };
 
+    const handleAddToCart = async (items) => {
+        if (carts.length > 0) {
+            const restaurant_existed = carts.find((item) => item.product.restaurant.id == items.restaurant.id);
+            if (!restaurant_existed) {
+                const choose = await Swal.fire({
+                    title: "You are adding a product to another restaurant's cart, you want to delete the old order?",
+                    showDenyButton: true,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "No",
+                });
+                if (choose.isConfirmed) {
+                    const [res, rej] = await CartService.removeAllDataCartByUserID(userData.user.subject);
+                    if (res) {
+                        setReload(!reload);
+                        const [data, error] = await CartService.saveDataToCart({
+                            userId: userData.user.subject,
+                            productId: items.id,
+                            quantity: 1
+                        });
+                        if (data) {
+                            navigate('/cart');
+                        }
+                        if (error) {
+                            console.log(error)
+                        }
+                    }
+                    if (rej) {
+                        console.log(rej)
+                    }
+                }
+            } else {
+                const [data, error] = await CartService.saveDataToCart({
+                    userId: userData.user.subject,
+                    productId: items.id,
+                    quantity: 1
+                });
+                if (data) {
+                    navigate('/cart');
+                }
+                if (error) {
+                    console.log(error)
+                }
+            }
+        } else {
+            const [data, error] = await CartService.saveDataToCart({
+                userId: userData.user.subject,
+                productId: items.id,
+                quantity: 1
+            });
+            if (data) {
+                navigate('/cart');
+            }
+            if (error) {
+                Swal.fire({
+                    title: "Having Some Errors When Add To Cart",
+                    position: 'top-left',
+                    timer: 1500,
+                    timerProgressBar: true
+                })
+            }
+        }
+
+
+    }
+
     useEffect(() => {
         const getDataFromAPI = async () => {
             const [data, error] = await ProductService.getProductByName(keyWord, queryParams);
@@ -71,15 +142,26 @@ function Search() {
                 setAllProduct([]);
             }
         }
+        const getCartFromAPI = async () => {
+            const [data, error] = await CartService.getAllCartByUser(userData.user.subject);
+            if (data) {
+                console.log("Cart Data:", data);
+                setCarts(data.carts);
+            }
+            if (error) {
+                console.log(error);
+            }
+        }
+        getCartFromAPI();
         getDataFromAPI();
-    }, [queryParams, keyWord]);
+    }, [queryParams, keyWord, userData.user.subject, reload]);
 
     return (
         <div className={cx('container-fluid', 'px-5', 'py-3')}>
             <div className={cx('row')}>
                 <div className={cx('col-lg-3', 'py-3')}>
-                    {/* <p className={cx('h1', 'font-weight-bold')}>"{keyword}"</p> */}
-                    {/* <p className={cx('text-muted')}>320+ result for "{keyword}"</p> */}
+                    <p className={cx('h1', 'font-weight-bold')}>"{keyWord}"</p>
+                    <p className={cx('text-muted')}>{allProduct.length} result for "{keyWord}"</p>
                     <hr />
                     <div className={cx("form-group")}>
                         <label htmlFor=""> Sort:</label>
@@ -122,7 +204,9 @@ function Search() {
                                                 </p>
                                                 <div className={cx('d-flex', 'mt-3')}>
                                                     <Link to={`/restaurant/${e.restaurant.id}-${slugsGenerator(e.restaurant.name)}`}><button className={cx('btn', 'btn-view-store', 'rounded-pill')}><HiOutlineBuildingStorefront /> View store</button></Link>
-                                                    <Link to=''><button className={cx('btn', 'btn-add-to-cart', 'mx-2', 'rounded-pill')}><BsCartPlus /> Add to cart</button></Link>
+                                                    <button className={cx('btn', 'btn-add-to-cart', 'mx-2', 'rounded-pill')} onClick={() => { handleAddToCart(e) }}>
+                                                        <BsCartPlus /> Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

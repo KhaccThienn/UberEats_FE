@@ -5,13 +5,12 @@ import { IoFastFoodOutline } from "react-icons/io5";
 import {
   RiCoupon3Line,
   RiListOrdered,
-  RiUser2Fill,
-  RiUser6Fill,
+  RiUser6Fill
 } from "react-icons/ri";
 import * as UserService from "../../../../services/UserService";
 
-import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
 
 const getDataFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem("access_token"))

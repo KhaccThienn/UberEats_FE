@@ -37,3 +37,12 @@ export const removeFromCart = async (cartId) => {
           return [null, error];
      }
 }
+
+export const removeAllDataCartByUserID = async (userId) => {
+     try {
+          const res = await http.remove(`${urlAPI}/cart/user/${userId}`);
+          return [res, null];
+     } catch (error) {
+          return [null, error];
+     }
+}
