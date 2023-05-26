@@ -6,7 +6,8 @@ import { selectUserData } from "./redux/reducers/users";
 import {
   clientRoute,
   deliveryRoute,
-  restaurantRoute
+  restaurantRoute,
+  unLoginRoute
 } from "./routes/Routes";
 
 const getDataFromLocalStorage = () => {
@@ -22,9 +23,8 @@ function App() {
     return cookies["user_data"] ? cookies["user_data"] : {};
   };
 
-  const user = getUserDataFromCookie() || getDataFromLocalStorage();
+  const user = getDataFromLocalStorage();
   const userData = useSelector(selectUserData);
-
   const expiredAt = new Date(user.exp * 1000) || new Date(userData.exp * 1000);
 
   const isExpired = new Date() > expiredAt || true;
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <Routes>
-      {clientRoute.map((route) => (
+      {(!userData.user.role) && unLoginRoute.map((route) => (
         <Route
           exact
           key={route.path}
@@ -41,31 +41,7 @@ function App() {
           element={route.component}
         />
       ))}
-      {/* {restaurantRoute.map((route) => (
-        <Route
-          exact
-          key={route.path}
-          path={route.path}
-          element={route.component}
-        />
-      ))} */}
-      {/* {deliveryRoute.map((route) => (
-        <Route
-          exact
-          key={route.path}
-          path={route.path}
-          element={route.component}
-        />
-      ))} */}
-      {/* {unLoginRoute.map((route) => (
-        <Route
-          exact
-          key={route.path}
-          path={route.path}
-          element={route.component}
-        />
-      ))} */}
-      {(userData.role === 1 || user.role === 1) &&
+      {(userData.user.role === 1) &&
         clientRoute.map((route) => (
           <Route
             exact
@@ -74,7 +50,7 @@ function App() {
             element={route.component}
           />
         ))}
-      {(userData.role === 2 || user.role === 2) &&
+      {(userData.user.role === 2) &&
         restaurantRoute.map((route) => (
           <Route
             exact
@@ -83,7 +59,7 @@ function App() {
             element={route.component}
           />
         ))}
-      {(userData.role === 3 || user.role === 3) &&
+      {(userData.user.role === 3) &&
         deliveryRoute.map((route) => (
           <Route
             exact

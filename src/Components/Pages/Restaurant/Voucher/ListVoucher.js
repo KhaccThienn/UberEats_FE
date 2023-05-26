@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
 import * as VoucherService from "../../../../services/VoucherService";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../../../../redux/reducers/users";
 
 function ListVoucher() {
+  const userData = useSelector(selectUserData);
+
   // init the state of all voucher
   const [allVouchers, setAllVouchers] = useState([]);
 
@@ -62,7 +66,7 @@ function ListVoucher() {
   };
   useEffect(() => {
     const getAllProductFromAPI = async () => {
-      const [data, error] = await VoucherService.getAllVouchers(queryParams);
+      const [data, error] = await VoucherService.getAllVouchers(userData.user.subject, queryParams);
       if (data) {
         // console.log(data.slice(1, 2));
         setTotalPages(Math.round(data.length / 2));
@@ -75,7 +79,7 @@ function ListVoucher() {
       }
     };
     getAllProductFromAPI();
-  }, [queryParams, loadPage]);
+  }, [queryParams, loadPage, userData.user.subject]);
   return (
     <div>
       <div className="row">

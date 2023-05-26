@@ -1,6 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
+import * as OrderDetailsService from "../../../../services/OrderDetailsService"
 
-function OrderDetails() {
+import classNames from "classnames/bind";
+import styles from './order.module.css'
+
+const cx = classNames.bind(styles);
+
+function OrderDetail() {
+  const { id } = useParams();
+  const initOrderInfo = {
+    delivered_address: '',
+    delivered_phone: '',
+    delivered_user: '',
+    id: '',
+    note: '',
+    status: '',
+    total_price: '',
+  }
+
+  const [orderInfo, setOrderInfo] = useState(initOrderInfo);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const getOrderInfoByID = async () => {
+      const [data, error] = await OrderDetailsService.getOrderInfoByID(id);
+      if (data) {
+        setOrderInfo(data)
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    const getListProducts = async () => {
+      const [data, error] = await OrderDetailsService.getAllOrderDTByOrder(id);
+      if (data) {
+        console.log(data);
+        setProducts(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    getOrderInfoByID();
+    getListProducts();
+  }, [id])
+
   return (
     <div>
       <div className="row">
@@ -12,7 +57,7 @@ function OrderDetails() {
               </div>
             </div>
             <div className="iq-card-body">
-              <div class="row">
+              <div className="row">
                 <div className="col-lg-6">
                   <div className="iq-header-title">
                     <h4 className="card-title">Order Information</h4>
@@ -21,20 +66,17 @@ function OrderDetails() {
                     <div className="table-responsive">
                       <table className="table table-striped table-bordered">
                         <tr>
-                          <th>No. </th>
-                          <td>Binding_data</td>
+                          <th>ID. </th>
+                          <td>{orderInfo.id}</td>
                         </tr>
-                        <tr>
-                          <th>Order Date </th>
-                          <td>Binding_data</td>
-                        </tr>
+
                         <tr>
                           <th>Total Price </th>
-                          <td>Binding_data</td>
+                          <td>{orderInfo.total_price}</td>
                         </tr>
                         <tr>
                           <th>Status </th>
-                          <td>Binding_data</td>
+                          <td>{orderInfo.status}</td>
                         </tr>
                       </table>
                     </div>
@@ -49,19 +91,19 @@ function OrderDetails() {
                       <table className="table table-striped table-bordered">
                         <tr>
                           <th>Name. </th>
-                          <td>Binding_data</td>
-                        </tr>
-                        <tr>
-                          <th>Email </th>
-                          <td>Binding_data</td>
+                          <td>{orderInfo.delivered_user}</td>
                         </tr>
                         <tr>
                           <th>Phone </th>
-                          <td>Binding_data</td>
+                          <td>{orderInfo.delivered_phone}</td>
                         </tr>
                         <tr>
                           <th>Address </th>
-                          <td>Binding_data</td>
+                          <td>{orderInfo.delivered_address}</td>
+                        </tr>
+                        <tr>
+                          <th>Note </th>
+                          <td>{orderInfo.note}</td>
                         </tr>
                       </table>
                     </div>
@@ -77,32 +119,41 @@ function OrderDetails() {
               </div>
             </div>
             <div className="iq-card-body">
-              <div class="row">
+              <div className="row">
                 <div className="col-lg-12">
                   <div className="iq-card-body p-0">
                     <div className="table-responsive">
                       <table className="table table-striped table-bordered">
                         <thead>
                           <tr>
-                            <th>No.</th>
+                            <th>ID.</th>
                             <th>Name</th>
                             <th>Image</th>
                             <th>Price</th>
                             <th>Sale Price</th>
-                            <th>Status</th>
-                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>binding_data</td>
-                            <td>binding_data</td>
-                            <td>binding_data</td>
-                            <td>binding_data</td>
-                            <td>binding_data</td>
-                            <td>binding_data</td>
-                            <td>binding_data</td>
-                          </tr>
+                          {
+                            products && products.map((e, i) => {
+                              return (
+                                <tr key={i}>
+                                  <td>{e.product.id}</td>
+                                  <td>{e.product.name}</td>
+                                  <td className={cx('w-15')}>
+                                    <img src={e.product.image} alt={e.product.name} className={cx('card-img')} />
+                                  </td>
+                                  <td>$ {e.product.price}</td>
+                                  <td>$ {e.product.sale_price}</td>
+                                  <td>{e.quantity}</td>
+                                  <td>$ {e.total}</td>
+                                </tr>
+                              )
+                            })
+                          }
+
                         </tbody>
                       </table>
                     </div>
@@ -117,4 +168,4 @@ function OrderDetails() {
   );
 }
 
-export default OrderDetails;
+export default OrderDetail;

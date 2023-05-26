@@ -35,6 +35,11 @@ function ListRestaurant() {
           <div className="iq-header-title">
             <h4 className="card-title">Your List Restaurant</h4>
           </div>
+          <div className="iq-card-header-toolbar d-flex align-items-center">
+            <Link to={"/restaurant/add"} className="btn btn-primary">
+              Add New Restaurant
+            </Link>
+          </div>
         </div>
         <div className="iq-card-body">
           {restaurants.length === 0 ? (

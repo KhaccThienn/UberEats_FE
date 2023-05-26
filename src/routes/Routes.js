@@ -1,28 +1,30 @@
 /* eslint-disable react/jsx-pascal-case */
 import MainLayout from "../Components/Layouts/ClientLayout/MainLayout";
+import DeliverLayout from "../Components/Layouts/DeliverLayout/DeliverLayout";
 import ResMainLayout from "../Components/Layouts/RestaurantLayout/ResMainLayout";
 import Cart from "../Components/Pages/Client/Cart/Cart";
+import Food from "../Components/Pages/Client/Food/Food";
 import Home from "../Components/Pages/Client/Home/Home";
+import OrderFix from "../Components/Pages/Client/Order/OrderFix";
+import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
+import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
+import Search from "../Components/Pages/Client/Search/Search";
+import Deliver from "../Components/Pages/Deliver/Deliver";
 import Login from "../Components/Pages/Login/Login";
 import Register from "../Components/Pages/Register/Register";
 import AddRestaurant from "../Components/Pages/Restaurant/AddRestaurant/AddRestaurant";
+import AuthAddRestaurant from "../Components/Pages/Restaurant/AddRestaurant/AuthAddRestaurant";
 import Dashboard from "../Components/Pages/Restaurant/Dashboard/Dashboard";
+import OrderDetail from "../Components/Pages/Restaurant/Order/OrderDetails";
 import AddProduct from "../Components/Pages/Restaurant/Product/AddProduct";
 import ListProduct from "../Components/Pages/Restaurant/Product/ListProduct";
 import UpdateProduct from "../Components/Pages/Restaurant/Product/UpdateProduct";
-import ListVoucher from "./../Components/Pages/Restaurant/Voucher/ListVoucher";
-import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
-import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
-import Profile from "../Components/Pages/Restaurant/Profile/Profile";
-import Food from "../Components/Pages/Client/Food/Food";
-import Search from "../Components/Pages/Client/Search/Search";
-import Order from "../Components/Pages/Client/Order/Order";
-import OrderMgmt from "./../Components/Pages/Restaurant/Order/Order";
-import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
-import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
-import Deliver from "../Components/Pages/Deliver/Deliver";
 import ListRestaurant from "../Components/Pages/Restaurant/Profile/Components/ListRestaurant";
-import DeliverLayout from "../Components/Layouts/DeliverLayout/DeliverLayout";
+import Profile from "../Components/Pages/Restaurant/Profile/Profile";
+import OrderMgmt from "./../Components/Pages/Restaurant/Order/Order";
+import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
+import ListVoucher from "./../Components/Pages/Restaurant/Voucher/ListVoucher";
+import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
 
 export const unLoginRoute = [
   {
@@ -54,7 +56,7 @@ export const clientRoute = [
   },
   {
     path: "/order",
-    component: <MainLayout children={<Order />} />,
+    component: <MainLayout children={<OrderFix />} />,
   },
   {
     path: "/profile",
@@ -68,16 +70,6 @@ export const clientRoute = [
     path: "/restaurant/:id",
     component: <MainLayout children={<Food />} />,
   },
-
-  // just demo
-  {
-    path: "/login",
-    component: <Login />,
-  },
-  {
-    path: "/register",
-    component: <Register />,
-  },
 ];
 
 export const restaurantRoute = [
@@ -88,6 +80,10 @@ export const restaurantRoute = [
   {
     path: "/add-restaurant",
     component: <AddRestaurant />,
+  },
+  {
+    path: "/restaurant/add",
+    component: <ResMainLayout child={<AuthAddRestaurant />} />,
   },
   {
     path: "/product",
@@ -130,17 +126,7 @@ export const restaurantRoute = [
   },
   {
     path: "/order/:id",
-    component: <ResMainLayout child={<OrderDetails />} />,
-  },
-
-  // Just Demo
-  {
-    path: "/login",
-    component: <Login />,
-  },
-  {
-    path: "/listRestaurant",
-    component: <ResMainLayout child={<ListRestaurant />} />,
+    component: <ResMainLayout child={<OrderDetail />} />,
   },
 ];
 

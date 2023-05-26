@@ -41,31 +41,20 @@ function Header() {
             )}
             {userData.user.subject && (
               <span>
-                <button className={cx("btn")} >
+                <Link to={"/profile"} className={cx("btn")} >
                   <AiOutlineUser className={cx("icon-header")} />
-                </button>
+                </Link>
               </span>
             )}
-            {/* <span>
-              <Link to="/login" className={cx('btn')}>
-                <AiOutlineUser className={cx('icon-header')} />
-              </Link>
-            </span> */}
 
-            {/* {
-              !userData.user && (<span>
+            {
+              userData.user.subject && (<span>
                 <Link to="/cart" className={cx("btn")}>
                   <AiOutlineShoppingCart className={cx("icon-header")} />
-                  <sup className={cx("number-cart")}>3</sup>
                 </Link>
               </span>)
-            } */}
-            <span>
-              <Link to="/cart" className={cx("btn")}>
-                <AiOutlineShoppingCart className={cx("icon-header")} />
-                <sup className={cx("number-cart")}>3</sup>
-              </Link>
-            </span>
+            }
+
           </div>
         </div>
       </header>
