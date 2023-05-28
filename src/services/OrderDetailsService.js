@@ -13,7 +13,7 @@ export const getOrderInfoByID = async (orderId) => {
 
 export const getAllOrderDTByOrder = async (orderId) => {
      try {
-          const res = await http.get(`${urlAPI}/order_details/${orderId}`);
+          const res = await http.get(`${urlAPI}/order_details?orderId=${orderId}`);
           return [res, null]
      } catch (error) {
           return [null, error]

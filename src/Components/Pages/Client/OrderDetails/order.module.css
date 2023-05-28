@@ -1,0 +1,17 @@
+.text-black{
+    color: black !important;
+}
+.img-order{
+    height: 10vh !important;
+}
+.btn-order{
+    background-color: #00c444 !important;
+    color: white !important;
+}
+.btn-order:hover{
+    background-color: #048732 !important;
+    color: white !important;
+}
+.w-15 {
+    width: 15% !important;
+}

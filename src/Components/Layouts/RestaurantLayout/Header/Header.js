@@ -28,18 +28,6 @@ function Header() {
               </div>
             </div>
             <div className="navbar-breadcrumb"></div>
-            <div className="iq-search-bar mt-3">
-              <form action="#" className="searchbox">
-                <input
-                  type="text"
-                  className="text search-input"
-                  placeholder="Tap here to search..."
-                />
-                <Link className="search-link" to="">
-                  <i className="ri-search-line"></i>
-                </Link>
-              </form>
-            </div>
             <button
               className="navbar-toggler"
               type="button"
@@ -62,16 +50,7 @@ function Header() {
                   >
                     <i className="ri-search-line"></i>
                   </Link>
-                  <form action="#" className="search-box p-0">
-                    <input
-                      type="text"
-                      className="text search-input"
-                      placeholder="Type here to search..."
-                    />
-                    <Link className="search-link" to="">
-                      <i className="ri-search-line"></i>
-                    </Link>
-                  </form>
+
                 </li>
               </ul>
             </div>

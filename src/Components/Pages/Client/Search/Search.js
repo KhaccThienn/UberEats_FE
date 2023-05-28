@@ -17,6 +17,13 @@ import styles from './search.module.css'
 let cx = classNames.bind(styles)
 
 function Search() {
+    const formatPrice = (price) => {
+        return price.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+        });
+    };
     const userData = useSelector(selectUserData);
     const { keyWord } = useParams();
     const [reload, setReload] = useState(false)
@@ -200,7 +207,7 @@ function Search() {
                                             <div className={cx("media-body", 'ml-3')}>
                                                 <h5>{e.name} <small>({e.restaurant.name})</small></h5>
                                                 <p className={cx("card-title", 'm-0')}>
-                                                    {e.sale_price === 0 ? `$${e.price}` : <><del className='text-muted'>${e.price}</del><TfiArrowRight />${e.sale_price}</>}
+                                                    {e.sale_price === 0 ? `${formatPrice(e.price)}` : <><del className='text-muted'>{formatPrice(e.price)}</del><TfiArrowRight />{formatPrice(e.sale_price)}</>}
                                                 </p>
                                                 <div className={cx('d-flex', 'mt-3')}>
                                                     <Link to={`/restaurant/${e.restaurant.id}-${slugsGenerator(e.restaurant.name)}`}><button className={cx('btn', 'btn-view-store', 'rounded-pill')}><HiOutlineBuildingStorefront /> View store</button></Link>

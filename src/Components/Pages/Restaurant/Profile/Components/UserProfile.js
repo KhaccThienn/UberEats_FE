@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ChangePassword from "./ChangePassword";
 import * as UserService from "./../../../../../services/UserService";
-import { useSelector } from "react-redux";
-import { selectUserData } from "../../../../../redux/reducers/users";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser, selectUserData } from "../../../../../redux/reducers/users";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 
 function UserProfile() {
@@ -27,7 +29,10 @@ function UserProfile() {
   const [profile, setProfile] = useState(initProfileState);
   const [postAvatar, setPostAvatar] = useState();
   const [postData, setPostData] = useState(initPostData);
+  const [reload, setReload] = useState(false)
+  const [cookies, setCookie, removeCookie] = useCookies(["user_data", "access_token", "refresh_token"]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChangeFile = (e) => {
     setPostAvatar(e.target.files[0]);
@@ -50,7 +55,7 @@ function UserProfile() {
       }
     };
     getProfileData(userData.user.subject);
-  }, [userData.user.subject]);
+  }, [userData.user.subject, reload]);
 
   const handlePostData = async (e) => {
     e.preventDefault();
@@ -92,6 +97,37 @@ function UserProfile() {
       })
     }
   };
+  const handleLogOut = async () => {
+    const choose = await Swal.fire({
+      title: "Do You Want To Log Out ?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+    });
+    if (choose.isConfirmed) {
+      const [data, error] = await UserService.logout();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        removeCookie("user_data");
+        removeCookie("access_token");
+        removeCookie("refresh_token");
+        localStorage.removeItem('access_token');
+        dispatch(clearUser());
+        navigate('/');
+        setReload(!reload);
+        Swal.fire({
+          title: "You Logged Out Successfully ?",
+          icon: 'success',
+          timer: 1500,
+          timerProgressBar: true,
+          position: 'top-right'
+        })
+      }
+
+    }
+  }
 
   return (
     <>
@@ -105,6 +141,11 @@ function UserProfile() {
             <div className="iq-card-header d-flex justify-content-between">
               <div className="iq-header-title">
                 <h4 className="card-title">User Profile</h4>
+              </div>
+              <div className="iq-card-header-toolbar d-flex align-items-center">
+                <button className="btn btn-primary" onClick={() => handleLogOut()}>
+                  Log Out
+                </button>
               </div>
             </div>
             <div className="iq-card-body">
