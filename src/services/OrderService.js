@@ -19,3 +19,30 @@ export const getAllOrderByResOwner = async (userId, params) => {
           return [null, error]
      }
 }
+
+export const getAllOrderByUserID = async (userId) => {
+     try {
+          const res = await http.get(`${urlAPI}/order?orderUser=${userId}`);
+          return [res, null]
+     } catch (error) {
+          return [null, error]
+     }
+}
+
+export const getAllOrdersByStatus = async (status, params) => {
+     try {
+          const res = await http.get(`${urlAPI}/order?status=${status}&${params}`);
+          return [res, null]
+     } catch (error) {
+          return [null, error]
+     }
+}
+
+export const getOrderByOrderId = async (orderId) => {
+     try {
+          const res = await http.get(`${urlAPI}/order?orderId=${orderId}`);
+          return [res, null]
+     } catch (error) {
+          return [null, error]
+     }
+}

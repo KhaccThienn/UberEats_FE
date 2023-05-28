@@ -34,12 +34,14 @@ export const userSlice = createSlice({
         ...state.user,
       };
     },
-    clearUser: (state) => {
-      return {};
+    clearUser: (state, action) => {
+      state.user = {};
+      setItemFunc(state.user);
     },
+    reset: () => initState
   },
 });
 
-export const { setUser, clearUser, getUser } = userSlice.actions;
+export const { setUser, clearUser, getUser, reset } = userSlice.actions;
 export const selectUserData = (state) => state.user;
 export default userSlice.reducer;

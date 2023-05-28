@@ -6,7 +6,7 @@ import Cart from "../Components/Pages/Client/Cart/Cart";
 import Food from "../Components/Pages/Client/Food/Food";
 import Home from "../Components/Pages/Client/Home/Home";
 import OrderFix from "../Components/Pages/Client/Order/OrderFix";
-import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
+import ListOrdered from "../Components/Pages/Client/ListOrdered/ListOrdered";
 import * as ClientProfile from "../Components/Pages/Client/Profile/Profile";
 import Search from "../Components/Pages/Client/Search/Search";
 import Deliver from "../Components/Pages/Deliver/Deliver";
@@ -19,12 +19,12 @@ import OrderDetail from "../Components/Pages/Restaurant/Order/OrderDetails";
 import AddProduct from "../Components/Pages/Restaurant/Product/AddProduct";
 import ListProduct from "../Components/Pages/Restaurant/Product/ListProduct";
 import UpdateProduct from "../Components/Pages/Restaurant/Product/UpdateProduct";
-import ListRestaurant from "../Components/Pages/Restaurant/Profile/Components/ListRestaurant";
 import Profile from "../Components/Pages/Restaurant/Profile/Profile";
 import OrderMgmt from "./../Components/Pages/Restaurant/Order/Order";
 import AddVoucher from "./../Components/Pages/Restaurant/Voucher/AddVoucher";
 import ListVoucher from "./../Components/Pages/Restaurant/Voucher/ListVoucher";
 import UpdateVoucher from "./../Components/Pages/Restaurant/Voucher/UpdateVoucher";
+import OrderDetails from "../Components/Pages/Client/OrderDetails/OrderDetails";
 
 export const unLoginRoute = [
   {
@@ -63,12 +63,20 @@ export const clientRoute = [
     component: <MainLayout children={<ClientProfile.default />} />,
   },
   {
-    path: "/order_details",
+    path: "/list_orderded",
+    component: <MainLayout children={<ListOrdered />} />,
+  },
+  {
+    path: "/list_orderded/:id",
     component: <MainLayout children={<OrderDetails />} />,
   },
   {
     path: "/restaurant/:id",
     component: <MainLayout children={<Food />} />,
+  },
+  {
+    path: "/login",
+    component: <Login />,
   },
 ];
 
@@ -128,6 +136,10 @@ export const restaurantRoute = [
     path: "/order/:id",
     component: <ResMainLayout child={<OrderDetail />} />,
   },
+  {
+    path: "/login",
+    component: <Login />,
+  },
 ];
 
 export const deliveryRoute = [
@@ -136,7 +148,15 @@ export const deliveryRoute = [
     component: <DeliverLayout children={<Deliver />} />,
   },
   {
+    path: ":id",
+    component: <DeliverLayout children={<Deliver />} />,
+  },
+  {
     path: "/profile",
     component: <DeliverLayout children={<ClientProfile.default />} />,
+  },
+  {
+    path: "/login",
+    component: <Login />,
   },
 ];

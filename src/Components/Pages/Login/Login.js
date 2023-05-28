@@ -18,7 +18,7 @@ function Login() {
   const userData = useSelector(selectUserData);
   const dispatch = useDispatch();
   const [loginData, setLoginData] = useState([]);
-  const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["user_data", "access_token", "refresh_token"]);
   const [errs, setErrs] = useState([]);
   const navigate = useNavigate();
 
@@ -37,7 +37,8 @@ function Login() {
       const user = jwt(token);
 
       localStorage.setItem("access_token", data.accessToken);
-
+      setCookie("access_token", data.accessToken);
+      setCookie("refresh_token", data.refreshToken);
       setCookie("user_data", user);
 
       dispatch(setUser(user));

@@ -6,8 +6,36 @@ import Swal from "sweetalert2";
 import { selectUserData } from "../../../../redux/reducers/users";
 import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
 import * as OrderService from "../../../../services/OrderService";
+import { GoPrimitiveDot } from "react-icons/go";
 
 function Order() {
+  const statusArr = [
+    {
+      sttId: 0,
+      style: "text-warning",
+      text: "Pending"
+    },
+    {
+      sttId: 1,
+      style: "text-primary",
+      text: "Cooking"
+    },
+    {
+      sttId: 2,
+      style: "text-info",
+      text: "Cooked"
+    },
+    {
+      sttId: 3,
+      style: "text-secondary",
+      text: "Shipping"
+    },
+    {
+      sttId: 4,
+      style: "text-success",
+      text: "Shipped"
+    },
+  ]
   const userData = useSelector(selectUserData);
 
   // init the state of all product
@@ -119,7 +147,17 @@ function Order() {
                             <td>{e.delivered_user}</td>
                             <td>{e.delivered_address}</td>
                             <td>{e.delivered_phone}</td>
-                            <td>{e.status}</td>
+                            {
+                              statusArr.map((status, index) => {
+                                if (status.sttId === e.status) {
+                                  return (
+                                    <td className={status.style}>
+                                      <GoPrimitiveDot /> {status.text}
+                                    </td>
+                                  )
+                                }
+                              })
+                            }
                             <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>Null</>}</td>
                             <td>{e.total_price}</td>
                             <td>

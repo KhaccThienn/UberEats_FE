@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import styles from './profile.module.css'
 import classNames from 'classnames/bind'
-import avatar2x from '../../../../images/avatar_2x.png'
-import { TiBackspaceOutline, TiTickOutline } from 'react-icons/ti'
+import React, { useEffect, useState } from 'react'
 import { FiEdit2 } from 'react-icons/fi'
-// import { Link } from 'react-router-dom'
-import Information from './Information'
-import Password from './Password'
-import { useSelector } from 'react-redux'
-import { selectUserData } from '../../../../redux/reducers/users'
-import * as UserService from "../../../../services/UserService";
+import { TiBackspaceOutline, TiTickOutline } from 'react-icons/ti'
+import styles from './profile.module.css'
+import { ImProfile } from "react-icons/im"
+import { MdOutlinePassword } from "react-icons/md"
+import { GrLogout } from "react-icons/gr"
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { clearUser, reset, selectUserData } from '../../../../redux/reducers/users'
+import * as UserService from "../../../../services/UserService"
+import Information from './Information'
+import Password from './Password'
+import { useCookies } from 'react-cookie'
 
 let cx = classNames.bind(styles)
 
@@ -31,9 +33,12 @@ function Profile() {
         address: "",
     };
     const userData = useSelector(selectUserData);
+    const dispatch = useDispatch();
     const [profile, setProfile] = useState(initProfileState);
+    const [cookies, setCookie, removeCookie] = useCookies(["user_data", "access_token", "refresh_token"]);
     const [postData, setPostData] = useState(initPostData);
     const [selectedImage, setSelectedImage] = useState();
+    const [reload, setReload] = useState(false);
     const [previewImage, setPreviewImage] = useState();
     const [child, setChild] = useState(<Information />);
     const navigate = useNavigate();
@@ -83,6 +88,37 @@ function Profile() {
         }
     };
 
+    const handleLogOut = async () => {
+        const choose = await Swal.fire({
+            title: "Do You Want To Log Out ?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+        });
+        if (choose.isConfirmed) {
+            const [data, error] = await UserService.logout();
+            if (error) {
+                console.log(error);
+            }
+            if (data) {
+                removeCookie("user_data");
+                removeCookie("access_token");
+                removeCookie("refresh_token");
+                localStorage.removeItem('access_token');
+                dispatch(clearUser());
+                navigate('/');
+                setReload(!reload);
+                Swal.fire({
+                    title: "You Logged Out Successfully ?",
+                    icon: 'success',
+                    timer: 1500,
+                    timerProgressBar: true,
+                    position: 'top-right'
+                })
+            }
+
+        }
+    }
 
     useEffect(() => {
         const getProfileData = async (userID) => {
@@ -143,10 +179,13 @@ function Profile() {
                 <div className={cx('col-9')}>
                     <ul className={cx("nav nav-tabs")}>
                         <li className={cx('active')}>
-                            <button className={cx("nav-link active")} data-toggle='tab' onClick={(e) => setChild(<Information />)} ><span className={cx('text-black')}><b>Your infomation</b></span></button>
+                            <button className={cx("nav-link active")} data-toggle='tab' onClick={(e) => setChild(<Information />)} ><span className={cx('text-black')}><b> <ImProfile /> Your infomation</b></span></button>
                         </li>
                         <li>
-                            <button className={cx("nav-link")} data-toggle='tab' onClick={(e) => setChild(<Password />)} ><span className={cx('text-black')}><b>Change password</b></span></button>
+                            <button className={cx("nav-link")} data-toggle='tab' onClick={(e) => setChild(<Password />)} ><span className={cx('text-black')}><b> <MdOutlinePassword /> Change password</b></span></button>
+                        </li>
+                        <li>
+                            <button className={cx("nav-link")} onClick={() => handleLogOut()}><span className={cx('text-black')}><b><GrLogout /> Log Out</b></span></button>
                         </li>
                     </ul>
                     <div className={cx('tab-content')}>

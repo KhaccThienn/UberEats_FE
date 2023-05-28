@@ -16,6 +16,13 @@ import { useNavigate } from 'react-router-dom'
 let cx = classNames.bind(styles);
 
 function OrderFix() {
+     const formatPrice = (price) => {
+          return price.toLocaleString('en-US', {
+               style: 'currency',
+               currency: 'USD',
+               minimumFractionDigits: 2,
+          });
+     };
      const initProfileState = {
           userName: "",
           phone: "",
@@ -65,7 +72,7 @@ function OrderFix() {
                          showConfirmButton: false
                     });
                     console.log("Checkout Success", data);
-                    navigate('/');
+                    navigate('/list_orderded');
                }
                if (rej) {
                     console.log(rej);
@@ -230,7 +237,7 @@ function OrderFix() {
                                                                       </td>
                                                                       <td>{e.product.name}</td>
                                                                       <td>{e.quantity}</td>
-                                                                      <td>${e.total}</td>
+                                                                      <td>{formatPrice(e.total)}</td>
                                                                  </tr>
                                                             )
                                                        }) :
@@ -261,7 +268,7 @@ function OrderFix() {
                                                   </tr>
                                                   <tr>
                                                        <td colSpan={3} className='text-uppercase font-weight-bold h5 text-right'>SubTotal: </td>
-                                                       <td>${total === currentTotal ? total : currentTotal}</td>
+                                                       <td>${total === currentTotal ? formatPrice(total) : formatPrice(currentTotal)}</td>
                                                   </tr>
                                              </tbody>
                                         </table>

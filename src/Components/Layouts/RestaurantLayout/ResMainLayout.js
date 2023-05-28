@@ -37,7 +37,9 @@ function ResMainLayout({ child }) {
   }, [userData.user.subject, restaurants.length, reload]);
   return (
     <div className="wrapper">
-      <SideBar />
+      {
+        restaurants.length == 0 ? <AuthRestaurantSideBar /> : <SideBar />
+      }
       <Header />
       <div id="content-page" className="content-page">
         <div className="container-fluid">{child}</div>

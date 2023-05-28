@@ -17,6 +17,13 @@ import styles from './food.module.css'
 let cx = classNames.bind(styles)
 
 function Food() {
+    const formatPrice = (price) => {
+        return price.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+        });
+    };
     const userData = useSelector(selectUserData);
 
     const dispatch = useDispatch();
@@ -225,7 +232,7 @@ function Food() {
                                                     <div>
                                                         <h5 className={cx("card-text", 'm-0')}>{e.name}</h5>
                                                         <p className={cx("card-title", 'm-0')}>
-                                                            {e.sale_price === 0 ? `$${e.price}` : <><del className='text-muted'>${e.price}</del><TfiArrowRight />${e.sale_price}</>}
+                                                            {e.sale_price === 0 ? `${formatPrice(e.price)}` : <><del className='text-muted'>{formatPrice(e.price)}</del><TfiArrowRight />{formatPrice(e.sale_price)}</>}
                                                         </p>
                                                     </div>
                                                     <button className={cx('btn', 'add-btn', "p-0")}

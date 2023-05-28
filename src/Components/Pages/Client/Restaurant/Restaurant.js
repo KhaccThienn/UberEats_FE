@@ -111,25 +111,7 @@ function Restaurant() {
                         }
 
                     </div>
-                    {/* <nav aria-label="Page navigation example">
-                        <ul className={cx("pagination")}>
-                            <li className={cx('page-item')}>
-                                <Link to='' className={cx("page-link", 'text-black')} aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span className={cx('sr-only')}>Previous</span>
-                                </Link>
-                            </li>
-                            <li className={cx('page-item')}><Link to='' className={cx("page-link", 'text-black')} >1</Link></li>
-                            <li className={cx('page-item')}><Link to='' className={cx("page-link", 'text-black')} >2</Link></li>
-                            <li className={cx('page-item')}><Link to='' className={cx("page-link", 'text-black')} >3</Link></li>
-                            <li className={cx('page-item')}>
-                                <Link to='' className={cx("page-link", 'text-black')} aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span className={cx('sr-only')}>Next</span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav> */}
+
                 </div>
             </div>
         </div>

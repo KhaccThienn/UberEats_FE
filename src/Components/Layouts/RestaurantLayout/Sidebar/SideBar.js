@@ -1,37 +1,15 @@
 import React from "react";
 import { AiOutlineHome } from "react-icons/ai";
-import { BiLogOut } from "react-icons/bi";
 import { IoFastFoodOutline } from "react-icons/io5";
 import {
   RiCoupon3Line,
   RiListOrdered,
   RiUser6Fill
 } from "react-icons/ri";
-import * as UserService from "../../../../services/UserService";
 
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
-
-const getDataFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("access_token"))
-    ? JSON.parse(localStorage.getItem("access_token"))
-    : "";
-};
+import { Link } from "react-router-dom";
 
 function SideBar() {
-  const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
-  const navigate = useNavigate();
-  const handleLogout = async () => {
-    const [data, error] = await UserService.logout();
-    if (error) {
-      console.log(error);
-    }
-    if (data) {
-      removeCookie("user_data");
-      navigate("/");
-    }
-  };
-
   return (
     <div>
       <div className="iq-sidebar">
@@ -84,13 +62,6 @@ function SideBar() {
                 <Link to={"/profile"}>
                   <RiUser6Fill />
                   &nbsp; Profile
-                </Link>
-              </li>
-
-              <li onClick={handleLogout}>
-                <Link>
-                  <BiLogOut />
-                  &nbsp; Log Out
                 </Link>
               </li>
             </ul>

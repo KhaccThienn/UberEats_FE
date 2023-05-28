@@ -2,6 +2,11 @@ import * as http from "../common/http";
 
 const urlAPI = "http://localhost:8000";
 
+const getCookie = (name) => {
+  const cookieValue = document.cookie?.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)') || null;
+  return cookieValue ? cookieValue.pop() : null;
+}
+
 export const register = async (data) => {
   try {
     const res = await http.post(`${urlAPI}/auth/register`, data);
@@ -22,7 +27,11 @@ export const login = async (data) => {
 
 export const logout = async (config) => {
   try {
-    const res = await http.get(`${urlAPI}/auth/logout`, config);
+    const res = await http.get(`${urlAPI}/auth/logout`, {
+      headers: {
+        Authorization: `Bearer ${getCookie('access_token')}`
+      }
+    });
     return [res, null];
   } catch (error) {
     return [null, error];
