@@ -46,22 +46,3 @@ export const getOrderByOrderId = async (orderId) => {
           return [null, error]
      }
 }
-
-export const updateOrderStatus = async (id, data) => {
-     try {
-          const res = await http.put(`${urlAPI}/order/${id}`, data);
-          return [res, null]
-     } catch (error) {
-          return [null, error]
-     }
-}
-
-export const updateOrderDelivery = async (id, deliveryId, data) => {
-     try {
-          const res = await http.put(`${urlAPI}/order/${id}/${deliveryId}`, data);
-          return [res, null]
-     } catch (error) {
-          return [null, error]
-     }
-
-}

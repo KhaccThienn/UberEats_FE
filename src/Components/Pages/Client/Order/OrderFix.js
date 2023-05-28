@@ -73,6 +73,7 @@ function OrderFix() {
                          timerProgressBar: true,
                          showConfirmButton: false
                     });
+                    console.log("Checkout Success", data);
                     navigate('/list_orderded');
                }
                if (rej) {
