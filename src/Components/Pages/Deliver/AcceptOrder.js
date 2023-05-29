@@ -1,19 +1,18 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import React, { useState } from 'react'
-import styles from './deliver.module.css'
-import classNames from 'classnames/bind'
-import * as OrderService from "../../../services/OrderService";
-import * as UserService from "../../../services/UserService";
-import { useEffect } from 'react';
+import classNames from 'classnames/bind';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUserData } from '../../../redux/reducers/users';
 import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import { selectUserData } from '../../../redux/reducers/users';
+import * as OrderService from "../../../services/OrderService";
+import * as UserService from "../../../services/UserService";
+import styles from './deliver.module.css';
+
+import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useRef } from 'react';
 
 const socket = io("http://localhost:8000");
-
-import { useRef } from 'react';
-import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 let cx = classNames.bind(styles)
 const center = { lat: 21.030653, lng: 105.847130 }
@@ -53,7 +52,7 @@ function AcceptOrder({ orderId }) {
      const [orderDetail, setOrderDetail] = useState({});
      const [reload, setReload] = useState(false)
 
-     const handleUpdateStatus = async (orderId) => {
+     const handleUpdateStatus = async (orderId, currentStatus) => {
           const orderData = {
                status: 4
           }
@@ -85,6 +84,7 @@ function AcceptOrder({ orderId }) {
           setDirectionsResponse(results)
           setDistance(results.routes[0].legs[0].distance.text)
           setDuration(results.routes[0].legs[0].duration.text)
+     }
 
      useEffect(() => {
           const getOrderByOrderID = async () => {
@@ -112,9 +112,9 @@ function AcceptOrder({ orderId }) {
 
 
      }, [orderId, userData.user.subject, desRef, oriRef]);
-     if (!isLoaded) {
-          return
-     }
+     // if (!isLoaded) {
+     //      return
+     // }
 
      return (
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
@@ -177,24 +177,26 @@ function AcceptOrder({ orderId }) {
                                         </div>
 
                                         :
-                                        <div className={cx('d-flex','justify-content-end')}>
-                                             <button className={cx('btn', 'btn-outline-secondary','rounded-0')} onClick={calculateRoute}>Calculate Route</button>
+                                        <div className={cx('d-flex', 'justify-content-end')}>
+                                             <button className={cx('btn', 'btn-outline-secondary', 'rounded-0')} onClick={calculateRoute}>Calculate Route</button>
                                         </div>
                                    }
                                    {
                                         orderDetail.status === 3 ?
                                              <div className={cx('d-flex', 'justify-content-between')}>
-                                                  <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId)}>Order Shipped</button>
+                                                  <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId, orderDetail.status)}>Order Shipped</button>
                                              </div>
                                              :
                                              <div className={cx('d-flex', 'justify-content-between')}>
                                                   <Link to={"/"} className='btn btn-block btn-success rounded-0'>Thanks For Our Application, Click Here To Return</Link>
+                                             </div>
                                    }
                               </div>
                          </div>
                     </div>
-               </div>
-          </div >
+               </div >
+          </div>
+
 
      )
 }

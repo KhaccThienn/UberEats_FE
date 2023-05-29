@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind'
 import React, { useEffect, useState } from 'react'
 import { AiOutlineCreditCard } from 'react-icons/ai'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { selectUserData } from '../../../../redux/reducers/users'

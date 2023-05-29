@@ -9,10 +9,10 @@ import { selectUserData } from '../../../redux/reducers/users';
 import * as OrderService from "../../../services/OrderService";
 import styles from './deliver.module.css';
 
+import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+
 const socket = io("http://localhost:8000");
 let cx = classNames.bind(styles)
-
-import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 const center = { lat: 21.030653, lng: 105.847130 }
 
@@ -44,16 +44,17 @@ function Dashboard() {
                console.log(data);
                socket.emit("deliverAcceptOrder", orderData);
                navigate(`/${orderId}`)
-               if (data) {}
-            if (error) {
+               if (data) { }
+               if (error) {
                     console.log(error);
                }
           }
-     
+     }
+
      const { isLoaded } = useJsApiLoader({
           googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
           libraries: ['places']
-      })
+     })
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
      const getListOrderedFromAPI = async () => {
           const [data, error] = await OrderService.getAllOrdersByStatus(2);
@@ -104,7 +105,7 @@ function Dashboard() {
                     </div>
                     <div className={cx('col-6')}>
                          {
-                              listOrders.length > 0 ?
+                              listPendingOrders.length > 0 ?
                                    <div className={cx('text-left')}>
                                         <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                                         <div className={cx('row', 'font-weight-bold', 'align-items-center')}>
@@ -150,4 +151,4 @@ function Dashboard() {
      )
 }
 
-export default Dashboard
+export default Dashboard;
