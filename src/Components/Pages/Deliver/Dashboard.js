@@ -5,8 +5,11 @@ import classNames from 'classnames/bind'
 import * as OrderService from "../../../services/OrderService";
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 let cx = classNames.bind(styles)
+const center = { lat: 21.030653, lng: 105.847130 }
+
 
 function Dashboard() {
      const formatPrice = (price) => {
@@ -17,9 +20,14 @@ function Dashboard() {
           });
      };
      const [listOrders, setListOrders] = useState([]);
+     const { isLoaded } = useJsApiLoader({
+          googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
+          libraries: ['places']
+      })
+     const [map, setMap] = useState(/**  @type google.maps.Map */(null));
 
      const handleAccept = async () => {
-          
+
      }
 
      useEffect(() => {
@@ -35,14 +43,29 @@ function Dashboard() {
           }
           getListOrderedFromAPI();
      }, []);
+     if (!isLoaded) {
+          return
+     }
 
      return (
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
                <div className={cx('row', 'justify-content-around')}>
                     <div className={cx('col-6')}>
-                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.7782450228!2d2.264634263777884!3d48.85893843503861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2zUGEgcmksIFBow6Fw!5e0!3m2!1svi!2s!4v1684468304857!5m2!1svi!2s"
-                              width="100%" height="450" className={cx('border-0')}
-                              allowFullScreen="yes" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                         <GoogleMap
+                              center={center}
+                              zoom={12}
+                              mapContainerStyle={{ width: '100%', height: '85vh' }}
+                              options={{
+                                   zoomControl: false,
+                                   streetViewControl: false,
+                                   mapTypeControl: false,
+                                   fullscreenControl: false,
+                              }}
+                              onLoad={map => { setMap(map) }}
+                         >
+                              <Marker position={center} />
+
+                         </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
                          {
@@ -67,7 +90,7 @@ function Dashboard() {
                                                             <div className={cx('col-3')}>{e.restaurant.address}</div>
                                                             <div className={cx('col-2')}>{formatPrice(e.total_price)}</div>
                                                             <div className={cx('col')}>
-                                                                 <Link to={`/${e.id}`} onClick={() => handleAccept} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                 <Link to={`/${e.id}`} onClick={handleAccept} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
                                                                       Accept challenge &rarr;
                                                                  </Link>
                                                             </div>
