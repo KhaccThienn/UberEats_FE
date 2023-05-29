@@ -91,6 +91,7 @@ function ListOrdered() {
                                    <th scope='col' className={cx('text-black')}>Location</th>
                                    <th scope='col' className={cx('text-black')}>Status</th>
                                    <th scope='col' className={cx('text-black')}>Shipper</th>
+
                                    <th scope='col' className={cx('text-black')}>Total</th>
                                    <th scope='col' className={cx('text-black')}>View Details</th>
                               </tr>
@@ -124,6 +125,7 @@ function ListOrdered() {
                                    }) :
                                         <>
                                              <Link to={"/"} className='m-0'>Nothing To Show, Click Here To Continue Shopping </Link>
+
                                         </>
                               }
 

@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:8000");
 
+
 function Order() {
   const statusArr = [
     {
@@ -179,6 +180,7 @@ function Order() {
                                 if (status.sttId === e.status) {
                                   return (
                                     <td className={status.style} key={index}>
+
                                       <GoPrimitiveDot /> {status.text}
                                     </td>
                                   )

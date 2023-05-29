@@ -69,7 +69,6 @@ axiosInstance.interceptors.request.use(async (config) => {
 
 //response
 axiosInstance.interceptors.response.use(config => {
-  // console.log(config);
   config.headers.Authorization = `Bearer ${getCookie('access_token')}`;
   return config;
 },

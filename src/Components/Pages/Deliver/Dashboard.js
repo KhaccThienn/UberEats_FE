@@ -12,6 +12,11 @@ import styles from './deliver.module.css';
 const socket = io("http://localhost:8000");
 let cx = classNames.bind(styles)
 
+import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+
+const center = { lat: 21.030653, lng: 105.847130 }
+
+
 function Dashboard() {
      const formatPrice = (price) => {
           return price.toLocaleString('en-US', {
@@ -39,13 +44,17 @@ function Dashboard() {
                console.log(data);
                socket.emit("deliverAcceptOrder", orderData);
                navigate(`/${orderId}`)
-               if (data) {
-               }
-               if (error) {
+               if (data) {}
+            if (error) {
                     console.log(error);
                }
           }
-     }
+     
+     const { isLoaded } = useJsApiLoader({
+          googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
+          libraries: ['places']
+      })
+     const [map, setMap] = useState(/**  @type google.maps.Map */(null));
      const getListOrderedFromAPI = async () => {
           const [data, error] = await OrderService.getAllOrdersByStatus(2);
           if (data) {
@@ -68,19 +77,36 @@ function Dashboard() {
           getListOrderedFromAPI();
      }, [userData.user.subject]);
 
+     if (!isLoaded) {
+          return
+     }
+
      return (
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
                <div className={cx('row', 'justify-content-around')}>
                     <div className={cx('col-6')}>
-                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.7782450228!2d2.264634263777884!3d48.85893843503861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2zUGEgcmksIFBow6Fw!5e0!3m2!1svi!2s!4v1684468304857!5m2!1svi!2s"
-                              width="100%" height="450" className={cx('border-0')}
-                              allowFullScreen="yes" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+
+                         <GoogleMap
+                              center={center}
+                              zoom={12}
+                              mapContainerStyle={{ width: '100%', height: '85vh' }}
+                              options={{
+                                   zoomControl: false,
+                                   streetViewControl: false,
+                                   mapTypeControl: false,
+                                   fullscreenControl: false,
+                              }}
+                              onLoad={map => { setMap(map) }}
+                         >
+                              <Marker position={center} />
+
+                         </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
-                         <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                          {
-                              listPendingOrders.length > 0 ?
+                              listOrders.length > 0 ?
                                    <div className={cx('text-left')}>
+                                        <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                                         <div className={cx('row', 'font-weight-bold', 'align-items-center')}>
                                              <div className={cx('text-black', 'col-auto')}>#</div>
                                              <div className={cx('text-black', 'col-3')}>From</div>
@@ -88,6 +114,7 @@ function Dashboard() {
                                              <div className={cx('text-black', 'col-2')}>Total</div>
                                              <div className={cx('text-black', 'col')}></div>
                                         </div>
+
                                         {
                                              listPendingOrders.map((e, i) => {
                                                   return (
@@ -115,6 +142,7 @@ function Dashboard() {
                                         }
                                    </div> :
                                    <>Nothing to show</>
+
                          }
                     </div>
                </div>

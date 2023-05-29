@@ -1,13 +1,14 @@
 import classNames from 'classnames/bind'
 import React, { useEffect, useState } from 'react'
 import { AiOutlineCreditCard } from 'react-icons/ai'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { selectUserData } from '../../../../redux/reducers/users'
 import * as CartService from '../../../../services/CartService'
 import styles from './cart.module.css'
 import { removeItem } from '../../../../redux/reducers/cart'
+
 
 let cx = classNames.bind(styles)
 
