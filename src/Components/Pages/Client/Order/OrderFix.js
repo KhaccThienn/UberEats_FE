@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import styles from './order.module.css'
 import classNames from 'classnames/bind'
-import food1 from '../../../../images/food1.png'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineCreditCard } from 'react-icons/ai'
-import { selectUserData, setUser } from '../../../../redux/reducers/users'
 import { useSelector } from 'react-redux'
-import * as CartService from '../../../../services/CartService'
-import * as UserService from '../../../../services/UserService'
-import * as OrderService from '../../../../services/OrderService'
-import * as VoucherService from '../../../../services/VoucherService'
-import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
-
+import Swal from 'sweetalert2'
+import { selectUserData } from '../../../../redux/reducers/users'
+import * as CartService from '../../../../services/CartService'
+import * as OrderService from '../../../../services/OrderService'
+import * as UserService from '../../../../services/UserService'
+import * as VoucherService from '../../../../services/VoucherService'
+import styles from './order.module.css'
+import io from "socket.io-client";
 
 let cx = classNames.bind(styles);
+const socket = io("http://localhost:8000");
 
 function OrderFix() {
      const formatPrice = (price) => {
@@ -59,10 +59,12 @@ function OrderFix() {
                restaurantId: resId
           }
           console.log(createOrder);
+
           const [data, error] = await OrderService.postCheckoutData(createOrder);
           if (data) {
                const [res, rej] = await CartService.removeAllDataCartByUserID(userData.user.subject);
                if (res) {
+                    socket.emit("createOrder", res);
                     Swal.fire({
                          title: "Checkout Successful",
                          position: 'top-right',
@@ -71,7 +73,6 @@ function OrderFix() {
                          timerProgressBar: true,
                          showConfirmButton: false
                     });
-                    console.log("Checkout Success", data);
                     navigate('/list_orderded');
                }
                if (rej) {
@@ -124,7 +125,7 @@ function OrderFix() {
           }
 
      }
-
+     
      useEffect(() => {
           const getCartFromAPI = async () => {
                const [data, error] = await CartService.getAllCartByUser(userData.user.subject);

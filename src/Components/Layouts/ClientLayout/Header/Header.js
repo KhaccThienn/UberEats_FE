@@ -10,20 +10,30 @@ import style from "./header.module.css";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../../redux/reducers/users";
 import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
+import { useEffect } from "react";
+import * as CartService from '../../../../services/CartService'
+import { selectCartsData } from "../../../../redux/reducers/cart";
 
 const cx = classNames.bind(style);
 
-const getDataFromLocalStorage = () => {
-  return localStorage.getItem("access_token")
-    ? localStorage.getItem("access_token")
-    : {};
-};
-
 function Header() {
-  const [cookies, setCookie, removeCookie] = useCookies(["user_data"]);
+  const [products, setProducts] = useState([]);
   const userData = useSelector(selectUserData);
-  const navigate = useNavigate();
-
+  const cartData = useSelector(selectCartsData);
+  console.log(cartData.carts.length);
+  useEffect(() => {
+    const getCartFromAPI = async () => {
+      const [data, error] = await CartService.getAllCartByUser(userData.user.subject);
+      if (data) {
+        console.log(data);
+        setProducts(data.carts);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    getCartFromAPI();
+  }, [userData.user.subject]);
   return (
     <>
       <header className={cx("bg-white", "sticky-top")}>

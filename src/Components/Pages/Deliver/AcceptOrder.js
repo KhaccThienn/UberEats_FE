@@ -7,7 +7,10 @@ import * as UserService from "../../../services/UserService";
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectUserData } from '../../../redux/reducers/users';
+import { Link } from 'react-router-dom';
+import { io } from 'socket.io-client';
 
+const socket = io("http://localhost:8000");
 let cx = classNames.bind(styles)
 const formatPrice = (price) => {
      return price?.toLocaleString('en-US', {
@@ -26,8 +29,24 @@ function AcceptOrder({ orderId }) {
           address: "",
      };
      const [profile, setProfile] = useState(initProfileState);
-     console.log("OrderId: ", orderId);
      const [orderDetail, setOrderDetail] = useState({});
+     const [reload, setReload] = useState(false)
+
+     const handleUpdateStatus = async (orderId) => {
+          const orderData = {
+               status: 4
+          }
+          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          if (data) {
+               socket.emit("deliverAcceptOrder", orderData);
+               setReload(!reload);
+               console.log(data);
+          }
+          if (error) {
+               console.log(error);
+          }
+     }
+
      useEffect(() => {
           const getOrderByOrderID = async () => {
                const [data, error] = await OrderService.getOrderByOrderId(orderId)
@@ -51,7 +70,7 @@ function AcceptOrder({ orderId }) {
           };
           getProfileData(userData.user.subject);
           getOrderByOrderID();
-     }, [orderId, userData.user.subject]);
+     }, [orderId, userData.user.subject, reload]);
 
      return (
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
@@ -62,7 +81,6 @@ function AcceptOrder({ orderId }) {
                               allowFullScreen="yes" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                     <div className={cx('col-6')}>
-
                          <div className={cx('row', 'py-3')}>
                               <div className={cx('col-12', 'text-center', 'bg-order')}>
                                    <p className={cx('h2', 'font-weight-bold', 'm-0', 'py-2')}>Order #{orderId}</p>
@@ -89,12 +107,21 @@ function AcceptOrder({ orderId }) {
                                         <p className={cx('h5')}>To: {orderDetail.delivered_address}</p>
                                    </div>
                                    <hr />
-
+                                   {
+                                        orderDetail.status === 3 ?
+                                             <div className={cx('d-flex', 'justify-content-between')}>
+                                                  <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId)}>Order Shipped</button>
+                                             </div>
+                                             :
+                                             <div className={cx('d-flex', 'justify-content-between')}>
+                                                  <Link to={"/"} className='btn btn-block btn-success rounded-0'>Thanks For Our Application, Click Here To Return</Link>
+                                             </div>
+                                   }
                               </div>
                          </div>
                     </div>
                </div>
-          </div>
+          </div >
      )
 }
 

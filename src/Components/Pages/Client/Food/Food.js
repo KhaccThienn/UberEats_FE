@@ -13,6 +13,7 @@ import { selectUserData } from '../../../../redux/reducers/users'
 import * as CartService from "../../../../services/CartService"
 import * as HomePageService from "../../../../services/HomePageService"
 import styles from './food.module.css'
+import { addToCart } from '../../../../redux/reducers/cart'
 
 let cx = classNames.bind(styles)
 
@@ -150,9 +151,9 @@ function Food() {
 
     useEffect(() => {
         const getAllProductFromAPI = async () => {
-            const [data, error] = await HomePageService.getProductByRestaurant(id.split('-')[0], id.split('-')[1], queryParams);
+            const [data, error] = await HomePageService.getProductByRestaurant(id.split('-')[0], id.split('-')[1], 1, queryParams);
             if (data) {
-                // console.log(data);
+                console.log(data.products);
                 setRestaurant(data);
                 setAllProduct(data.products)
             }
