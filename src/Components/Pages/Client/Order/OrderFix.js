@@ -73,7 +73,6 @@ function OrderFix() {
                          timerProgressBar: true,
                          showConfirmButton: false
                     });
-                    console.log("Checkout Success", data);
                     navigate('/list_orderded');
                }
                if (rej) {
@@ -126,8 +125,7 @@ function OrderFix() {
           }
 
      }
-
-
+     
      useEffect(() => {
           const getCartFromAPI = async () => {
                const [data, error] = await CartService.getAllCartByUser(userData.user.subject);
