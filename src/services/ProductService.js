@@ -20,6 +20,8 @@ export const getProductByName = async (name, params) => {
     }
 }
 
+// export const getAllShowedProduct = async ()
+
 export const getAllProduct = async (userId, params) => {
     try {
         const res = await http.get(`${urlAPI}/product?userId=${userId}&${params}`);

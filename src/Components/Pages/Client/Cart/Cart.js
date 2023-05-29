@@ -7,6 +7,8 @@ import Swal from 'sweetalert2'
 import { selectUserData } from '../../../../redux/reducers/users'
 import * as CartService from '../../../../services/CartService'
 import styles from './cart.module.css'
+import { removeItem } from '../../../../redux/reducers/cart'
+
 
 let cx = classNames.bind(styles)
 
@@ -22,6 +24,7 @@ function Cart() {
   const [total, setTotal] = useState(0);
   const [products, setProducts] = useState([]);
   const [reload, setReload] = useState(false)
+  const dispatch = useDispatch()
 
   const handleChangeQuantity = async (e) => {
     const { name, value } = e.target;
@@ -41,7 +44,35 @@ function Cart() {
     }
   }
 
-  const handleDeleteCart = async (cartId) => {
+  const handleButtonChangeQuantity = async (e, prodId) => {
+    const { name, value } = e.target;
+    var quantity = Number(value);
+    if (name === "minus") {
+      quantity = quantity - 1;
+      console.log(quantity);
+    } else {
+      quantity = quantity + 1;
+      console.log(quantity);
+
+    }
+
+    const item = {
+      userId: userData.user.subject,
+      prodId: prodId,
+      quantity: Number(quantity),
+    };
+
+    const [data, error] = await CartService.updateaCartQuantity(item);
+    if (data) {
+      console.log(data);
+      setReload(!reload);
+    }
+    if (error) {
+      console.log(error);
+    }
+  }
+
+  const handleDeleteCart = async (cartId, items) => {
     const choose = await Swal.fire({
       title: "Do you want to delete this product ?",
       showDenyButton: true,
@@ -106,19 +137,19 @@ function Cart() {
                 </div>
                 <div className={cx('col')}>{e.product.name}</div>
                 <div className={cx('col')}>{e.product.restaurant.name}</div>
-                <div className={cx('col', 'text-center')}>${e.product.sale_price > 0 ? formatPrice(e.product.sale_price) : formatPrice(e.product.price)}</div>
+                <div className={cx('col', 'text-center')}>{e.product.sale_price > 0 ? formatPrice(e.product.sale_price) : formatPrice(e.product.price)}</div>
                 <div className={cx('col', 'text-center')}>
                   <div className={cx('form-group', 'mt-3')}>
                     <div className={cx('d-flex', 'align-items-center', 'rounded-pill', 'border-quantity', 'px-2', 'mx-4')}>
-                      {/* <button className={cx('btn', 'font-weight-bold')} name={e.product.id} onClick={() => { }}>&minus;</button> */}
-                      <input type="number" name={e.product.id} id="" className={cx("form-control", 'rounded-0', 'input-quantity', 'text-center')} onChange={handleChangeQuantity} min={1} defaultValue={e.quantity} />
-                      {/* <button className={cx('btn', 'font-weight-bold')} name={e.product.id} onClick={() => { }}>&#43;</button> */}
+                      <button className={cx('btn', 'font-weight-bold')} name="minus" onClick={(event) => { handleButtonChangeQuantity(event, e.product.id) }}>&minus;</button>
+                      <input type="number" name={e.product.id} id="" value={e.quantity} className={cx("form-control", 'rounded-0', 'input-quantity', 'text-center')} onChange={handleChangeQuantity} min={1} defaultValue={e.quantity} />
+                      <button className={cx('btn', 'font-weight-bold')} value={e.quantity} name="plus" onClick={(event) => { handleButtonChangeQuantity(event, e.product.id) }}>&#43;</button>
                     </div>
                   </div>
                 </div>
                 <div className={cx('col', 'text-center')}>{formatPrice(e.total)}</div>
                 <div className={cx('col-1', 'text-right')}>
-                  <button className={cx('btn')} onClick={() => { handleDeleteCart(e.id) }}>&#10005;</button>
+                  <button className={cx('btn')} onClick={() => { handleDeleteCart(e.id, e) }}>&#10005;</button>
                 </div>
               </div>
             )
@@ -148,7 +179,7 @@ function Cart() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

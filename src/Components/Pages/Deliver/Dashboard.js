@@ -1,13 +1,19 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import React, { useState } from 'react'
-import styles from './deliver.module.css'
-import classNames from 'classnames/bind'
+import classNames from 'classnames/bind';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { io } from "socket.io-client";
+import Swal from 'sweetalert2';
+import { selectUserData } from '../../../redux/reducers/users';
 import * as OrderService from "../../../services/OrderService";
-import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import styles from './deliver.module.css';
+
+const socket = io("http://localhost:8000");
+let cx = classNames.bind(styles)
+
 import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-let cx = classNames.bind(styles)
 const center = { lat: 21.030653, lng: 105.847130 }
 
 
@@ -19,30 +25,58 @@ function Dashboard() {
                minimumFractionDigits: 2,
           });
      };
-     const [listOrders, setListOrders] = useState([]);
+     const userData = useSelector(selectUserData);
+     const [listPendingOrders, setListPendingOrders] = useState([]);
+     const navigate = useNavigate();
+
+     const handleAccept = async (orderId, status) => {
+          const choose = await Swal.fire({
+               title: "Do You Want Accepting This Order ?",
+               showDenyButton: true,
+               confirmButtonText: "Yes",
+               denyButtonText: "No",
+          });
+          if (choose.isConfirmed) {
+               const orderData = {
+                    status: status + 1
+               }
+               const [data, error] = await OrderService.updateOrderDelivery(orderId, userData.user.subject, orderData);
+               console.log(data);
+               socket.emit("deliverAcceptOrder", orderData);
+               navigate(`/${orderId}`)
+               if (data) {}
+            if (error) {
+                    console.log(error);
+               }
+          }
+     
      const { isLoaded } = useJsApiLoader({
           googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
           libraries: ['places']
       })
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
+     const getListOrderedFromAPI = async () => {
+          const [data, error] = await OrderService.getAllOrdersByStatus(2);
+          if (data) {
 
-     const handleAccept = async () => {
-
-     }
-
-     useEffect(() => {
-          const getListOrderedFromAPI = async () => {
-               const [data, error] = await OrderService.getAllOrdersByStatus(2);
-               if (data) {
-                    console.log(data);
-                    setListOrders(data)
-               }
-               if (error) {
-                    console.log(error);
-               }
+               console.log(data);
+               const newListPendingOrdered = data.filter((item) => item.status === 2 || item.status === 3);
+               console.log(newListPendingOrdered);
+               setListPendingOrders(newListPendingOrdered);
           }
+          if (error) {
+               console.log(error);
+          }
+     }
+     socket.on("updateOrderStatusDeliver", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getListOrderedFromAPI()
+     })
+     useEffect(() => {
+
           getListOrderedFromAPI();
-     }, []);
+     }, [userData.user.subject]);
+
      if (!isLoaded) {
           return
      }
@@ -51,6 +85,7 @@ function Dashboard() {
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
                <div className={cx('row', 'justify-content-around')}>
                     <div className={cx('col-6')}>
+
                          <GoogleMap
                               center={center}
                               zoom={12}
@@ -80,27 +115,34 @@ function Dashboard() {
                                              <div className={cx('text-black', 'col')}></div>
                                         </div>
 
-                                        {/* map items order cooked */}
                                         {
-                                             listOrders.map((e, i) => {
+                                             listPendingOrders.map((e, i) => {
                                                   return (
                                                        <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
                                                             <div className={cx('col-auto')}>{i + 1}</div>
-                                                            <div className={cx('col-3')}>{e.delivered_address}</div>
                                                             <div className={cx('col-3')}>{e.restaurant.address}</div>
+                                                            <div className={cx('col-3')}>{e.delivered_address}</div>
                                                             <div className={cx('col-2')}>{formatPrice(e.total_price)}</div>
                                                             <div className={cx('col')}>
-                                                                 <Link to={`/${e.id}`} onClick={handleAccept} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
-                                                                      Accept challenge &rarr;
-                                                                 </Link>
+                                                                 {
+                                                                      e.status === 2 && <button onClick={() => handleAccept(e.id, e.status)} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                           Accept challenge &rarr;
+                                                                      </button>
+                                                                 }
+                                                                 {
+                                                                      e.status === 3 &&
+                                                                      <Link to={`/${e.id}`} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                           View Order &rarr;
+                                                                      </Link>
+                                                                 }
                                                             </div>
                                                        </div>
                                                   )
                                              })
                                         }
-                                        {/*  */}
                                    </div> :
-                                   <></>
+                                   <>Nothing to show</>
+
                          }
                     </div>
                </div>

@@ -4,6 +4,7 @@ import * as OrderDetailsService from "../../../../services/OrderDetailsService"
 
 import classNames from "classnames/bind";
 import styles from './order.module.css'
+import Information from './../Profile/Information';
 
 const cx = classNames.bind(styles);
 
@@ -42,7 +43,6 @@ function OrderDetails() {
         const getListProducts = async () => {
             const [data, error] = await OrderDetailsService.getAllOrderDTByOrder(id);
             if (data) {
-                console.log(data);
                 setProducts(data);
             }
             if (error) {
@@ -54,7 +54,7 @@ function OrderDetails() {
     }, [id])
 
     return (
-        <div>
+        <div className="container-fluid">
             <div className="row">
                 <div className="col-sm-12">
                     <div className="iq-card">
@@ -84,6 +84,10 @@ function OrderDetails() {
                                                 <tr>
                                                     <th>Status </th>
                                                     <td>{orderInfo.status}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Shipper Information: </th>
+                                                    <td>{orderInfo.driver ? `${orderInfo.driver.userName} (${orderInfo.driver.phone})` : 'Null'}</td>
                                                 </tr>
                                             </table>
                                         </div>

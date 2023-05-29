@@ -7,6 +7,10 @@ import { selectUserData } from "../../../../redux/reducers/users";
 import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
 import * as OrderService from "../../../../services/OrderService";
 import { GoPrimitiveDot } from "react-icons/go";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:8000");
+
 
 function Order() {
   const statusArr = [
@@ -83,22 +87,46 @@ function Order() {
     return string.replaceAll(" ", "_");
   };
 
+  const handleUpdateStatus = async (orderID, currentStatus) => {
+    console.log({ orderID, currentStatus });
+    const orderData = {
+      status: currentStatus + 1
+    }
+    const [data, error] = await OrderService.updateOrderStatus(orderID, orderData);
+    if (data) {
+      socket.emit("restaurantAcceptOrder", orderData);
+      setLoadPage(!loadPage);
+    }
+    if (error) {
+      console.log(error);
+    }
+  }
+  const getAllProductFromAPI = async () => {
+    const [data, error] = await OrderService.getAllOrderByResOwner(userData.user.subject, queryParams);
+    if (data) {
+      console.log(data);
+      setTotalPages(Math.round(data.length / 2));
+
+      queryParams
+        ? setAllOrders(data)
+        : setAllOrders(data.sort((a, b) => b.id - a.id));
+    }
+    if (error) {
+      console.log(error);
+    }
+  };
+
+  socket.on("createOrderClient", (data) => {
+    data ? console.log(data) : console.log("hehe");
+    getAllProductFromAPI()
+  })
+
+  socket.on("deliverUpdateOrderStatus", (data) => {
+    data ? console.log(data) : console.log("hehe");
+    getAllProductFromAPI()
+  })
 
   useEffect(() => {
-    const getAllProductFromAPI = async () => {
-      const [data, error] = await OrderService.getAllOrderByResOwner(userData.user.subject, queryParams);
-      if (data) {
-        console.log(data);
-        setTotalPages(Math.round(data.length / 2));
-
-        queryParams
-          ? setAllOrders(data)
-          : setAllOrders(data.sort((a, b) => b.id - a.id));
-      }
-      if (error) {
-        console.log(error);
-      }
-    };
     getAllProductFromAPI();
   }, [queryParams, loadPage, currentPage, userData.user.subject]);
   return (
@@ -151,7 +179,8 @@ function Order() {
                               statusArr.map((status, index) => {
                                 if (status.sttId === e.status) {
                                   return (
-                                    <td className={status.style}>
+                                    <td className={status.style} key={index}>
+
                                       <GoPrimitiveDot /> {status.text}
                                     </td>
                                   )
@@ -182,12 +211,16 @@ function Order() {
                                   >
                                     View Details
                                   </Link>
-                                  <Link
-                                    className="dropdown-item"
-                                    to={""}
-                                  >
-                                    {"Update Status"}
-                                  </Link>
+                                  {
+                                    e.status >= 2 ? <></> :
+                                      <button
+                                        className="dropdown-item"
+                                        onClick={() => handleUpdateStatus(e.id, e.status)}
+                                      >
+                                        Update Status
+                                      </button>
+                                  }
+
                                 </div>
                               </div>
                             </td>

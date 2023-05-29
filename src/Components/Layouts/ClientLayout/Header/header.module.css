@@ -11,9 +11,9 @@ header{
 .number-cart{
     position: absolute;
     border-radius: 50% !important;
-    padding: 8px 8px !important;
-    right: 3.4% !important;
-    top: 25% !important;
+    padding: 11px 8px !important;
+    right: 2% !important;
+    top: 20% !important;
     background-color: darkslategrey !important;
     color: white !important;
     font-size: 11px !important;

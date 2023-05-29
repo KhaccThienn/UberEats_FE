@@ -8,7 +8,9 @@ import * as OrderService from "../../../../services/OrderService"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { io } from "socket.io-client";
 
+const socket = io("http://localhost:8000");
 let cx = classNames.bind(styles)
 
 function ListOrdered() {
@@ -47,20 +49,31 @@ function ListOrdered() {
           },
      ]
      const userData = useSelector(selectUserData);
-
+     const getAllProductFromAPI = async () => {
+          const [data, error] = await OrderService.getAllOrderByUserID(userData.user.subject);
+          if (data) {
+               console.log(data);
+               setAllOrders(data.sort((a, b) => b.id - a.id))
+          }
+          if (error) {
+               console.log(error);
+          }
+     };
+     socket.on("updateOrderStatusClient", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getAllProductFromAPI()
+     })
+     socket.on("updateOrderStatusDeliver", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getAllProductFromAPI()
+     })
+     socket.on("deliverUpdateOrderStatus", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getAllProductFromAPI()
+     })
      // init the state of all product
      const [allOrders, setAllOrders] = useState([]);
      useEffect(() => {
-          const getAllProductFromAPI = async () => {
-               const [data, error] = await OrderService.getAllOrderByUserID(userData.user.subject);
-               if (data) {
-                    console.log(data);
-                    setAllOrders(data)
-               }
-               if (error) {
-                    console.log(error);
-               }
-          };
           getAllProductFromAPI();
      }, [userData.user.subject]);
      return (
@@ -77,6 +90,8 @@ function ListOrdered() {
                                    <th scope='col' className={cx('text-black')}>Restaurant name</th>
                                    <th scope='col' className={cx('text-black')}>Location</th>
                                    <th scope='col' className={cx('text-black')}>Status</th>
+                                   <th scope='col' className={cx('text-black')}>Shipper</th>
+
                                    <th scope='col' className={cx('text-black')}>Total</th>
                                    <th scope='col' className={cx('text-black')}>View Details</th>
                               </tr>
@@ -94,13 +109,14 @@ function ListOrdered() {
                                                        statusArr.map((status, index) => {
                                                             if (status.sttId === e.status) {
                                                                  return (
-                                                                      <td className={status.style}>
+                                                                      <td className={status.style} key={index}>
                                                                            <GoPrimitiveDot /> {status.text}
                                                                       </td>
                                                                  )
                                                             }
                                                        })
                                                   }
+                                                  <td>{e.driver ? e.driver?.userName : "Not Have Yet"}</td>
 
                                                   <td>{formatPrice(e.total_price)}</td>
                                                   <td><Link className='btn btn-success rounded-0' to={`/list_orderded/${e.id}`}>View Details</Link></td>
@@ -108,7 +124,8 @@ function ListOrdered() {
                                         )
                                    }) :
                                         <>
-                                             <p>Nothing To Show, <Link to={"/"}>Click Here To Continue </Link></p>
+                                             <Link to={"/"} className='m-0'>Nothing To Show, Click Here To Continue Shopping </Link>
+
                                         </>
                               }
 

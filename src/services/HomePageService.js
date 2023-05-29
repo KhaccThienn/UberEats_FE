@@ -12,10 +12,10 @@ export const getAllRestaurant = async (params) => {
      }
 }
 
-export const getProductByRestaurant = async (resID, slugs, params) => {
+export const getProductByRestaurant = async (resID, slugs, status, params) => {
      try {
           // const res = await http.get(`${urlAPI}/product?restaurantID=${resID}&${params}`);
-          const res = await http.get(`${urlAPI}/restaurant/${resID}-${slugs}?${params}`);
+          const res = await http.get(`${urlAPI}/restaurant/${resID}-${slugs}?status=${status}&${params}`);
           return [res, null];
      } catch (error) {
           return [null, error];
