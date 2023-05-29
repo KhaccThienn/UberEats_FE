@@ -7,8 +7,11 @@ import * as UserService from "../../../services/UserService";
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectUserData } from '../../../redux/reducers/users';
+import { useRef } from 'react';
+import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 let cx = classNames.bind(styles)
+const center = { lat: 21.030653, lng: 105.847130 }
 const formatPrice = (price) => {
      return price?.toLocaleString('en-US', {
           style: 'currency',
@@ -17,6 +20,19 @@ const formatPrice = (price) => {
      });
 };
 function AcceptOrder({ orderId }) {
+     const { isLoaded } = useJsApiLoader({
+          googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
+          libraries: ['places']
+     })
+     const [map, setMap] = useState(/**  @type google.maps.Map */(null));
+     const [directionsResponse, setDirectionsResponse] = useState(null)
+     const [distance, setDistance] = useState('')
+     const [duration, setDuration] = useState('')
+     /** @type React.MultableRefObject<HTMLInputElement> */
+     const oriRef = useRef()
+
+     /** @type React.MultableRefObject<HTMLInputElement> */
+     const desRef = useRef()
      const userData = useSelector(selectUserData);
      const initProfileState = {
           avatar: "",
@@ -28,6 +44,24 @@ function AcceptOrder({ orderId }) {
      const [profile, setProfile] = useState(initProfileState);
      console.log("OrderId: ", orderId);
      const [orderDetail, setOrderDetail] = useState({});
+     const calculateRoute = async (e) => {
+
+          if (oriRef.current.value === '' || desRef.current.value === '') {
+               return
+          }
+          // eslint-disable-next-line no-undef
+          const directionService = new google.maps.DirectionsService()
+          const results = await directionService.route({
+               origin: oriRef.current.value,
+               destination: desRef.current.value,
+               // eslint-disable-next-line no-undef
+               travelMode: google.maps.TravelMode.DRIVING
+          })
+          setDirectionsResponse(results)
+          setDistance(results.routes[0].legs[0].distance.text)
+          setDuration(results.routes[0].legs[0].duration.text)
+
+     }
      useEffect(() => {
           const getOrderByOrderID = async () => {
                const [data, error] = await OrderService.getOrderByOrderId(orderId)
@@ -51,15 +85,31 @@ function AcceptOrder({ orderId }) {
           };
           getProfileData(userData.user.subject);
           getOrderByOrderID();
-     }, [orderId, userData.user.subject]);
+
+     }, [orderId, userData.user.subject, desRef, oriRef]);
+     if (!isLoaded) {
+          return
+     }
 
      return (
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
                <div className={cx('row', 'justify-content-around')}>
                     <div className={cx('col-6')}>
-                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.7782450228!2d2.264634263777884!3d48.85893843503861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2zUGEgcmksIFBow6Fw!5e0!3m2!1svi!2s!4v1684468304857!5m2!1svi!2s"
-                              width="100%" height="450" className={cx('border-0')}
-                              allowFullScreen="yes" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                         <GoogleMap
+                              center={center}
+                              zoom={12}
+                              mapContainerStyle={{ width: '100%', height: '85vh' }}
+                              options={{
+                                   zoomControl: false,
+                                   streetViewControl: false,
+                                   mapTypeControl: false,
+                                   fullscreenControl: false,
+                              }}
+                              onLoad={map => { setMap(map) }}
+
+                         >
+                              {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+                         </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
 
@@ -74,22 +124,34 @@ function AcceptOrder({ orderId }) {
                               <div className={cx('col-12', 'text-left')}>
                                    <p className={cx('h5')}>Prepare by: {orderDetail.restaurant?.name}</p>
                                    <hr />
-                                   <div className={cx('d-flex', 'justify-content-between')}>
-                                        <p className={cx('h5')}>Deliver to: {orderDetail.delivered_user}</p>
-                                        <p className={cx('h5')}>Phone: {orderDetail.delivered_phone}</p>
+                                   <div className={cx('d-flex')}>
+                                        <p className={cx('h5', 'mr-5')}>Deliver to: {orderDetail.delivered_user}</p>
+                                        <p className={cx('h5', 'ml-5')}>Phone: {orderDetail.delivered_phone}</p>
                                    </div>
                                    <hr />
-                                   <div className={cx('d-flex', 'justify-content-between')}>
-                                        <p className={cx('h5')}>Deliver by: {profile.userName}</p>
-                                        <p className={cx('h5')}>Phone: {profile.phone}</p>
+                                   <div className={cx('d-flex')}>
+                                        <p className={cx('h5', 'mr-5')}>Deliver by: {profile.userName}</p>
+                                        <p className={cx('h5', 'ml-5')}>Phone: {profile.phone}</p>
                                    </div>
                                    <hr />
-                                   <div className={cx('d-flex', 'justify-content-between')}>
-                                        <p className={cx('h5')}>From: {orderDetail.restaurant?.address}</p>
-                                        <p className={cx('h5')}>To: {orderDetail.delivered_address}</p>
+                                   <div className={cx('d-flex')}>
+                                        <p className={cx('h5', 'mr-5')}>From: {orderDetail.restaurant?.address}</p>
+                                        <input type='hidden' defaultValue={orderDetail.restaurant?.address} ref={oriRef} />
+                                        <p className={cx('h5', 'ml-5')}>To: {orderDetail.delivered_address}</p>
+                                        <input type='hidden' defaultValue={orderDetail.delivered_address} ref={desRef} />
                                    </div>
                                    <hr />
+                                   {distance && duration ?
+                                        <div className={cx('d-flex')}>
+                                             <p className={cx('h5', 'mr-5')}>Distance: {distance}</p>
+                                             <p className={cx('h5', 'ml-5')}>Duration: {duration}</p>
+                                        </div>
 
+                                        :
+                                        <div className={cx('d-flex','justify-content-end')}>
+                                             <button className={cx('btn', 'btn-outline-secondary','rounded-0')} onClick={calculateRoute}>Calculate Route</button>
+                                             </div>
+                                   }
                               </div>
                          </div>
                     </div>
