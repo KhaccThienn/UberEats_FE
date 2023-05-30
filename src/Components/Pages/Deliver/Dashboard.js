@@ -14,7 +14,7 @@ import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-go
 const socket = io("http://localhost:8000");
 let cx = classNames.bind(styles)
 
-const center = { lat: 21.030653, lng: 105.847130 }
+const center = { lat: 21.246090, lng: 105.7818487 }
 
 
 function Dashboard() {
@@ -27,6 +27,7 @@ function Dashboard() {
      };
      const userData = useSelector(selectUserData);
      const [listPendingOrders, setListPendingOrders] = useState([]);
+     const [allResAddress, setAllResAddress] = useState([]);
      const navigate = useNavigate();
 
      const handleAccept = async (orderId, status) => {
@@ -51,8 +52,9 @@ function Dashboard() {
           }
      }
 
+
      const { isLoaded } = useJsApiLoader({
-          googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
+          googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
           libraries: ['places']
      })
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
@@ -74,7 +76,6 @@ function Dashboard() {
           getListOrderedFromAPI()
      })
      useEffect(() => {
-
           getListOrderedFromAPI();
      }, [userData.user.subject]);
 
@@ -89,13 +90,14 @@ function Dashboard() {
 
                          <GoogleMap
                               center={center}
-                              zoom={12}
+                              zoom={20}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
-                                   zoomControl: false,
-                                   streetViewControl: false,
-                                   mapTypeControl: false,
-                                   fullscreenControl: false,
+                                   // zoomControl: false,
+                                   // streetViewControl: false,
+                                   // mapTypeControl: false,
+                                   // fullscreenControl: false,
+
                               }}
                               onLoad={map => { setMap(map) }}
                          >
@@ -118,7 +120,6 @@ function Dashboard() {
 
                                         {
                                              listPendingOrders.map((e, i) => {
-                                                  console.log(e);
                                                   return (
                                                        <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
                                                             <div className={cx('col-auto')}>{i + 1}</div>
@@ -143,7 +144,7 @@ function Dashboard() {
                                              })
                                         }
                                    </div> :
-                                   <>Nothing to show</>
+                                   <p className={cx('text-center', 'display-4', 'font-weight-bold', 'py-5')}>No order yet</p>
 
                          }
                     </div>

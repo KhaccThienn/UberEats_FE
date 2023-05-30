@@ -99,7 +99,7 @@ function Order() {
     }
     const [data, error] = await OrderService.updateOrderStatus(orderID, orderData);
     if (data) {
-      socket.emit("restaurantAcceptOrder", orderData);
+      socket.emit("restaurantAcceptOrder", { orderID, orderData });
       setLoadPage(!loadPage);
     }
     if (error) {
@@ -127,6 +127,14 @@ function Order() {
   })
 
   socket.on("deliverUpdateOrderStatus", (data) => {
+    data ? console.log(data) : console.log("hehe");
+    getAllProductFromAPI()
+  })
+  socket.on("deliverShippingOrder", (data) => {
+    data ? console.log(data) : console.log("hehe");
+    getAllProductFromAPI()
+  })
+  socket.on("deliverShippedOrder", (data) => {
     data ? console.log(data) : console.log("hehe");
     getAllProductFromAPI()
   })

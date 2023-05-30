@@ -125,7 +125,8 @@ function OrderFix() {
           }
 
      }
-     
+
+
      useEffect(() => {
           const getCartFromAPI = async () => {
                const [data, error] = await CartService.getAllCartByUser(userData.user.subject);

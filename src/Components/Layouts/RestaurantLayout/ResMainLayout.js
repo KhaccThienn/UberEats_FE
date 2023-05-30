@@ -39,7 +39,7 @@ function ResMainLayout({ child }) {
     console.log("orderStatus Socket Data", data);
     data &&
       Swal.fire({
-        title: 'You have a new order, do you want to view it ?',
+        title: `Order #${data.orderId} has been picked up by ${data.deliver.userName}`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
       }).then((result) => {
@@ -48,6 +48,33 @@ function ResMainLayout({ child }) {
         }
       })
   })
+  socket.on("deliverShippingOrder", (data) => {
+    console.log("orderStatus Socket Data", data);
+    data &&
+      Swal.fire({
+        title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
+        showCancelButton: true,
+        confirmButtonText: 'Accept',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/order")
+        }
+      })
+  })
+  socket.on("deliverShippedOrder", (data) => {
+    console.log("orderStatus Socket Data", data);
+    data &&
+      Swal.fire({
+        title: `Order #${data.orderId} has been shipped successfully by ${data.deliver.userName}`,
+        showCancelButton: true,
+        confirmButtonText: 'Accept',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/")
+        }
+      })
+  })
+
   const userData = useSelector(selectUserData);
 
   const [restaurants, setRestaurants] = useState([]);

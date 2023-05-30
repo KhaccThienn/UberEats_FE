@@ -53,13 +53,41 @@ function AcceptOrder({ orderId }) {
      const [orderDetail, setOrderDetail] = useState({});
      const [reload, setReload] = useState(false)
 
-     const handleUpdateStatus = async (orderId, deliverId, currentStatus, duration) => {
+     const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
           const orderData = {
                status: currentStatus + 1
           }
           const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
           if (data) {
                socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
+               setReload(!reload);
+               console.log(data);
+          }
+          if (error) {
+               console.log(error);
+          }
+     }
+     const handleUpdateStatus = async (orderId, deliverId, currentStatus) => {
+          const orderData = {
+               status: currentStatus + 1
+          }
+          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          if (data) {
+               socket.emit("deliverPickupOrder", { orderId, deliverId, orderData });
+               setReload(!reload);
+               console.log(data);
+          }
+          if (error) {
+               console.log(error);
+          }
+     }
+     const handleShipped = async (orderId, deliverId, currentStatus) => {
+          const orderData = {
+               status: currentStatus + 1
+          }
+          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          if (data) {
+               socket.emit("deliverShipped", { orderId, deliverId, orderData });
                setReload(!reload);
                console.log(data);
           }
@@ -113,7 +141,7 @@ function AcceptOrder({ orderId }) {
 
 
 
-     }, [orderId, userData.user.subject, desRef, oriRef]);
+     }, [orderId, userData.user.subject, desRef, oriRef, reload]);
      if (!isLoaded) {
           return
      }
@@ -179,9 +207,27 @@ function AcceptOrder({ orderId }) {
                                         </div>
                                    }
                                    {
-                                        orderDetail.status == 2 &&
+                                        (duration && orderDetail.status == 2) &&
                                         <div className={cx('d-flex', 'justify-content-between')}>
-                                             <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId, userData.user.subject, orderDetail.status, duration)}>Picked Up</button>
+                                             <button className='btn btn-block btn-success rounded-0' onClick={() => handlePickedUp(orderId, userData.user.subject, orderDetail.status, duration)}>Picked Up</button>
+                                        </div>
+                                   }
+                                   {
+                                        orderDetail.status == 3 &&
+                                        <div className={cx('d-flex', 'justify-content-between')}>
+                                             <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId, userData.user.subject, orderDetail.status, duration)}>Start Shipping</button>
+                                        </div>
+                                   }
+                                   {
+                                        orderDetail.status == 4 &&
+                                        <div className={cx('d-flex', 'justify-content-between')}>
+                                             <button className='btn btn-block btn-success rounded-0' onClick={() => handleShipped(orderId, userData.user.subject, orderDetail.status)}>Shipped</button>
+                                        </div>
+                                   }
+                                   {
+                                        orderDetail.status == 5 &&
+                                        <div className={cx('d-flex', 'justify-content-between')}>
+                                             <Link to={"/"} className='btn btn-block btn-success rounded-0'>Thanks For Using Our Application, Click To View Others Order</Link>
                                         </div>
                                    }
                               </div>
