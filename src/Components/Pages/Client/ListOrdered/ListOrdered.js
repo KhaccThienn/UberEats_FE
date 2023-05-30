@@ -68,14 +68,30 @@ function ListOrdered() {
           data ? console.log(data) : console.log("hehe");
           getAllProductFromAPI()
      })
+
      socket.on("updateOrderStatusDeliver", (data) => {
           data ? console.log(data) : console.log("hehe");
           getAllProductFromAPI()
      })
+
      socket.on("deliverUpdateOrderStatus", (data) => {
           data ? console.log(data) : console.log("hehe");
           getAllProductFromAPI()
      })
+
+     socket.on("updateDeliver", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getAllProductFromAPI()
+     })
+     socket.on("deliverShippingOrder", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getAllProductFromAPI()
+     })
+     socket.on("deliverShippedOrder", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getAllProductFromAPI()
+     })
+
      // init the state of all product
      const [allOrders, setAllOrders] = useState([]);
      useEffect(() => {

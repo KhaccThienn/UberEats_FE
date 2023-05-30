@@ -10,11 +10,12 @@ const socket = io("http://localhost:8000");
 
 function MainLayout({ children }) {
   const navigate = useNavigate();
-  socket.on("updateOrderStatus", (data) => {
-    console.log("orderStatus Socket Data", data);
+
+  socket.on("updateOrderStatusClient", (data) => {
+    console.log("updateOrderStatusClient Socket Data", data);
     data &&
       Swal.fire({
-        title: 'Your Order has been updated, do you want to view it ?',
+        title: `Your Order #${data.orderID} has been cooking !`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
         position: "top-left"
@@ -25,25 +26,11 @@ function MainLayout({ children }) {
       })
   })
 
-  socket.on("updateOrderStatusClient", (data) => {
-    console.log("orderStatus Socket Data", data);
-    data &&
-      Swal.fire({
-        title: 'Your Order has been updated, do you want to view it ?',
-        showCancelButton: true,
-        confirmButtonText: 'Accept',
-        position: "top-left"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/list_orderded")
-        }
-      })
-  })
   socket.on("updateOrderStatusDeliver", (data) => {
-    console.log("orderStatus Socket Data", data);
+    console.log("updateOrderStatusDeliver Socket Data", data);
     data &&
       Swal.fire({
-        title: 'Your Order has been updated, do you want to view it ?',
+        title: `Your Order #${data.orderID} has been cooked !`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
         position: "center"
@@ -53,8 +40,9 @@ function MainLayout({ children }) {
         }
       })
   })
+
   socket.on("updateDeliver", (data) => {
-    console.log("orderStatus Socket Data", data);
+    console.log("updateDeliver Socket Data", data);
     data &&
       Swal.fire({
         title: `Your Order #${data.orderId} has been accepted by ${data.deliver.userName}, do you want to view it ?`,
@@ -69,13 +57,41 @@ function MainLayout({ children }) {
   })
 
   socket.on("deliverUpdateOrderStatus", (data) => {
-    console.log("orderStatus Socket Data", data);
+    console.log("deliverUpdateOrderStatus Socket Data", data);
     data &&
       Swal.fire({
         title: `Your Order #${data.orderId} has been picked up by ${data.deliver.userName}, do you want to view it ?`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
         position: "center"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/list_orderded")
+        }
+      })
+  })
+
+  socket.on("deliverShippingOrder", (data) => {
+    console.log("orderStatus Socket Data", data);
+    data &&
+      Swal.fire({
+        title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
+        showCancelButton: true,
+        confirmButtonText: 'Accept',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/list_orderded")
+        }
+      })
+  })
+  
+  socket.on("deliverShippedOrder", (data) => {
+    console.log("orderStatus Socket Data", data);
+    data &&
+      Swal.fire({
+        title: "Your order has been shipped, Thanks For using our service",
+        showCancelButton: true,
+        confirmButtonText: 'Accept',
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/list_orderded")
