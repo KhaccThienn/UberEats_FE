@@ -52,7 +52,6 @@ function AcceptOrder({ orderId }) {
 
      const [orderDetail, setOrderDetail] = useState({});
      const [reload, setReload] = useState(false)
-
      const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
           const orderData = {
                status: currentStatus + 1
@@ -139,9 +138,8 @@ function AcceptOrder({ orderId }) {
           getProfileData(userData.user.subject);
           getOrderByOrderID();
 
-
-
      }, [orderId, userData.user.subject, desRef, oriRef, reload]);
+
      if (!isLoaded) {
           return
      }
@@ -207,6 +205,7 @@ function AcceptOrder({ orderId }) {
                                         </div>
                                    }
                                    {
+
                                         (duration && orderDetail.status == 2) &&
                                         <div className={cx('d-flex', 'justify-content-between')}>
                                              <button className='btn btn-block btn-success rounded-0' onClick={() => handlePickedUp(orderId, userData.user.subject, orderDetail.status, duration)}>Picked Up</button>

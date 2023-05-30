@@ -120,6 +120,7 @@ function Dashboard() {
 
                                         {
                                              listPendingOrders.map((e, i) => {
+                                                  console.log(e);
                                                   return (
                                                        <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
                                                             <div className={cx('col-auto')}>{i + 1}</div>
