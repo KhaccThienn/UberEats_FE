@@ -1,6 +1,6 @@
 import * as http from "../common/http";
 
-const urlAPI = "http://localhost:8000";
+const urlAPI = process.env.REACT_APP_URL_API;
 
 export const postCheckoutData = async (data) => {
      try {
@@ -63,4 +63,5 @@ export const updateOrderDelivery = async (id, deliveryId, data) => {
      } catch (error) {
           return [null, error]
      }
+
 }

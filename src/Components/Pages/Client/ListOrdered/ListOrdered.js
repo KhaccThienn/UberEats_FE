@@ -39,11 +39,16 @@ function ListOrdered() {
           },
           {
                sttId: 3,
+               style: "text-dark",
+               text: "Picked"
+          },
+          {
+               sttId: 4,
                style: "text-secondary",
                text: "Shipping"
           },
           {
-               sttId: 4,
+               sttId: 5,
                style: "text-success",
                text: "Shipped"
           },
@@ -86,6 +91,7 @@ function ListOrdered() {
                          <thead>
                               <tr>
                                    <th scope='col' className={cx('text-black')}>#</th>
+                                   <th scope='col' className={cx('text-black')}>OrderID</th>
                                    <th scope='col' className={cx('text-black')}>Customer name</th>
                                    <th scope='col' className={cx('text-black')}>Restaurant name</th>
                                    <th scope='col' className={cx('text-black')}>Location</th>
@@ -101,6 +107,7 @@ function ListOrdered() {
                                         return (
                                              <tr key={i} >
                                                   <th scope="row">{i + 1}</th>
+                                                  <td>{e.id}</td>
                                                   <td>{e.delivered_user}</td>
                                                   <td>{e.restaurant.name}</td>
                                                   <td>{e.delivered_address}</td>
