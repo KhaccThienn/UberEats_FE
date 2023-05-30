@@ -38,11 +38,11 @@ function Dashboard() {
           });
           if (choose.isConfirmed) {
                const orderData = {
-                    status: status + 1
+                    status: status
                }
                const [data, error] = await OrderService.updateOrderDelivery(orderId, userData.user.subject, orderData);
                console.log(data);
-               socket.emit("deliverAcceptOrder", orderData);
+               socket.emit("deliverAcceptOrder", { orderId, userData, orderData });
                navigate(`/${orderId}`)
                if (data) { }
                if (error) {
@@ -118,6 +118,7 @@ function Dashboard() {
 
                                         {
                                              listPendingOrders.map((e, i) => {
+                                                  console.log(e);
                                                   return (
                                                        <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
                                                             <div className={cx('col-auto')}>{i + 1}</div>
@@ -150,5 +151,4 @@ function Dashboard() {
           </div>
      )
 }
-
 export default Dashboard;

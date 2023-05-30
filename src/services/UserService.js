@@ -1,6 +1,6 @@
 import * as http from "../common/http";
 
-const urlAPI = "http://localhost:8000";
+const urlAPI = process.env.REACT_APP_URL_API;
 
 const getCookie = (name) => {
   const cookieValue = document.cookie?.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)') || null;

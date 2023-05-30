@@ -1,7 +1,7 @@
 import * as http from "../common/http";
 import env from "react-dotenv";
 
-const urlAPI = "http://localhost:8000";
+const urlAPI = process.env.REACT_APP_URL_API;
 
 export const getAllRestaurant = async (params) => {
      try {

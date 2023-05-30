@@ -142,7 +142,7 @@ function Cart() {
                   <div className={cx('form-group', 'mt-3')}>
                     <div className={cx('d-flex', 'align-items-center', 'rounded-pill', 'border-quantity', 'px-2', 'mx-4')}>
                       <button className={cx('btn', 'font-weight-bold')} name="minus" onClick={(event) => { handleButtonChangeQuantity(event, e.product.id) }}>&minus;</button>
-                      <input type="number" name={e.product.id} id="" value={e.quantity} className={cx("form-control", 'rounded-0', 'input-quantity', 'text-center')} onChange={handleChangeQuantity} min={1} defaultValue={e.quantity} />
+                      <input type="number" name={e.product.id} id="" className={cx("form-control", 'rounded-0', 'input-quantity', 'text-center')} onChange={handleChangeQuantity} min={1} defaultValue={e.quantity} />
                       <button className={cx('btn', 'font-weight-bold')} value={e.quantity} name="plus" onClick={(event) => { handleButtonChangeQuantity(event, e.product.id) }}>&#43;</button>
                     </div>
                   </div>

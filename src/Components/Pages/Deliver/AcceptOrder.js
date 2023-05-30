@@ -26,8 +26,9 @@ const formatPrice = (price) => {
 };
 function AcceptOrder({ orderId }) {
 
+
      const { isLoaded } = useJsApiLoader({
-          googleMapsApiKey: 'AIzaSyDKlrInmKV4Mrnv3m5T-CXXDG0-J7bCFtQ',
+          googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
           libraries: ['places']
      })
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
@@ -52,13 +53,13 @@ function AcceptOrder({ orderId }) {
      const [orderDetail, setOrderDetail] = useState({});
      const [reload, setReload] = useState(false)
 
-     const handleUpdateStatus = async (orderId, currentStatus) => {
+     const handleUpdateStatus = async (orderId, deliverId, currentStatus, duration) => {
           const orderData = {
-               status: 4
+               status: currentStatus + 1
           }
           const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
           if (data) {
-               socket.emit("deliverAcceptOrder", orderData);
+               socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
                setReload(!reload);
                console.log(data);
           }
@@ -111,10 +112,11 @@ function AcceptOrder({ orderId }) {
           getOrderByOrderID();
 
 
+
      }, [orderId, userData.user.subject, desRef, oriRef]);
-     // if (!isLoaded) {
-     //      return
-     // }
+     if (!isLoaded) {
+          return
+     }
 
      return (
           <div className={cx('container-fluid', 'px-5', 'py-5')}>
@@ -158,11 +160,7 @@ function AcceptOrder({ orderId }) {
                                         <p className={cx('h5')}>Phone: {profile.phone}</p>
                                    </div>
                                    <hr />
-                                   <div className={cx('d-flex', 'justify-content-between')}>
-                                        <p className={cx('h5')}>From: {orderDetail.restaurant?.address}</p>
-                                        <p className={cx('h5')}>To: {orderDetail.delivered_address}</p>
-                                   </div>
-                                   <hr />
+
                                    <div className={cx('d-flex')}>
                                         <p className={cx('h5', 'mr-5')}>From: {orderDetail.restaurant?.address}</p>
                                         <input type='hidden' defaultValue={orderDetail.restaurant?.address} ref={oriRef} />
@@ -175,21 +173,16 @@ function AcceptOrder({ orderId }) {
                                              <p className={cx('h5', 'mr-5')}>Distance: {distance}</p>
                                              <p className={cx('h5', 'ml-5')}>Duration: {duration}</p>
                                         </div>
-
                                         :
                                         <div className={cx('d-flex', 'justify-content-end')}>
                                              <button className={cx('btn', 'btn-outline-secondary', 'rounded-0')} onClick={calculateRoute}>Calculate Route</button>
                                         </div>
                                    }
                                    {
-                                        orderDetail.status === 3 ?
-                                             <div className={cx('d-flex', 'justify-content-between')}>
-                                                  <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId, orderDetail.status)}>Order Shipped</button>
-                                             </div>
-                                             :
-                                             <div className={cx('d-flex', 'justify-content-between')}>
-                                                  <Link to={"/"} className='btn btn-block btn-success rounded-0'>Thanks For Our Application, Click Here To Return</Link>
-                                             </div>
+                                        orderDetail.status == 2 &&
+                                        <div className={cx('d-flex', 'justify-content-between')}>
+                                             <button className='btn btn-block btn-success rounded-0' onClick={() => handleUpdateStatus(orderId, userData.user.subject, orderDetail.status, duration)}>Picked Up</button>
+                                        </div>
                                    }
                               </div>
                          </div>

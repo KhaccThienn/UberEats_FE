@@ -1,3 +1,1 @@
-window.env = {
-  "URL_API": "http://localhost:8000"
-};
+window.env = {};

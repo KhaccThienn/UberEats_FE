@@ -31,11 +31,16 @@ function Order() {
     },
     {
       sttId: 3,
+      style: "text-dark",
+      text: "Picked"
+    },
+    {
+      sttId: 4,
       style: "text-secondary",
       text: "Shipping"
     },
     {
-      sttId: 4,
+      sttId: 5,
       style: "text-success",
       text: "Shipped"
     },
@@ -176,7 +181,7 @@ function Order() {
                             <td>{e.delivered_address}</td>
                             <td>{e.delivered_phone}</td>
                             {
-                              statusArr.map((status, index) => {
+                              statusArr && statusArr.map((status, index) => {
                                 if (status.sttId === e.status) {
                                   return (
                                     <td className={status.style} key={index}>

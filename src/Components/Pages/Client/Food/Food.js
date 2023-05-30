@@ -86,7 +86,7 @@ function Food() {
                 const [data, error] = await CartService.saveDataToCart({
                     userId: userData.user.subject,
                     productId: items.id,
-                    quantity: 1
+                    quantity: 1,
                 });
                 if (data) {
                     navigate('/cart');
