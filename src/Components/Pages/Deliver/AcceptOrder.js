@@ -26,6 +26,7 @@ const formatPrice = (price) => {
 };
 function AcceptOrder({ orderId }) {
 
+
      const { isLoaded } = useJsApiLoader({
           googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
           libraries: ['places']
@@ -109,6 +110,7 @@ function AcceptOrder({ orderId }) {
           };
           getProfileData(userData.user.subject);
           getOrderByOrderID();
+
 
 
      }, [orderId, userData.user.subject, desRef, oriRef]);
