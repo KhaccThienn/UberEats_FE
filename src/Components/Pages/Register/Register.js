@@ -25,13 +25,20 @@ function Register() {
       Swal.fire({
         position: "top-end",
         icon: "error",
-        title: "All Field Are Required",
+        title: "Invalid registration",
         showConfirmButton: false,
         timer: 1500,
       });
       console.log(error);
     }
     if (data) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Register Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       navigate("/login");
     }
   };

@@ -48,14 +48,17 @@ function Home() {
             <div className={cx('bg-image', 'container-fluid px-5')}>
                 <div className={cx('d-flex', 'flex-column', 'form-banner')}>
                     <div className={cx('fz-60', 'font-weight-bold', 'text-black')}>Order food to your door</div>
-                    <div>
-                        <form className={cx('form-inline')} method='GET' onSubmit={(e) => { handleSubmitForm(e) }}>
-                            <div className={cx("form-group")}>
-                                <input type="text" name="keyWord" onChange={handleChangeValue} id="keyWord" className={cx("form-control", 'rounded-0', 'input-banner')} placeholder={'Enter food you wanna find...'} />
-                            </div>
-                            <button type="submit" className={cx("btn btn-dark", 'btn-banner')}>Find food</button>
-                        </form>
-                    </div>
+                    {
+                        userData.user.subject &&
+                        <div>
+                            <form className={cx('form-inline')} method='GET' onSubmit={(e) => { handleSubmitForm(e) }}>
+                                <div className={cx("form-group")}>
+                                    <input type="text" name="keyWord" onChange={handleChangeValue} id="keyWord" className={cx("form-control", 'rounded-0', 'input-banner')} placeholder={'Enter food you wanna find...'} />
+                                </div>
+                                <button type="submit" className={cx("btn btn-dark", 'btn-banner')}>Find food</button>
+                            </form>
+                        </div>
+                    }
                 </div>
             </div>
             {
