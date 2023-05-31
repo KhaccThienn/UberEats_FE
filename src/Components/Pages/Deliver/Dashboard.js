@@ -5,17 +5,18 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { selectUserData } from '../../../redux/reducers/users';
 import * as OrderService from "../../../services/OrderService";
 import styles from './deliver.module.css';
+import GetMarker from './GetMarker';
+import homeicon from '../../../images/homeicon.png'
 
-import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
 
-const center = { lat: 21.246090, lng: 105.7818487 }
-
+const defaultPlace = { lat: 21.246097, lng: 105.781977 }
 
 function Dashboard() {
      const formatPrice = (price) => {
@@ -27,7 +28,6 @@ function Dashboard() {
      };
      const userData = useSelector(selectUserData);
      const [listPendingOrders, setListPendingOrders] = useState([]);
-     const [allResAddress, setAllResAddress] = useState([]);
      const navigate = useNavigate();
 
      const handleAccept = async (orderId, status) => {
@@ -58,6 +58,7 @@ function Dashboard() {
           libraries: ['places']
      })
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
+     // eslint-disable-next-line react-hooks/exhaustive-deps
      const getListOrderedFromAPI = async () => {
           const [data, error] = await OrderService.getAllOrdersByStatus(2);
           if (data) {
@@ -89,8 +90,8 @@ function Dashboard() {
                     <div className={cx('col-6')}>
 
                          <GoogleMap
-                              center={center}
-                              zoom={20}
+                              center={defaultPlace}
+                              zoom={11}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
                                    // zoomControl: false,
@@ -101,8 +102,17 @@ function Dashboard() {
                               }}
                               onLoad={map => { setMap(map) }}
                          >
-                              <Marker position={center} />
-
+                              <Marker
+                                   position={defaultPlace}
+                                   title='Sieu thi nao do?'
+                                   /*  eslint-disable-next-line no-undef */
+                                   icon={homeicon}
+                              />
+                              {listPendingOrders.map((e, i) => {
+                                   return (
+                                        <GetMarker key={i} address={e.restaurant.address} name={e.restaurant.name} />
+                                   )
+                              })}
                          </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
@@ -120,7 +130,6 @@ function Dashboard() {
 
                                         {
                                              listPendingOrders.map((e, i) => {
-                                                  console.log(e);
                                                   return (
                                                        <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
                                                             <div className={cx('col-auto')}>{i + 1}</div>
