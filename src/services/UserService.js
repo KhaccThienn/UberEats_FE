@@ -7,6 +7,11 @@ const getCookie = (name) => {
   return cookieValue ? cookieValue.pop() : null;
 }
 
+const getCookie = (name) => {
+  const cookieValue = document.cookie?.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)') || null;
+  return cookieValue ? cookieValue.pop() : null;
+}
+
 export const register = async (data) => {
   try {
     const res = await http.post(`${urlAPI}/auth/register`, data);
