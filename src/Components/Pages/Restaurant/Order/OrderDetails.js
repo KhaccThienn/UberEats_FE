@@ -4,10 +4,18 @@ import * as OrderDetailsService from "../../../../services/OrderDetailsService"
 
 import classNames from "classnames/bind";
 import styles from './order.module.css'
+import { GoPrimitiveDot } from "react-icons/go";
 
 const cx = classNames.bind(styles);
 
 function OrderDetail() {
+  const formatPrice = (price) => {
+    return price.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    });
+  };
   const { id } = useParams();
   const initOrderInfo = {
     delivered_address: '',
@@ -18,7 +26,38 @@ function OrderDetail() {
     status: '',
     total_price: '',
   }
-
+  const statusArr = [
+    {
+      sttId: 0,
+      style: "text-warning",
+      text: "Pending"
+    },
+    {
+      sttId: 1,
+      style: "text-primary",
+      text: "Cooking"
+    },
+    {
+      sttId: 2,
+      style: "text-info",
+      text: "Cooked"
+    },
+    {
+      sttId: 3,
+      style: "text-dark",
+      text: "Picked"
+    },
+    {
+      sttId: 4,
+      style: "text-secondary",
+      text: "Shipping"
+    },
+    {
+      sttId: 5,
+      style: "text-success",
+      text: "Shipped"
+    },
+  ]
   const [orderInfo, setOrderInfo] = useState(initOrderInfo);
   const [products, setProducts] = useState([]);
 
@@ -26,6 +65,7 @@ function OrderDetail() {
     const getOrderInfoByID = async () => {
       const [data, error] = await OrderDetailsService.getOrderInfoByID(id);
       if (data) {
+        console.log("ORd Infor", data);
         setOrderInfo(data)
       }
       if (error) {
@@ -72,11 +112,25 @@ function OrderDetail() {
 
                         <tr>
                           <th>Total Price </th>
-                          <td>{orderInfo.total_price}</td>
+                          <td>{formatPrice(orderInfo.total_price)}</td>
                         </tr>
                         <tr>
                           <th>Status </th>
-                          <td>{orderInfo.status}</td>
+                          {
+                            statusArr.map((status, index) => {
+                              if (status.sttId === orderInfo.status) {
+                                return (
+                                  <td className={status.style} key={index}>
+                                    <GoPrimitiveDot /> {status.text}
+                                  </td>
+                                )
+                              }
+                            })
+                          }
+                        </tr>
+                        <tr>
+                          <th>Driver:  </th>
+                          <td>{orderInfo.driver ? orderInfo.driver.userName : "Null"}</td>
                         </tr>
                       </table>
                     </div>
@@ -145,10 +199,10 @@ function OrderDetail() {
                                   <td className={cx('w-15')}>
                                     <img src={e.product.image} alt={e.product.name} className={cx('card-img')} />
                                   </td>
-                                  <td>$ {e.product.price}</td>
-                                  <td>$ {e.product.sale_price}</td>
+                                  <td>{formatPrice(e.product.price)}</td>
+                                  <td>{formatPrice(e.product.sale_price)}</td>
                                   <td>{e.quantity}</td>
-                                  <td>$ {e.total}</td>
+                                  <td>{formatPrice(e.total)}</td>
                                 </tr>
                               )
                             })

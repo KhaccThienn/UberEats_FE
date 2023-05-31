@@ -12,7 +12,7 @@ import styles from './deliver.module.css';
 import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { useRef } from 'react';
 
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 
 let cx = classNames.bind(styles)
 const center = { lat: 21.030653, lng: 105.847130 }

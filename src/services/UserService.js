@@ -7,6 +7,11 @@ const getCookie = (name) => {
   return cookieValue ? cookieValue.pop() : null;
 }
 
+const getCookie = (name) => {
+  const cookieValue = document.cookie?.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)') || null;
+  return cookieValue ? cookieValue.pop() : null;
+}
+
 export const register = async (data) => {
   try {
     const res = await http.post(`${urlAPI}/auth/register`, data);
@@ -64,3 +69,13 @@ export const changePassword = async (userId, data) => {
     return [null, error];
   }
 };
+
+
+export const getAllUsersByRole = async (roleId) => {
+  try {
+    const res = await http.get(`${urlAPI}/user/role/${roleId}`);
+    return [res, null];
+  } catch (error) {
+    return [null, error];
+  }
+}

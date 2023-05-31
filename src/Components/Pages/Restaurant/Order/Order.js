@@ -3,16 +3,24 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import dateFormat from "dateformat";
 import { selectUserData } from "../../../../redux/reducers/users";
 import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
 import * as OrderService from "../../../../services/OrderService";
 import { GoPrimitiveDot } from "react-icons/go";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 
 
 function Order() {
+  const formatPrice = (price) => {
+    return price.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    });
+  };
   const statusArr = [
     {
       sttId: 0,
@@ -68,11 +76,11 @@ function Order() {
 
   const handleSubmit = () => {
     console.log({ ...filterValues });
-    navigateSearch("/product", { ...filterValues });
+    navigateSearch("/order", { ...filterValues });
   };
 
   const clearFilter = () => {
-    navigateSearch("/product", initState);
+    navigateSearch("/order", initState);
     setKeySearch("");
   };
 
@@ -106,7 +114,7 @@ function Order() {
       console.log(error);
     }
   }
-  const getAllProductFromAPI = async () => {
+  const getAllOrdersFromAPI = async () => {
     const [data, error] = await OrderService.getAllOrderByResOwner(userData.user.subject, queryParams);
     if (data) {
       console.log(data);
@@ -123,24 +131,24 @@ function Order() {
 
   socket.on("createOrderClient", (data) => {
     data ? console.log(data) : console.log("hehe");
-    getAllProductFromAPI()
+    getAllOrdersFromAPI()
   })
 
   socket.on("deliverUpdateOrderStatus", (data) => {
     data ? console.log(data) : console.log("hehe");
-    getAllProductFromAPI()
+    getAllOrdersFromAPI()
   })
   socket.on("deliverShippingOrder", (data) => {
     data ? console.log(data) : console.log("hehe");
-    getAllProductFromAPI()
+    getAllOrdersFromAPI()
   })
   socket.on("deliverShippedOrder", (data) => {
     data ? console.log(data) : console.log("hehe");
-    getAllProductFromAPI()
+    getAllOrdersFromAPI()
   })
 
   useEffect(() => {
-    getAllProductFromAPI();
+    getAllOrdersFromAPI();
   }, [queryParams, loadPage, currentPage, userData.user.subject]);
   return (
     <>
@@ -154,15 +162,21 @@ function Order() {
             </div>
             <div className="iq-card-body">
               <div className="table-responsive">
-                <div class="row">
+                <div class="row align-items-center">
                   <div class="form-group col-lg-3 m-0">
-                    <label htmlFor="">Sort By: </label>
-                    <select class="form-control" name="" id="">
-                      <option>Name (A-Z)</option>
-                      <option>Name (Z-A)</option>
-                      <option>Price (Low - High)</option>
-                      <option>Price (High - Low)</option>
+                    <select class="form-control" name="sort" id="" onChange={(e) => handleChange(e)}>
+                      <option>Choose One</option>
+                      <option value="status-ASC">Status (Low - High)</option>
+                      <option value="status-DESC">Status (High - Low)</option>
+                      <option value="created_at-ASC">Date Created (Low - High)</option>
+                      <option value="created_at-DESC">Date Created (High - Low)</option>
                     </select>
+                  </div>
+                  <div className="col-lg-3">
+                    <button className="btn btn-primary" onClick={handleSubmit}>
+                      {" "}
+                      Submit
+                    </button>
                   </div>
                 </div>
 
@@ -174,6 +188,7 @@ function Order() {
                       <th>Delevery Address</th>
                       <th>Delevery Phone</th>
                       <th>Status</th>
+                      <th>Created At</th>
                       <th>Voucher</th>
                       <th>Total Price</th>
                       <th>Actions</th>
@@ -200,8 +215,9 @@ function Order() {
                                 }
                               })
                             }
+                            <td>{dateFormat(e.created_at)}</td>
                             <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>Null</>}</td>
-                            <td>{e.total_price}</td>
+                            <td>{formatPrice(e.total_price)}</td>
                             <td>
                               <div className="dropdown">
                                 <button

@@ -1,7 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../../../../redux/reducers/users";
+import * as ProductService from "../../../../services/ProductService";
+import * as OrderService from "../../../../services/OrderService";
 import * as RestaurantService from "../../../../services/RestaurantService"
+import * as UserService from "../../../../services/UserService"
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -10,20 +13,55 @@ function Dashboard() {
   const userData = useSelector(selectUserData);
 
   const [restaurants, setRestaurants] = useState([]);
-  console.log(userData);
+  const [users, setUsers] = useState([]);
+  const [allProd, setAllProd] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [pendingOrder, setPendingOrders] = useState([]);
 
-  useEffect(() => {
-    const getRestaurantByUserID = async () => {
-      const [data, error] = await RestaurantService.getAllRestaurantByUser(userData.user.subject);
-      if (data) {
-        setRestaurants(data.restaurant);
-        console.log(data.restaurant);
-      }
-      if (error) {
-        console.log(error);
-      }
+  const getAllOrdersFromAPI = async () => {
+    const [data, error] = await OrderService.getAllOrderByResOwner(userData.user.subject);
+    if (data) {
+      setAllOrders(data);
+      const pendingOrds = data.filter((item) => item.status == 0);
+      setPendingOrders(pendingOrds)
     }
-    getRestaurantByUserID()
+    if (error) {
+      console.log(error);
+    }
+  };
+  const getRestaurantByUserID = async () => {
+    const [data, error] = await RestaurantService.getAllRestaurantByUser(userData.user.subject);
+    if (data) {
+      setRestaurants(data.restaurant);
+      console.log(data.restaurant);
+    }
+    if (error) {
+      console.log(error);
+    }
+  }
+  const getAllProductFromAPI = async () => {
+    const [data, error] = await ProductService.getAllProduct(userData.user.subject);
+    if (data) {
+      setAllProd(data)
+    }
+    if (error) {
+      console.log(error);
+    }
+  };
+  const getAllUserClient = async (roleId) => {
+    const [data, error] = await UserService.getAllUsersByRole(roleId);
+    if (data) {
+      setUsers(data)
+    }
+    if (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
+    getAllUserClient(1);
+    getAllOrdersFromAPI()
+    getAllProductFromAPI();
+    getRestaurantByUserID();
   }, [userData.user.subject, restaurants.length])
   return (
     <div className="row">
@@ -38,7 +76,7 @@ function Dashboard() {
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
-                      <span className="counter">7</span>
+                      <span className="counter">{users.length}</span>
                     </h2>
                     <h5 className="">Users</h5>
                   </div>
@@ -55,7 +93,7 @@ function Dashboard() {
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
-                      <span className="counter">4</span>
+                      <span className="counter">{allProd.length}</span>
                     </h2>
                     <h5 className="">Products</h5>
                   </div>
@@ -72,7 +110,7 @@ function Dashboard() {
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
-                      <span className="counter">1</span>
+                      <span className="counter">{allOrders.length}</span>
                     </h2>
                     <h5 className="">Orders</h5>
                   </div>
@@ -89,7 +127,11 @@ function Dashboard() {
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
-                      <span className="counter">690</span>
+                      <span className="counter">
+                        {
+                          pendingOrder.length
+                        }
+                      </span>
                     </h2>
                     <h5 className="">Pending</h5>
                   </div>

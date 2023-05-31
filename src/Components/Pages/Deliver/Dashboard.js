@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import geolocation from 'geolocation';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
@@ -16,7 +17,8 @@ import homeicon from '../../../images/homeicon.png'
 const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
 
-const defaultPlace = { lat: 21.246097, lng: 105.781977 }
+// const center = { lat: 21.246090, lng: 105.7818487 }
+
 
 function Dashboard() {
      const formatPrice = (price) => {
@@ -28,6 +30,8 @@ function Dashboard() {
      };
      const userData = useSelector(selectUserData);
      const [listPendingOrders, setListPendingOrders] = useState([]);
+     const [center, setCenter] = useState({ lat: "", lng: "" });
+
      const navigate = useNavigate();
 
      const handleAccept = async (orderId, status) => {
@@ -77,6 +81,20 @@ function Dashboard() {
           getListOrderedFromAPI()
      })
      useEffect(() => {
+          geolocation.getCurrentPosition((err, position) => {
+               if (err) {
+                    console.error('Error retrieving location', err);
+               } else {
+                    const { latitude, longitude } = position.coords;
+                    setCenter({
+                         lat: latitude,
+                         lng: longitude
+                    })
+                    console.log('Current latitude:', latitude);
+                    console.log('Current longitude:', longitude);
+                    // Do something with the latitude and longitude values
+               }
+          });
           getListOrderedFromAPI();
      }, [userData.user.subject]);
 
@@ -90,20 +108,20 @@ function Dashboard() {
                     <div className={cx('col-6')}>
 
                          <GoogleMap
-                              center={defaultPlace}
+                              center={center}
                               zoom={11}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
-                                   // zoomControl: false,
-                                   // streetViewControl: false,
-                                   // mapTypeControl: false,
-                                   // fullscreenControl: false,
+                                   zoomControl: false,
+                                   streetViewControl: false,
+                                   mapTypeControl: false,
+                                   fullscreenControl: false,
 
                               }}
                               onLoad={map => { setMap(map) }}
                          >
                               <Marker
-                                   position={defaultPlace}
+                                   position={center}
                                    title='Sieu thi nao do?'
                                    /*  eslint-disable-next-line no-undef */
                                    icon={homeicon}
@@ -116,10 +134,10 @@ function Dashboard() {
                          </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
+                         <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                          {
                               listPendingOrders.length > 0 ?
                                    <div className={cx('text-left')}>
-                                        <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                                         <div className={cx('row', 'font-weight-bold', 'align-items-center')}>
                                              <div className={cx('text-black', 'col-auto')}>#</div>
                                              <div className={cx('text-black', 'col-3')}>From</div>
@@ -127,7 +145,6 @@ function Dashboard() {
                                              <div className={cx('text-black', 'col-2')}>Total</div>
                                              <div className={cx('text-black', 'col')}></div>
                                         </div>
-
                                         {
                                              listPendingOrders.map((e, i) => {
                                                   return (

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 
 function MainLayout({ children }) {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function MainLayout({ children }) {
         title: `Your Order #${data.orderID} has been cooking !`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
-        position: "top-left"
+        position: "center"
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/list_orderded")
@@ -78,6 +78,7 @@ function MainLayout({ children }) {
         title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
+        position: "center"
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/list_orderded")
