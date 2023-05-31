@@ -141,11 +141,7 @@ function OrderFix() {
           }
 
      }
-<<<<<<< HEAD
      
-=======
-
->>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
      useEffect(() => {
           const getCartFromAPI = async () => {
                const [data, error] = await CartService.getAllCartByUser(userData.user.subject);

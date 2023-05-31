@@ -13,20 +13,12 @@ import styles from './deliver.module.css';
 import GetMarker from './GetMarker';
 import homeicon from '../../../images/homeicon.png'
 
-<<<<<<< HEAD
-=======
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
->>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
 
 const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
 
-<<<<<<< HEAD
-const defaultPlace = { lat: 21.246097, lng: 105.781977 }
-=======
 // const center = { lat: 21.246090, lng: 105.7818487 }
 
->>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
 
 function Dashboard() {
      const formatPrice = (price) => {
@@ -38,13 +30,8 @@ function Dashboard() {
      };
      const userData = useSelector(selectUserData);
      const [listPendingOrders, setListPendingOrders] = useState([]);
-<<<<<<< HEAD
-=======
-     const [allLocations, setAllLocations] = useState([]);
      const [center, setCenter] = useState({ lat: "", lng: "" });
-     let locations = [{}];
 
->>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
      const navigate = useNavigate();
 
      const handleAccept = async (orderId, status) => {
@@ -121,13 +108,8 @@ function Dashboard() {
                     <div className={cx('col-6')}>
 
                          <GoogleMap
-<<<<<<< HEAD
-                              center={defaultPlace}
-                              zoom={11}
-=======
                               center={center}
-                              zoom={15}
->>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
+                              zoom={11}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
                                    zoomControl: false,
@@ -138,9 +120,8 @@ function Dashboard() {
                               }}
                               onLoad={map => { setMap(map) }}
                          >
-<<<<<<< HEAD
                               <Marker
-                                   position={defaultPlace}
+                                   position={center}
                                    title='Sieu thi nao do?'
                                    /*  eslint-disable-next-line no-undef */
                                    icon={homeicon}
@@ -150,9 +131,6 @@ function Dashboard() {
                                         <GetMarker key={i} address={e.restaurant.address} name={e.restaurant.name} />
                                    )
                               })}
-=======
-                              <Marker position={center} />
->>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
                          </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
