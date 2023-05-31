@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './orderDetails.module.css'
 import classNames from 'classnames/bind'
+import dateFormat from 'dateformat'
 import { GoPrimitiveDot } from 'react-icons/go'
 import { useSelector } from 'react-redux'
 import { selectUserData } from '../../../../redux/reducers/users'
@@ -10,7 +11,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
 
 function ListOrdered() {
@@ -112,6 +113,7 @@ function ListOrdered() {
                                    <th scope='col' className={cx('text-black')}>Restaurant name</th>
                                    <th scope='col' className={cx('text-black')}>Location</th>
                                    <th scope='col' className={cx('text-black')}>Status</th>
+                                   <th scope='col' className={cx('text-black')}>Date Created</th>
                                    <th scope='col' className={cx('text-black')}>Shipper</th>
                                    <th scope='col' className={cx('text-black')}>Total</th>
                                    <th scope='col' className={cx('text-black')}>View Details</th>
@@ -138,6 +140,7 @@ function ListOrdered() {
                                                             }
                                                        })
                                                   }
+                                                  <td>{dateFormat(e.created_at)}</td>
                                                   <td>{e.driver ? e.driver?.userName : "Not Have Yet"}</td>
 
                                                   <td>{formatPrice(e.total_price)}</td>

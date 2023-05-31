@@ -69,3 +69,13 @@ export const changePassword = async (userId, data) => {
     return [null, error];
   }
 };
+
+
+export const getAllUsersByRole = async (roleId) => {
+  try {
+    const res = await http.get(`${urlAPI}/user/role/${roleId}`);
+    return [res, null];
+  } catch (error) {
+    return [null, error];
+  }
+}

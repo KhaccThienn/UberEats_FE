@@ -4,6 +4,7 @@ import { AiOutlineCreditCard } from 'react-icons/ai'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import dateFormat from 'dateformat'
 import { selectUserData } from '../../../../redux/reducers/users'
 import * as CartService from '../../../../services/CartService'
 import * as OrderService from '../../../../services/OrderService'
@@ -13,7 +14,7 @@ import styles from './order.module.css'
 import io from "socket.io-client";
 
 let cx = classNames.bind(styles);
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 
 function OrderFix() {
      const formatPrice = (price) => {
@@ -23,6 +24,7 @@ function OrderFix() {
                minimumFractionDigits: 2,
           });
      };
+
      const initProfileState = {
           userName: "",
           phone: "",
@@ -44,12 +46,24 @@ function OrderFix() {
      const [vouchers, setVouchers] = useState([]);
      const [postData, setPostData] = useState(initPostCheckout)
      const navigate = useNavigate();
+     const currentDate = () => {
+          const date = new Date();
+          const year = date.getFullYear();
+          const month = date.getMonth() + 1;
+          const day = date.getDate();
 
+          const hour = date.getHours() + 7;
+          const minute = date.getMinutes();
+          const second = date.getSeconds();
+
+          return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+     }
      const handlePostCheckout = async () => {
           const createOrder = {
                delivered_user: postData.userName ? postData.userName : userProfile.userName,
                delivered_address: postData.address ? postData.address : userProfile.address,
                delivered_phone: postData.phone ? postData.phone : userProfile.phone,
+               created_at: currentDate(),
                note: postData.note,
                status: 0,
                carts: products,
@@ -64,7 +78,9 @@ function OrderFix() {
           if (data) {
                const [res, rej] = await CartService.removeAllDataCartByUserID(userData.user.subject);
                if (res) {
-                    socket.emit("createOrder", res);
+                    socket.emit("createOrder", {
+                         createOrder, date: dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss", false, true)
+                    });
                     Swal.fire({
                          title: "Checkout Successful",
                          position: 'top-right',
@@ -125,7 +141,11 @@ function OrderFix() {
           }
 
      }
+<<<<<<< HEAD
      
+=======
+
+>>>>>>> f877f23 (Feat: Update Websocket Service for update order status)
      useEffect(() => {
           const getCartFromAPI = async () => {
                const [data, error] = await CartService.getAllCartByUser(userData.user.subject);
@@ -269,7 +289,7 @@ function OrderFix() {
                                                   </tr>
                                                   <tr>
                                                        <td colSpan={3} className='text-uppercase font-weight-bold h5 text-right'>SubTotal: </td>
-                                                       <td>${total === currentTotal ? formatPrice(total) : formatPrice(currentTotal)}</td>
+                                                       <td>{total === currentTotal ? formatPrice(total) : formatPrice(currentTotal)}</td>
                                                   </tr>
                                              </tbody>
                                         </table>
@@ -281,9 +301,9 @@ function OrderFix() {
                <div className={cx('row', 'px-5', 'my-3', 'justify-content-center')}>
                     <div className={cx('col-8')}>
                          <button className={cx('btn btn-block', 'btn-lg', 'btn-order', 'rounded-0')} onClick={() => handlePostCheckout()}>
-                              <b>
+                              <button>
                                    <AiOutlineCreditCard />&nbsp;Order instantly
-                              </b>
+                              </button>
                          </button>
                     </div>
                </div>

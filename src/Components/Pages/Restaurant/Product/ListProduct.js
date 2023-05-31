@@ -8,6 +8,13 @@ import { useSelector } from "react-redux";
 import { selectUserData } from "../../../../redux/reducers/users";
 
 function ListProduct() {
+  const formatPrice = (price) => {
+    return price.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    });
+  };
   const userData = useSelector(selectUserData);
 
   // init the state of all product

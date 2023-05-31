@@ -18,7 +18,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 
-const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_URL_API);
 
 function ResMainLayout({ child }) {
   const navigate = useNavigate();
@@ -26,9 +26,10 @@ function ResMainLayout({ child }) {
     console.log("orderStatus Socket Data", data);
     data &&
       Swal.fire({
-        title: 'You have a new order, do you want to view it ?',
+        title: `You have a new order created at ${data.date}, do you want to view it ?`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
+        position: "center"
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/order")
@@ -42,6 +43,8 @@ function ResMainLayout({ child }) {
         title: `Order #${data.orderId} has been picked up by ${data.deliver.userName}`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
+        position: "center"
+
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/order")
@@ -55,6 +58,8 @@ function ResMainLayout({ child }) {
         title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
+        position: "center"
+
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/order")
@@ -68,6 +73,8 @@ function ResMainLayout({ child }) {
         title: `Order #${data.orderId} has been shipped successfully by ${data.deliver.userName}`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
+        position: "center"
+
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/")

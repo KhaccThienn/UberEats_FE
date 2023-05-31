@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind'
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePhone } from 'react-icons/ai'
-import { FaLocationArrow } from 'react-icons/fa'
+import { GoLocation } from 'react-icons/go'
 import { IoAddCircle } from 'react-icons/io5'
 import { TfiArrowRight } from 'react-icons/tfi'
 import { useDispatch, useSelector } from 'react-redux'
@@ -177,11 +177,11 @@ function Food() {
     return (
         <>
             <div>
-                <img className={cx('img-food')} src={img_food} alt='img-food' />
+                <img className={cx('img-food')} src={restaurant.avatar} alt='img-food' />
             </div>
             <div className={cx('container-fluid', 'px-5')} >
                 <p className={cx('h2', 'font-weight-bold', 'text-black', 'm-0', 'mt-3', 'text-uppercase')}>{restaurant.name}</p>
-                <p className={cx('text-muted', 'm-0')}> <FaLocationArrow /> Location: {restaurant.address}</p>
+                <p className={cx('text-muted', 'm-0')}> <GoLocation /> Location: {restaurant.address}</p>
                 <p className={cx('text-muted', 'm-0')}> <AiOutlinePhone /> Phone: {restaurant.phone}</p>
                 <hr />
                 <div className={cx('row', 'py-3', 'text-black')}>
