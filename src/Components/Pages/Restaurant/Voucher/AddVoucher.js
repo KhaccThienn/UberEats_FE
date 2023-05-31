@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import * as VoucherService from "../../../../services/VoucherService";
 import { selectUserData } from "../../../../redux/reducers/users";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function AddVoucher() {
   const initState = {
@@ -47,6 +48,13 @@ function AddVoucher() {
     }
     if (error) {
       console.log(error);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'All Fields Are Required',
+        showConfirmButton: false,
+        timer: 1500
+      })
     }
   };
   return (

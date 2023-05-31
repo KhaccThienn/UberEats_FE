@@ -72,6 +72,12 @@ function AddProduct() {
     if (error) {
       console.log(error.response.data.message);
       setErrData(error.response.data.message);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'All Fields Are Required',
+        showConfirmButton: false,
+      })
     }
   };
   return (
