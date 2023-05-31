@@ -109,7 +109,7 @@ function Profile() {
                 navigate('/');
                 setReload(!reload);
                 Swal.fire({
-                    title: "You Logged Out Successfully ?",
+                    title: "You Logged Out Successfully",
                     icon: 'success',
                     timer: 1500,
                     timerProgressBar: true,

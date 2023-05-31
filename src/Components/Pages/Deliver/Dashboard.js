@@ -109,7 +109,7 @@ function Dashboard() {
 
                          <GoogleMap
                               center={center}
-                              zoom={11}
+                              zoom={20}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
                                    zoomControl: false,
@@ -122,7 +122,8 @@ function Dashboard() {
                          >
                               <Marker
                                    position={center}
-                                   title='Sieu thi nao do?'
+                                   title='Your Location'
+                                   cursor='pointer'
                                    /*  eslint-disable-next-line no-undef */
                                    icon={homeicon}
                               />
@@ -134,10 +135,10 @@ function Dashboard() {
                          </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
-                         <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                          {
                               listPendingOrders.length > 0 ?
                                    <div className={cx('text-left')}>
+                                        <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                                         <div className={cx('row', 'font-weight-bold', 'align-items-center')}>
                                              <div className={cx('text-black', 'col-auto')}>#</div>
                                              <div className={cx('text-black', 'col-3')}>From</div>

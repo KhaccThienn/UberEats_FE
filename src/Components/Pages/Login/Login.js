@@ -11,6 +11,7 @@ import style from "./login.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Header from "../../Layouts/ClientLayout/Header/Header";
+import Swal from "sweetalert2";
 
 const cx = classNames.bind(style);
 
@@ -30,6 +31,13 @@ function Login() {
     e.preventDefault();
     const [data, error] = await LoginService.login(loginData);
     if (error) {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Invalid Account",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       console.log(error);
     }
     if (data) {
@@ -42,7 +50,13 @@ function Login() {
       setCookie("user_data", user);
 
       dispatch(setUser(user));
-
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Login Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       navigate("/");
     }
   };
@@ -89,18 +103,6 @@ function Login() {
                     onChange={handleChange}
                   />
                   {/* <small id="helpId" className="text-muted">Help text</small> */}
-                </div>
-                <div className={cx("form-check")}>
-                  <label className={cx("form-check-label")}>
-                    <input
-                      type="checkbox"
-                      className={cx("form-check-input")}
-                      name=""
-                      id=""
-                      value="checkedValue"
-                    />
-                    Remember me
-                  </label>
                 </div>
                 <button
                   type="submit"
