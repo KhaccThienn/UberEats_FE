@@ -5,6 +5,7 @@ import * as ProductService from "../../../../services/ProductService";
 import style from "./AddProduct.module.css";
 import classNames from "classnames/bind";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const cx = classNames.bind(style);
 
@@ -109,6 +110,12 @@ function UpdateProduct() {
     }
     if (error) {
       console.log(error);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'All Fields Are Required',
+        showConfirmButton: false,
+      })
     }
   };
 
