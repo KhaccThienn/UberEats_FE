@@ -31,13 +31,36 @@ function Login() {
     e.preventDefault();
     const [data, error] = await LoginService.login(loginData);
     if (error) {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Invalid Account",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      switch (error.response.status) {
+        case 400:
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "All Fields Are Required",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          break;
+        case 401:
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "Invalid Account",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          break;
+
+        default:
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "Having Some Error When Requesting",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          break;
+      }
       console.log(error);
     }
     if (data) {
