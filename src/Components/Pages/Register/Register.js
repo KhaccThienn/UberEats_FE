@@ -22,13 +22,29 @@ function Register() {
     console.log(registerData);
     const [data, error] = await RegisterService.register(registerData);
     if (error) {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Invalid registration",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      switch (error.response.status) {
+        case 400:
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "All Fields Are Required",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          break;
+        case 409:
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: `${error.response.data.error}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          break;
+
+        default:
+          break;
+      }
       console.log(error);
     }
     if (data) {
