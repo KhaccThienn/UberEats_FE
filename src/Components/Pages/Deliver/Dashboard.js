@@ -110,7 +110,6 @@ function Dashboard() {
                          <GoogleMap
                               center={center}
                               zoom={20}
-
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
                                    zoomControl: false,
@@ -123,7 +122,6 @@ function Dashboard() {
                          >
                               <Marker
                                    position={center}
-
                                    title='Your Location'
                                    cursor='pointer'
                                    /*  eslint-disable-next-line no-undef */
