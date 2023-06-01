@@ -216,7 +216,7 @@ function Order() {
                               })
                             }
                             <td>{dateFormat(e.created_at)}</td>
-                            <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>Null</>}</td>
+                            <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>No voucher added yet</>}</td>
                             <td>{formatPrice(e.total_price)}</td>
                             <td>
                               <div className="dropdown">
