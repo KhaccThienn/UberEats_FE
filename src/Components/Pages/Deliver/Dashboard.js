@@ -135,43 +135,45 @@ function Dashboard() {
                          </GoogleMap>
                     </div>
                     <div className={cx('col-6')}>
-                         <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
                          {
                               listPendingOrders.length > 0 ?
-                                   <div className={cx('text-left')}>
-                                        <div className={cx('row', 'font-weight-bold', 'align-items-center')}>
-                                             <div className={cx('text-black', 'col-auto')}>#</div>
-                                             <div className={cx('text-black', 'col-3')}>From</div>
-                                             <div className={cx('text-black', 'col-3')}>To</div>
-                                             <div className={cx('text-black', 'col-2')}>Total</div>
-                                             <div className={cx('text-black', 'col')}></div>
-                                        </div>
-                                        {
-                                             listPendingOrders.map((e, i) => {
-                                                  return (
-                                                       <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
-                                                            <div className={cx('col-auto')}>{i + 1}</div>
-                                                            <div className={cx('col-3')}>{e.restaurant.address}</div>
-                                                            <div className={cx('col-3')}>{e.delivered_address}</div>
-                                                            <div className={cx('col-2')}>{formatPrice(e.total_price)}</div>
-                                                            <div className={cx('col')}>
-                                                                 {
-                                                                      e.status === 2 && <button onClick={() => handleAccept(e.id, e.status)} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
-                                                                           Accept challenge &rarr;
-                                                                      </button>
-                                                                 }
-                                                                 {
-                                                                      e.status === 3 &&
-                                                                      <Link to={`/${e.id}`} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
-                                                                           View Order &rarr;
-                                                                      </Link>
-                                                                 }
+                                   <>
+                                        <p className={cx('h1', 'font-weight-bold', 'text-center')}>New cooked order</p>
+                                        <div className={cx('text-left')}>
+                                             <div className={cx('row', 'font-weight-bold', 'align-items-center')}>
+                                                  <div className={cx('text-black', 'col-auto')}>#</div>
+                                                  <div className={cx('text-black', 'col-3')}>From</div>
+                                                  <div className={cx('text-black', 'col-3')}>To</div>
+                                                  <div className={cx('text-black', 'col-2')}>Total</div>
+                                                  <div className={cx('text-black', 'col')}></div>
+                                             </div>
+                                             {
+                                                  listPendingOrders.map((e, i) => {
+                                                       return (
+                                                            <div className={cx('row', 'align-items-center', 'my-2')} key={i}>
+                                                                 <div className={cx('col-auto')}>{i + 1}</div>
+                                                                 <div className={cx('col-3')}>{e.restaurant.address}</div>
+                                                                 <div className={cx('col-3')}>{e.delivered_address}</div>
+                                                                 <div className={cx('col-2')}>{formatPrice(e.total_price)}</div>
+                                                                 <div className={cx('col')}>
+                                                                      {
+                                                                           e.status === 2 && <button onClick={() => handleAccept(e.id, e.status)} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                                Accept challenge &rarr;
+                                                                           </button>
+                                                                      }
+                                                                      {
+                                                                           e.status === 3 &&
+                                                                           <Link to={`/${e.id}`} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                                View Order &rarr;
+                                                                           </Link>
+                                                                      }
+                                                                 </div>
                                                             </div>
-                                                       </div>
-                                                  )
-                                             })
-                                        }
-                                   </div> :
+                                                       )
+                                                  })
+                                             }
+                                        </div>
+                                   </> :
                                    <p className={cx('text-center', 'display-4', 'font-weight-bold', 'py-5')}>No order yet</p>
 
                          }
