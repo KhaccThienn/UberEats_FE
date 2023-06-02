@@ -7,6 +7,23 @@ const getCookie = (name) => {
   return cookieValue ? cookieValue.pop() : null;
 }
 
+export const getAllUserEmails = async () => {
+  try {
+    const res = await http.get(`${urlAPI}/user/emails`);
+    return [res,null]
+  } catch (error) {
+    return [null,error];
+  }
+}
+export const getAllUserPhones = async () => {
+  try {
+    const res = await http.get(`${urlAPI}/user/phones`);
+    return [res,null]
+  } catch (error) {
+    return [null,error];
+  }
+}
+
 export const register = async (data) => {
   try {
     const res = await http.post(`${urlAPI}/auth/register`, data);

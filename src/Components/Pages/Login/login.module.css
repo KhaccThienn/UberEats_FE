@@ -28,7 +28,7 @@
 
 .form-login {
   margin-top: 27%;
-  background-color:white;
+  background-color: white;
   padding: 50px 70px;
   border-radius: 25px;
   opacity: 85%;
@@ -38,11 +38,16 @@
   box-shadow: 8px 18px 27px #000;
 }
 
-.fz-14{
+.fz-14 {
   font-size: 14px;
 }
 
-.border-black{
+.border-black {
   border: 1px solid rgb(39, 36, 36) !important;
+  box-shadow: none !important;
+}
+
+.border-error {
+  border: 1px solid red !important;
   box-shadow: none !important;
 }

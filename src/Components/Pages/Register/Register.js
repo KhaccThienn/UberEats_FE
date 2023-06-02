@@ -1,63 +1,82 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
-import * as RegisterService from "../../../services/UserService";
-import style from "./register.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import * as Yup from 'yup';
+import { useFormik } from "formik";
 import "sweetalert2/dist/sweetalert2.css";
+import style from "./register.module.css";
+import * as RegisterService from "../../../services/UserService";
 import Header from "../../Layouts/ClientLayout/Header/Header";
+import { useEffect } from "react";
+
 const cx = classNames.bind(style);
+
 
 function Register() {
   const [registerData, setRegisterData] = useState([]);
-  const [errs, setErrs] = useState([]);
-
+  const [phones, setPhones] = useState([]);
+  const [emails, setEmails] = useState([]);
+  const initialValues = {
+    userName: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    phone: "",
+  }
+  const validationSchema = Yup.object().shape({
+    userName: Yup.string().required('Please enter your username'),
+    password: Yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters'),
+    confirmPassword: Yup.string().required('Please enter confirm password').oneOf([Yup.ref('password')], 'Confirm Password must be equal to your password'),
+    email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(emails,'This email address is already in exists'),
+    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(phones,'This phone number is already exists'),
+  })
   const navigate = useNavigate();
   const handleChange = async (e) => {
     const { name, value } = await e.target;
     setRegisterData({ ...registerData, [name]: value });
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(registerData);
-    const [data, error] = await RegisterService.register(registerData);
+  }
+  const getUserEmails = async () => {
+    const [data,error] = await RegisterService.getAllUserEmails();
+    if (data) {
+      setEmails(data)
+    }
     if (error) {
-      switch (error.response.status) {
-        case 400:
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "All Fields Are Required",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          break;
-        case 409:
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: `${error.response.data.error}`,
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          break;
-
-        default:
-          break;
-      }
       console.log(error);
     }
+  }
+  const getUserPhones = async () => {
+    const [data,error] = await RegisterService.getAllUserPhones();
     if (data) {
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Register Successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      navigate("/login");
+      setPhones(data)
     }
-  };
+    if (error) {
+      console.log(error);
+    }
+  }
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: async (e) => {
+      console.log(registerData);
+      const [data, error] = await RegisterService.register(registerData);
+      if (data) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Register Successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/login");
+      }
+    }, 
+  })
+  useEffect(()=>{
+    getUserEmails();
+    getUserPhones();
+  },[])
   return (
     <>
       <Header />
@@ -69,7 +88,7 @@ function Register() {
               <form
                 className={cx("form-register")}
                 method="POST"
-                onSubmit={(e) => handleSubmit(e)}
+                onSubmit={(e) => formik.handleSubmit(e)}
               >
                 <div className={cx("form-group")}>
                   <label htmlFor="">User name: </label>
@@ -80,12 +99,17 @@ function Register() {
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      formik.errors.userName && 'is-invalid',
+                      formik.errors.userName ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter user name..."
-                    onChange={handleChange}
+                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    value={formik.values.userName}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {
+                    formik.errors.userName &&
+                    <small id="helpId" className="text-danger">{formik.errors.userName}</small>
+                  }
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Password: </label>
@@ -96,12 +120,17 @@ function Register() {
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      formik.errors.password && 'is-invalid',
+                      formik.errors.password ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter password..."
-                    onChange={handleChange}
+                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    value={formik.values.password}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {
+                    formik.errors.password &&
+                    <small id="helpId" className="text-danger">{formik.errors.password}</small>
+                  }
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Confirm password: </label>
@@ -112,12 +141,17 @@ function Register() {
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      formik.errors.confirmPassword && 'is-invalid',
+                      formik.errors.confirmPassword ? 'border-error' : "border-black"
                     )}
                     placeholder="Confirm password..."
-                    onChange={handleChange}
+                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    value={formik.values.confirmPassword}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {
+                    formik.errors.confirmPassword &&
+                    <small id="helpId" className="text-danger">{formik.errors.confirmPassword}</small>
+                  }
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Email: </label>
@@ -128,12 +162,17 @@ function Register() {
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      formik.errors.email && 'is-invalid',
+                      formik.errors.email ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter email..."
-                    onChange={handleChange}
+                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    value={formik.values.email}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {
+                    formik.errors.email &&
+                    <small id="helpId" className="text-danger">{formik.errors.email}</small>
+                  }
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Phone number: </label>
@@ -144,12 +183,17 @@ function Register() {
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      formik.errors.phone && 'is-invalid',
+                      formik.errors.phone ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter phone number..."
-                    onChange={handleChange}
+                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    value={formik.values.phone}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {
+                    formik.errors.phone &&
+                    <small id="helpId" className="text-danger">{formik.errors.phone}</small>
+                  }
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Role:</label>
@@ -160,11 +204,11 @@ function Register() {
                       "border-black"
                     )}
                     name="role"
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e)}
                   >
-                    <option value="1">Customers</option>
-                    <option value="2">Restaurants</option>
-                    <option value="3">Delivers</option>
+                    <option value={1} >Customers</option>
+                    <option value={2} >Restaurants</option>
+                    <option value={3} >Delivers</option>
                   </select>
                 </div>
                 <button
