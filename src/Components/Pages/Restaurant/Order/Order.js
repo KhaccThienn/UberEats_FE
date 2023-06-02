@@ -128,6 +128,10 @@ function Order() {
       console.log(error);
     }
   };
+  socket.on("handleCanceledOrder", (data) => {
+    data ? console.log(data) : console.log("hehe");
+    getAllOrdersFromAPI()
+  })
 
   socket.on("createOrderClient", (data) => {
     data ? console.log(data) : console.log("hehe");
@@ -219,9 +223,9 @@ function Order() {
                             <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>No voucher added yet</>}</td>
                             <td>{formatPrice(e.total_price)}</td>
                             <td>
-                              <div className="dropdown">
+                              <div className="dropdown rounded-0">
                                 <button
-                                  className="btn btn-primary dropdown-toggle"
+                                  className="btn btn-primary dropdown-toggle rounded-0"
                                   type="button"
                                   id="dropdownMenuButton"
                                   data-toggle="dropdown"
@@ -231,7 +235,7 @@ function Order() {
                                   Actions
                                 </button>
                                 <div
-                                  className="dropdown-menu"
+                                  className="dropdown-menu rounded-0"
                                   aria-labelledby="dropdownMenuButton"
                                 >
                                   <Link
@@ -241,13 +245,20 @@ function Order() {
                                     View Details
                                   </Link>
                                   {
-                                    e.status >= 2 ? <></> :
-                                      <button
-                                        className="dropdown-item"
-                                        onClick={() => handleUpdateStatus(e.id, e.status)}
-                                      >
-                                        Update Status
-                                      </button>
+                                    e.status == 0 && <button
+                                      className="dropdown-item"
+                                      onClick={() => handleUpdateStatus(e.id, e.status)}
+                                    >
+                                      Accept Order
+                                    </button>
+                                  }
+                                  {
+                                    e.status == 1 && <button
+                                      className="dropdown-item"
+                                      onClick={() => handleUpdateStatus(e.id, e.status)}
+                                    >
+                                      Order Cooked
+                                    </button>
                                   }
 
                                 </div>

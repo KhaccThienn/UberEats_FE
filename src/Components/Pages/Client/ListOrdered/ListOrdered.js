@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from "socket.io-client";
+import Swal from 'sweetalert2'
 
 const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
@@ -54,7 +55,42 @@ function ListOrdered() {
                text: "Shipped"
           },
      ]
+     const [reload, setReload] = useState(false)
      const userData = useSelector(selectUserData);
+
+     const handleCancelOrdered = async (orderId) => {
+          const choose = await Swal.fire({
+               title: "Do You Want Cancel This Order ?",
+               showDenyButton: true,
+               confirmButtonText: "Yes",
+               denyButtonText: "No",
+          });
+          if (choose.isConfirmed) {
+               const [data, error] = await OrderService.deleteOrder(orderId);
+               if (data) {
+                    socket.emit("canceledOrder", { orderId, userData })
+                    Swal.fire({
+                         position: 'top-end',
+                         icon: 'success',
+                         title: 'You are already cancelled this order',
+                         showConfirmButton: false,
+                         timer: 1500
+                    })
+                    setReload(!reload)
+               }
+               if (error) {
+                    Swal.fire({
+                         position: 'top-end',
+                         icon: 'error',
+                         title: 'Having Some Errors When Calling API',
+                         showConfirmButton: false,
+                         timer: 1500
+                    })
+               }
+          }
+
+     }
+
      const getAllProductFromAPI = async () => {
           const [data, error] = await OrderService.getAllOrderByUserID(userData.user.subject);
           if (data) {
@@ -97,66 +133,85 @@ function ListOrdered() {
      const [allOrders, setAllOrders] = useState([]);
      useEffect(() => {
           getAllProductFromAPI();
-     }, [userData.user.subject]);
+     }, [userData.user.subject, reload]);
      return (
           <div className={cx('container-fluid', 'px-5')}>
                <div className={cx('row')}>
-                    <div className={cx("col-12")}>
-                         <p className={cx('h1', 'text-head', 'py-3', 'text-center')}>List <b>Orders</b></p>
-                    </div>
-                    <table className={cx("table", "table-striped", 'table-borderless')}>
-                         <thead>
-                              <tr>
-                                   <th scope='col' className={cx('text-black')}>#</th>
-                                   <th scope='col' className={cx('text-black')}>OrderID</th>
-                                   <th scope='col' className={cx('text-black')}>Customer name</th>
-                                   <th scope='col' className={cx('text-black')}>Restaurant name</th>
-                                   <th scope='col' className={cx('text-black')}>Location</th>
-                                   <th scope='col' className={cx('text-black')}>Status</th>
-                                   <th scope='col' className={cx('text-black')}>Date Created</th>
-                                   <th scope='col' className={cx('text-black')}>Shipper</th>
-                                   <th scope='col' className={cx('text-black')}>Total</th>
-                                   <th scope='col' className={cx('text-black')}>View Details</th>
-                              </tr>
-                         </thead>
-                         <tbody>
-                              {
-                                   allOrders.length > 0 ? allOrders.map((e, i) => {
-                                        return (
-                                             <tr key={i} >
-                                                  <th scope="row">{i + 1}</th>
-                                                  <td>{e.id}</td>
-                                                  <td>{e.delivered_user}</td>
-                                                  <td>{e.restaurant.name}</td>
-                                                  <td>{e.delivered_address}</td>
-                                                  {
-                                                       statusArr.map((status, index) => {
-                                                            if (status.sttId === e.status) {
-                                                                 return (
-                                                                      <td className={status.style} key={index}>
-                                                                           <GoPrimitiveDot /> {status.text}
-                                                                      </td>
-                                                                 )
-                                                            }
-                                                       })
-                                                  }
-                                                  <td>{dateFormat(e.created_at)}</td>
-                                                  <td>{e.driver ? e.driver?.userName : "Not Have Yet"}</td>
-
-                                                  <td>{formatPrice(e.total_price)}</td>
-                                                  <td><Link className='btn btn-success rounded-0' to={`/list_orderded/${e.id}`}>View Details</Link></td>
+                    {
+                         allOrders.length == 0 ?
+                              <div className='text-center p-5'>
+                                   <Link to={"/"} className='btn rounded-0 btn-outline-success'>&lt; Nothing to show, Click here to continue shopping</Link>
+                              </div> :
+                              <>
+                                   <div className={cx("col-12")}>
+                                        <p className={cx('h1', 'text-head', 'py-3', 'text-center')}>List <b>Orders</b></p>
+                                   </div>
+                                   <table className={cx("table", "table-striped", 'table-borderless')}>
+                                        <thead>
+                                             <tr>
+                                                  <th scope='col' className={cx('text-black')}>#</th>
+                                                  <th scope='col' className={cx('text-black')}>OrderID</th>
+                                                  <th scope='col' className={cx('text-black')}>Customer name</th>
+                                                  <th scope='col' className={cx('text-black')}>Restaurant name</th>
+                                                  <th scope='col' className={cx('text-black')}>Location</th>
+                                                  <th scope='col' className={cx('text-black')}>Status</th>
+                                                  <th scope='col' className={cx('text-black')}>Date Created</th>
+                                                  <th scope='col' className={cx('text-black')}>Estimated Date</th>
+                                                  <th scope='col' className={cx('text-black')}>Shipper</th>
+                                                  <th scope='col' className={cx('text-black')}>Total</th>
+                                                  <th scope='col' className={cx('text-black')}>View Details</th>
+                                                  <th scope='col' className={cx('text-black')}></th>
                                              </tr>
-                                        )
-                                   }) :
-                                        <>
-                                             <Link to={"/"} className='m-0'>Nothing To Show, Click Here To Continue Shopping </Link>
-                                        </>
-                              }
+                                        </thead>
+                                        <tbody>
+                                             {
+                                                  allOrders.map((e, i) => {
+                                                       return (
+                                                            <tr key={i} >
+                                                                 <th scope="row">{i + 1}</th>
+                                                                 <td>{e.id}</td>
+                                                                 <td>{e.delivered_user}</td>
+                                                                 <td>{e.restaurant.name}</td>
+                                                                 <td>{e.delivered_address}</td>
+                                                                 {
+                                                                      statusArr.map((status, index) => {
+                                                                           if (status.sttId === e.status) {
+                                                                                return (
+                                                                                     <td className={status.style} key={index}>
+                                                                                          <GoPrimitiveDot /> {status.text}
+                                                                                     </td>
+                                                                                )
+                                                                           }
+                                                                      })
+                                                                 }
+                                                                 <td>{dateFormat(e.created_at)}</td>
+                                                                 <td>{dateFormat(e.estimated_time)}</td>
+                                                                 <td>{e.driver ? e.driver?.userName : "Not Have Yet"}</td>
 
-                         </tbody>
-                    </table>
+                                                                 <td>{formatPrice(e.total_price)}</td>
+                                                                 <td>
+                                                                      <Link className='btn btn-success rounded-0' to={`/list_orderded/${e.id}`}>View Details</Link>
+                                                                 </td>
+                                                                 <td>
+                                                                      <button onClick={() => handleCancelOrdered(e.id)}
+                                                                           disabled={e.status !== 0}
+                                                                           className='btn btn-danger rounded-0'>
+                                                                           Cancel Order
+                                                                      </button>
+                                                                 </td>
+
+                                                            </tr>
+                                                       )
+                                                  })
+                                             }
+
+                                        </tbody>
+                                   </table>
+                              </>
+                    }
+
                </div>
-          </div>
+          </div >
      )
 }
 

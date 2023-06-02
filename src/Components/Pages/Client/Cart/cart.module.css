@@ -31,3 +31,6 @@ input::-webkit-inner-spin-button {
     background-color: #048732 !important;
     color: white !important;
 }
+input:disabled{
+    background-color: transparent !important;
+}
