@@ -28,16 +28,17 @@ function Register() {
     userName: Yup.string().required('Please enter your username'),
     password: Yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters'),
     confirmPassword: Yup.string().required('Please enter confirm password').oneOf([Yup.ref('password')], 'Confirm Password must be equal to your password'),
-    email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(emails,'This email address is already in exists'),
-    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(phones,'This phone number is already exists'),
+    email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(emails, 'This email address is already in exists'),
+    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(phones, 'This phone number is already exists'),
   })
+  
   const navigate = useNavigate();
   const handleChange = async (e) => {
     const { name, value } = await e.target;
     setRegisterData({ ...registerData, [name]: value });
   }
   const getUserEmails = async () => {
-    const [data,error] = await RegisterService.getAllUserEmails();
+    const [data, error] = await RegisterService.getAllUserEmails();
     if (data) {
       setEmails(data)
     }
@@ -46,7 +47,7 @@ function Register() {
     }
   }
   const getUserPhones = async () => {
-    const [data,error] = await RegisterService.getAllUserPhones();
+    const [data, error] = await RegisterService.getAllUserPhones();
     if (data) {
       setPhones(data)
     }
@@ -71,12 +72,12 @@ function Register() {
         });
         navigate("/login");
       }
-    }, 
+    },
   })
-  useEffect(()=>{
+  useEffect(() => {
     getUserEmails();
     getUserPhones();
-  },[])
+  }, [])
   return (
     <>
       <Header />
@@ -103,7 +104,7 @@ function Register() {
                       formik.errors.userName ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter user name..."
-                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    onChange={(e) => { formik.handleChange(e); handleChange(e) }}
                     value={formik.values.userName}
                   />
                   {
@@ -124,7 +125,7 @@ function Register() {
                       formik.errors.password ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter password..."
-                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    onChange={(e) => { formik.handleChange(e); handleChange(e) }}
                     value={formik.values.password}
                   />
                   {
@@ -145,7 +146,7 @@ function Register() {
                       formik.errors.confirmPassword ? 'border-error' : "border-black"
                     )}
                     placeholder="Confirm password..."
-                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    onChange={(e) => { formik.handleChange(e); handleChange(e) }}
                     value={formik.values.confirmPassword}
                   />
                   {
@@ -166,7 +167,7 @@ function Register() {
                       formik.errors.email ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter email..."
-                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    onChange={(e) => { formik.handleChange(e); handleChange(e) }}
                     value={formik.values.email}
                   />
                   {
@@ -187,7 +188,7 @@ function Register() {
                       formik.errors.phone ? 'border-error' : "border-black"
                     )}
                     placeholder="Enter phone number..."
-                    onChange={(e) => {formik.handleChange(e);handleChange(e)}}
+                    onChange={(e) => { formik.handleChange(e); handleChange(e) }}
                     value={formik.values.phone}
                   />
                   {

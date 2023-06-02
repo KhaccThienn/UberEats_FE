@@ -4,11 +4,13 @@ import classNames from 'classnames/bind'
 import { TiTickOutline } from 'react-icons/ti'
 import { MdOutlineRefresh } from 'react-icons/md'
 import Swal from 'sweetalert2'
+import * as Yup from "yup"
 import { useSelector } from 'react-redux'
 import * as UserService from "../../../../services/UserService";
 import { selectUserData } from './../../../../redux/reducers/users';
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useFormik } from 'formik'
 let cx = classNames.bind(styles)
 
 function Information() {
@@ -30,27 +32,27 @@ function Information() {
   const [postData, setPostData] = useState(initPostData);
   const navigate = useNavigate();
 
+  const validationSchema = Yup.object().shape({
+    userName: Yup.string().required("Please enter your user name"),
+    address: Yup.string(),
+    email: Yup.string().required('Please enter your email').email('Invalid type of email'),
+    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number')
+  })
+  const formik = useFormik({
+    initialValues: initProfileState,
+    validationSchema,
+    onSubmit: async (e) => {
+      await handlePostData(e)
+    },
+  })
+
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
+    formik.values[name] = value
     setPostData({ ...postData, [name]: value });
   };
 
-  useEffect(() => {
-    const getProfileData = async (userID) => {
-      const [data, error] = await UserService.getUserProfile(userID);
-      if (data) {
-        console.log("API User Data: ", data);
-        setProfile(data);
-      }
-      if (error) {
-        console.log(error);
-      }
-    };
-    getProfileData(userData.user.subject);
-  }, [userData.user.subject]);
-
   const handlePostData = async (e) => {
-    e.preventDefault();
     const formDataa = new FormData();
     formDataa.append(
       "userName",
@@ -88,11 +90,28 @@ function Information() {
       })
     }
   };
+
+  useEffect(() => {
+    const getProfileData = async (userID) => {
+      const [data, error] = await UserService.getUserProfile(userID);
+      if (data) {
+        console.log("API User Data: ", data);
+        formik.setValues(data)
+        setProfile(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    };
+    getProfileData(userData.user.subject);
+  }, [userData.user.subject]);
+
+
   return (
     <div className={cx('container-fluid', 'py-3')}>
       <form method="POST"
         onSubmit={(e) => {
-          handlePostData(e);
+          formik.handleSubmit(e);
         }}>
         <div className={cx("row")}>
           <div className={cx('col-6')}>
@@ -100,7 +119,8 @@ function Information() {
               <label htmlFor="">User name:</label>
               <input type="text" name="userName"
                 defaultValue={profile.userName}
-                onChange={handleChangeValue} id="" className={cx("form-control", 'input-info')} placeholder="User name..." />
+                onChange={(e) => { handleChangeValue(e) }} id="" className={cx("form-control", 'input-info')} placeholder="User name..." />
+              {formik.errors.userName && <small id="helpId" className="text-danger">{formik.errors.userName}</small>}
               {/* <small id="helpId" className="text-muted">Help text</small> */}
             </div>
           </div>
@@ -109,7 +129,8 @@ function Information() {
               <label htmlFor="">Phone number:</label>
               <input type="text" name="phone"
                 defaultValue={profile.phone}
-                onChange={handleChangeValue} id="" className={cx("form-control", 'input-info')} placeholder="Phone num..." />
+                onChange={(e) => { handleChangeValue(e) }} id="" className={cx("form-control", 'input-info')} placeholder="Phone num..." />
+              {formik.errors.phone && <small id="helpId" className="text-danger">{formik.errors.phone}</small>}
               {/* <small id="helpId" className="text-muted">Help text</small> */}
             </div>
           </div>
@@ -118,7 +139,8 @@ function Information() {
               <label htmlFor="">Email address:</label>
               <input type="text" name="email"
                 defaultValue={profile.email}
-                onChange={handleChangeValue} id="" className={cx("form-control", 'input-info')} placeholder="Email..." />
+                onChange={(e) => { handleChangeValue(e) }} id="" className={cx("form-control", 'input-info')} placeholder="Email..." />
+              {formik.errors.email && <small id="helpId" className="text-danger">{formik.errors.email}</small>}
               {/* <small id="helpId" className="text-muted">Help text</small> */}
             </div>
           </div>
@@ -127,7 +149,8 @@ function Information() {
               <label htmlFor="">Address:</label>
               <textarea className={cx("form-control", 'input-info')} name="address"
                 defaultValue={profile.address}
-                onChange={handleChangeValue} id="" rows="3" placeholder='district, city, country...'></textarea>
+                onChange={(e) => { handleChangeValue(e) }} id="" rows="3" placeholder='district, city, country...'></textarea>
+              {formik.errors.address && <small id="helpId" className="text-danger">{formik.errors.address}</small>}
             </div>
           </div>
           <div className={cx('col-12')}>

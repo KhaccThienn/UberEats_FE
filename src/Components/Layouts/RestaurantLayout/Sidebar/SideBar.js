@@ -14,7 +14,7 @@ function SideBar() {
     <div>
       <div className="iq-sidebar">
         <div className="iq-sidebar-logo d-flex justify-content-between">
-          <Link to="" className="header-logo">
+          <Link to="/" className="header-logo">
             <img
               src="images/logo.png"
               className="img-fluid rounded-normal"

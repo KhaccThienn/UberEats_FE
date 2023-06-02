@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import Geocode from 'react-geocode'
 
-function GetMarker({ address,name }) {
+function GetMarker({ address, name }) {
     const [restaurantLocation, setRestaurantLocation] = useState()
     Geocode.setApiKey(process.env.REACT_APP_API_MAP_KEY)
     Geocode.enableDebug()
@@ -13,7 +13,7 @@ function GetMarker({ address,name }) {
             Geocode.fromAddress(address).then(
                 res => {
                     const { lat, lng } = res.results[0].geometry.location
-                    const location = {lat: lat, lng: lng}
+                    const location = { lat: lat, lng: lng }
                     setRestaurantLocation(location)
                 },
                 err => {
@@ -22,12 +22,12 @@ function GetMarker({ address,name }) {
             )
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         getLocation(address);
-    },[address])
+    }, [address])
     return (
         <>
-        <Marker position={restaurantLocation} title={name} />
+            <Marker position={restaurantLocation} title={name} />
         </>
     )
 }

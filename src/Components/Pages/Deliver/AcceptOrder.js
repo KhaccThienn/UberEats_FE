@@ -5,13 +5,14 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import dateFormat from 'dateformat';
+import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useRef } from 'react';
+
 import { selectUserData } from '../../../redux/reducers/users';
 import * as OrderService from "../../../services/OrderService";
 import * as UserService from "../../../services/UserService";
-import styles from './deliver.module.css';
 
-import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { useRef } from 'react';
+import styles from './deliver.module.css';
 
 const socket = io(process.env.REACT_APP_URL_API);
 

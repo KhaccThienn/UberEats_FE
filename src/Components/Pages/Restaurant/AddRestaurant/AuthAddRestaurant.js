@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUserData } from '../../../../redux/reducers/users';
-import * as RestaurantService from "./../../../../services/RestaurantService";
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import * as Yup from "yup"
+import { useFormik } from 'formik';
+import { selectUserData } from '../../../../redux/reducers/users';
 
+import * as RestaurantService from "./../../../../services/RestaurantService";
 function AuthAddRestaurant() {
      const initProfileState = {
           avatar: "",
@@ -37,6 +38,11 @@ function AuthAddRestaurant() {
           const { name, value } = e.target;
           setPostData({ ...postData, [name]: value });
      };
+
+     const validationSchema = Yup.object().shape({
+          avatar: Yup.mixed().required("Please upload a valid avatar"),
+          name: Yup.string().required('Please enter your restaurant name')
+     })
 
 
      const handleSubmitForm = async (e) => {
