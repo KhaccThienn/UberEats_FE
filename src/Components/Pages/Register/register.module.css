@@ -28,6 +28,11 @@
     box-shadow: none !important;
 }
 
+.border-error {
+    border: 1px solid red !important;
+    box-shadow: none !important;
+}
+
 .btn-register {
     text-decoration: none;
     color: white !important;
@@ -35,10 +40,10 @@
     text-align: center;
     border: 1px #463a42;
     background-image: linear-gradient(to right, #062090, black);
-  }
-  
-  .btn-register:hover {
+}
+
+.btn-register:hover {
     border: 1px #062090;
     background-image: linear-gradient(to right, black, #d34949);
     color: white;
-  }
+}
