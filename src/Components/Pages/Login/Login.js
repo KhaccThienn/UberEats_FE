@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
 import { useSelector, useDispatch } from "react-redux";
+import jwt from "jwt-decode";
+import { Link, useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
+import { useFormik } from "formik";
+import { useCookies } from "react-cookie";
 import {
   setUser,
   selectUserData,
 } from "../../../redux/reducers/users";
-import jwt from "jwt-decode";
 import * as LoginService from "../../../services/UserService";
 import style from "./login.module.css";
-import { Link, useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import Header from "../../Layouts/ClientLayout/Header/Header";
 import Swal from "sweetalert2";
 
@@ -20,69 +22,78 @@ function Login() {
   const dispatch = useDispatch();
   const [loginData, setLoginData] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies(["user_data", "access_token", "refresh_token"]);
-  const [errs, setErrs] = useState([]);
+  const [accErr, setAccErr] = useState(false);
+  const [passErr, setPassErr] = useState(false);
   const navigate = useNavigate();
+
+  const initialValues = {
+    email: "",
+    password: "",
+  }
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required('Please enter your email').email('Invalid type of email'),
+    password: Yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters')
+  })
 
   const handleChange = async (e) => {
     const { name, value } = await e.target;
     setLoginData({ ...loginData, [name]: value });
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const [data, error] = await LoginService.login(loginData);
-    if (error) {
-      switch (error.response.status) {
-        case 400:
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "All Fields Are Required",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          break;
-        case 401:
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "Invalid Account",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          break;
+  
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: async (e) => {
+      const [data, error] = await LoginService.login(loginData);
+      if (error) {
+        switch (error.response.status) {
+          case 401:
+            if (error.response.data.error === 'Account does not exist') {
+              setAccErr(true)
+            } else {
+              setAccErr(false)
+            }
+            if (error.response.data.error === 'Password does not match') {
+              setPassErr(true)
+            } else {
+              setPassErr(false)
+            }
+            break;
 
-        default:
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "Having Some Error When Requesting",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          break;
+          default:
+            Swal.fire({
+              position: "top-end",
+              icon: "error",
+              title: "Having some unknown error when requesting",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            break;
+        }
+        console.log(error);
       }
-      console.log(error);
-    }
-    if (data) {
-      const token = data.accessToken;
-      const user = jwt(token);
+      if (data) {
+        const token = data.accessToken;
+        const user = jwt(token);
 
-      localStorage.setItem("access_token", data.accessToken);
-      setCookie("access_token", data.accessToken);
-      setCookie("refresh_token", data.refreshToken);
-      setCookie("user_data", user);
+        localStorage.setItem("access_token", data.accessToken);
+        setCookie("access_token", data.accessToken);
+        setCookie("refresh_token", data.refreshToken);
+        setCookie("user_data", user);
 
-      dispatch(setUser(user));
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Login Successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      navigate("/");
+        dispatch(setUser(user));
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Login Successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/");
+      }
     }
-  };
+  })
   return (
     <>
       <Header />
@@ -93,23 +104,26 @@ function Login() {
               <form
                 className={cx("form-login")}
                 method="POST"
-                onSubmit={handleSubmit}
+                onSubmit={(e) => formik.handleSubmit(e)}
               >
                 <div className={cx("form-group")}>
                   <label htmlFor="">Email: </label>
                   <input
-                    type="email"
+                    type="text"
                     name="email"
                     id="email"
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      (accErr === true || formik.errors.email) && 'is-invalid',
+                      accErr === true || formik.errors.email ? 'border-error' : 'border-black'
                     )}
                     placeholder="Enter your email..."
-                    onChange={handleChange}
+                    onChange={(e) => { handleChange(e); setAccErr(false); setPassErr(false); formik.handleChange(e) }}
+                    value={formik.values.email}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {formik.errors.email && <small id="helpId" className="text-danger">{formik.errors.email}</small>}
+                  {accErr === true && <small id="helpId" className="text-danger">Account does not exists</small>}
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Password: </label>
@@ -120,12 +134,15 @@ function Login() {
                     className={cx(
                       "form-control rounded-pill",
                       "fz-14",
-                      "border-black"
+                      (passErr === true || formik.errors.password) && 'is-invalid',
+                      passErr === true || formik.errors.password ? 'border-error' : 'border-black'
                     )}
                     placeholder="Enter your password..."
-                    onChange={handleChange}
+                    onChange={(e) => { handleChange(e); setAccErr(false); setPassErr(false); formik.handleChange(e) }}
+                    value={formik.values.password}
                   />
-                  {/* <small id="helpId" className="text-muted">Help text</small> */}
+                  {formik.errors.password && <small id="helpId" className="text-danger">{formik.errors.password}</small>}
+                  {passErr === true && <small id="helpId" className="text-danger">Password does not match</small>}
                 </div>
                 <button
                   type="submit"

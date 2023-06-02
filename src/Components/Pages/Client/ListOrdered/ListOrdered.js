@@ -184,9 +184,10 @@ function ListOrdered() {
                                                                            }
                                                                       })
                                                                  }
+                                                                 {/* unavailable */}
                                                                  <td>{dateFormat(e.created_at)}</td>
-                                                                 <td>{dateFormat(e.estimated_time)}</td>
-                                                                 <td>{e.driver ? e.driver?.userName : "Not Have Yet"}</td>
+                                                                 <td>{e.estimated_time ? dateFormat(e.estimated_time) : "Unavailable"}</td>
+                                                                 <td>{e.driver ? e.driver?.userName : "Unavailable"}</td>
 
                                                                  <td>{formatPrice(e.total_price)}</td>
                                                                  <td>

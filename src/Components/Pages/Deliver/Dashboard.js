@@ -61,6 +61,7 @@ function Dashboard() {
           googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
           libraries: ['places']
      })
+
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
      // eslint-disable-next-line react-hooks/exhaustive-deps
      const getListOrderedFromAPI = async () => {

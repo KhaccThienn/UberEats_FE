@@ -5,13 +5,15 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import dateFormat from 'dateformat'
+import * as Yup from 'yup';
+import { useFormik } from "formik";
+import io from "socket.io-client";
 import { selectUserData } from '../../../../redux/reducers/users'
 import * as CartService from '../../../../services/CartService'
 import * as OrderService from '../../../../services/OrderService'
 import * as UserService from '../../../../services/UserService'
 import * as VoucherService from '../../../../services/VoucherService'
 import styles from './order.module.css'
-import io from "socket.io-client";
 
 let cx = classNames.bind(styles);
 const socket = io(process.env.REACT_APP_URL_API);
@@ -25,27 +27,6 @@ function OrderFix() {
           });
      };
 
-     const initProfileState = {
-          userName: "",
-          phone: "",
-          address: "",
-     };
-     const initPostCheckout = {
-          userName: "",
-          address: "",
-          phone: "",
-          note: '',
-          vouchersId: ''
-     }
-     const userData = useSelector(selectUserData);
-     const [total, setTotal] = useState(0);
-     const [currentTotal, setCurrentTotal] = useState(0);
-     const [products, setProducts] = useState([]);
-     const [userProfile, setUserProfile] = useState(initProfileState);
-     const [resId, setResId] = useState(0);
-     const [vouchers, setVouchers] = useState([]);
-     const [postData, setPostData] = useState(initPostCheckout)
-     const navigate = useNavigate();
      const currentDate = () => {
           const date = new Date();
           const year = date.getFullYear();
@@ -58,6 +39,31 @@ function OrderFix() {
 
           return `${year}-${month}-${day} ${hour}:${minute}:${second}`
      }
+
+     const initProfileState = {
+          userName: "",
+          address: "",
+          phone: "",
+     };
+
+     const initPostCheckout = {
+          userName: "",
+          address: "",
+          phone: "",
+          note: '',
+          vouchersId: ''
+     }
+
+     const userData = useSelector(selectUserData);
+     const [total, setTotal] = useState(0);
+     const [currentTotal, setCurrentTotal] = useState(0);
+     const [products, setProducts] = useState([]);
+     const [userProfile, setUserProfile] = useState(initProfileState);
+     const [resId, setResId] = useState(0);
+     const [vouchers, setVouchers] = useState([]);
+     const [postData, setPostData] = useState(initPostCheckout)
+     const navigate = useNavigate();
+
      const handlePostCheckout = async () => {
           const createOrder = {
                delivered_user: postData.userName ? postData.userName : userProfile.userName,
@@ -118,8 +124,23 @@ function OrderFix() {
           }
      }
 
+     const validationSchema = Yup.object().shape({
+          userName: Yup.string().required("Please enter your user name"),
+          address: Yup.string().required("Please enter your address"),
+          phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number')
+     })
+     const formik = useFormik({
+          initialValues: initProfileState,
+          validationSchema,
+          onSubmit: async (e) => {
+               await handlePostCheckout()
+          },
+     })
+
+
      const handleChangeProfile = (e) => {
           const { name, value } = e.target;
+          formik.values[name] = value
           setPostData({ ...postData, [name]: value })
      }
 
@@ -160,6 +181,7 @@ function OrderFix() {
                const [data, error] = await UserService.getUserProfile(userData.user.subject);
                if (data) {
                     setUserProfile(data)
+                    formik.setValues(data)
                }
                if (error) {
                     console.log(error);
@@ -189,7 +211,7 @@ function OrderFix() {
                          </p>
                          <div className={cx('row')}>
                               <div className={cx('col-6')}>
-                                   <form method='POST'>
+                                   <form method='POST' onSubmit={(e) => formik.handleSubmit(e)}>
                                         <div className={cx("card border-0")}>
                                              <div className={cx("card-header bg-transparent pl-0")}>
                                                   <p className={cx("card-text", "text-black", "mb-2 text-uppercase h3", 'font-weight-bold text-center')}>
@@ -201,32 +223,38 @@ function OrderFix() {
                                                        <label htmlFor="" className={cx("h5 text-black mb-1")}>Name<span className='text-danger'>(*)</span>: </label>
                                                        <input type="text"
                                                             defaultValue={userProfile.userName}
-                                                            onChange={handleChangeProfile}
+                                                            onChange={(e) => { handleChangeProfile(e) }}
                                                             className={cx("form-control rounded-0 mt-1")}
                                                             name="userName" placeholder="Enter name..." />
+                                                       {formik.errors.userName && <small id="helpId" className="text-danger">{formik.errors.userName}</small>}
                                                   </div>
                                                   <div className={cx("form-group")}>
                                                        <label htmlFor="" className={cx("h5 text-black mb-1")}>Address<span className='text-danger'>(*)</span>: </label>
                                                        <input type="text"
-                                                            onChange={handleChangeProfile}
+                                                            onChange={(e) => { handleChangeProfile(e) }}
                                                             defaultValue={userProfile.address}
                                                             className={cx("form-control rounded-0 mt-1")}
                                                             name="address" placeholder="Enter address..." />
+                                                       {formik.errors.address && <small id="helpId" className="text-danger">{formik.errors.address}</small>}
                                                   </div>
                                                   <div className={cx("form-group")}>
                                                        <label htmlFor="" className={cx("h5 text-black mb-1")}>Phone number<span className='text-danger'>(*)</span>: </label>
                                                        <input type="text"
-                                                            onChange={handleChangeProfile}
+                                                            onChange={(e) => { handleChangeProfile(e) }}
                                                             defaultValue={userProfile.phone}
                                                             className={cx("form-control rounded-0 mt-1")}
                                                             name="phone" placeholder="Enter phone number..." />
+                                                       {formik.errors.phone && <small id="helpId" className="text-danger">{formik.errors.phone}</small>}
                                                   </div>
                                                   <div className={cx("form-group")}>
-                                                       <label htmlFor="" className={cx("h5 text-black mb-1")}>Note<span className='text-danger'>(*)</span>:</label>
+                                                       <label htmlFor="" className={cx("h5 text-black mb-1")}>Note:</label>
                                                        <textarea className={cx("form-control rounded-0 mt-1")} onChange={handleChangeProfile} name="note" rows="3" placeholder='note'></textarea>
                                                   </div>
                                              </div>
                                         </div>
+                                        <button className={cx('btn btn-block', 'btn-lg', 'btn-order', 'rounded-0')} type='submit'>
+                                             <AiOutlineCreditCard />&nbsp;Order instantly
+                                        </button>
                                    </form>
                               </div>
                               <div className={cx('col-6', 'p-0')}>
@@ -296,9 +324,7 @@ function OrderFix() {
                </div>
                <div className={cx('row', 'px-5', 'my-3', 'justify-content-center')}>
                     <div className={cx('col-8')}>
-                         <button className={cx('btn btn-block', 'btn-lg', 'btn-order', 'rounded-0')} onClick={() => handlePostCheckout()}>
-                              <AiOutlineCreditCard />&nbsp;Order instantly
-                         </button>
+
                     </div>
                </div>
           </div>
