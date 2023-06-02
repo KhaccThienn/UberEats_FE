@@ -22,6 +22,22 @@ const socket = io(process.env.REACT_APP_URL_API);
 
 function ResMainLayout({ child }) {
   const navigate = useNavigate();
+
+  socket.on("handleCanceledOrder", (data) => {
+    console.log("orderStatus Socket Data", data);
+    data &&
+      Swal.fire({
+        title: `Order ${data.orderId} is already canceled by ${data.user.userName} !`,
+        showCancelButton: true,
+        confirmButtonText: 'Accept',
+        position: "center"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/order")
+        }
+      })
+  })
+
   socket.on("createOrderClient", (data) => {
     console.log("orderStatus Socket Data", data);
     data &&
@@ -36,6 +52,7 @@ function ResMainLayout({ child }) {
         }
       })
   })
+
   socket.on("deliverUpdateOrderStatus", (data) => {
     console.log("orderStatus Socket Data", data);
     data &&
@@ -51,6 +68,7 @@ function ResMainLayout({ child }) {
         }
       })
   })
+
   socket.on("deliverShippingOrder", (data) => {
     console.log("orderStatus Socket Data", data);
     data &&
@@ -66,6 +84,7 @@ function ResMainLayout({ child }) {
         }
       })
   })
+
   socket.on("deliverShippedOrder", (data) => {
     console.log("orderStatus Socket Data", data);
     data &&

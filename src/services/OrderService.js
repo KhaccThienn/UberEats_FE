@@ -64,3 +64,12 @@ export const updateOrderDelivery = async (id, deliveryId, data) => {
           return [null, error]
      }
 }
+
+export const deleteOrder = async (orderID) => {
+     try {
+          const res = await http.remove(`${urlAPI}/order/${orderID}`);
+          return [res, null]
+     } catch (error) {
+          return [null, error]
+     }
+}

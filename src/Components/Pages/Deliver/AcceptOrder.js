@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import dateFormat from 'dateformat';
 import { selectUserData } from '../../../redux/reducers/users';
 import * as OrderService from "../../../services/OrderService";
 import * as UserService from "../../../services/UserService";
@@ -24,9 +25,21 @@ const formatPrice = (price) => {
           minimumFractionDigits: 2,
      });
 };
+const currentDate = () => {
+     const date = new Date();
+     const year = date.getFullYear();
+     const month = date.getMonth() + 1;
+     const day = date.getDate();
+
+     const hour = date.getHours() + 7;
+     const minute = date.getMinutes();
+     const second = date.getSeconds();
+
+     return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+}
 function AcceptOrder({ orderId }) {
 
-
+     const date_now = new Date();
      const { isLoaded } = useJsApiLoader({
           googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
           libraries: ['places']
@@ -53,18 +66,21 @@ function AcceptOrder({ orderId }) {
      const [orderDetail, setOrderDetail] = useState({});
      const [reload, setReload] = useState(false)
      const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
+          console.log(dateFormat(duration));
           const orderData = {
-               status: currentStatus + 1
+               status: currentStatus + 1,
+               estimated_time: date_now.getTime() + duration * 1000
           }
-          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
-          if (data) {
-               socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
-               setReload(!reload);
-               console.log(data);
-          }
-          if (error) {
-               console.log(error);
-          }
+          console.log(orderData);
+          // const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          // if (data) {
+          //      socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
+          //      setReload(!reload);
+          //      console.log(data);
+          // }
+          // if (error) {
+          //      console.log(error);
+          // }
      }
      const handleUpdateStatus = async (orderId, deliverId, currentStatus) => {
           const orderData = {

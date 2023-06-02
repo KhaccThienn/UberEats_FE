@@ -18,7 +18,7 @@ const socket = io(process.env.REACT_APP_URL_API);
 
 function OrderFix() {
      const formatPrice = (price) => {
-          return price.toLocaleString('en-US', {
+          return price?.toLocaleString('en-US', {
                style: 'currency',
                currency: 'USD',
                minimumFractionDigits: 2,
@@ -141,7 +141,7 @@ function OrderFix() {
           }
 
      }
-     
+
      useEffect(() => {
           const getCartFromAPI = async () => {
                const [data, error] = await CartService.getAllCartByUser(userData.user.subject);
@@ -297,9 +297,7 @@ function OrderFix() {
                <div className={cx('row', 'px-5', 'my-3', 'justify-content-center')}>
                     <div className={cx('col-8')}>
                          <button className={cx('btn btn-block', 'btn-lg', 'btn-order', 'rounded-0')} onClick={() => handlePostCheckout()}>
-                              <button>
-                                   <AiOutlineCreditCard />&nbsp;Order instantly
-                              </button>
+                              <AiOutlineCreditCard />&nbsp;Order instantly
                          </button>
                     </div>
                </div>

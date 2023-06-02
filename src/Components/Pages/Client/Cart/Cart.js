@@ -25,29 +25,11 @@ function Cart() {
   const [reload, setReload] = useState(false)
   const dispatch = useDispatch()
 
-  const handleChangeQuantity = async (e) => {
-    const { name, value } = e.target;
-    console.log({ name, value });
-    const item = {
-      userId: userData.user.subject,
-      productId: e.target.name,
-      quantity: Number(e.target.value) > 1 ? Number(e.target.value) : 1
-    }
-    const [data, error] = await CartService.updateaCartQuantity(item);
-    if (data) {
-      console.log(data);
-      setReload(!reload);
-    }
-    if (error) {
-      console.log(error);
-    }
-  }
-
   const handleButtonChangeQuantity = async (e, prodId) => {
     const { name, value } = e.target;
     var quantity = Number(value);
     if (name === "minus") {
-      quantity = quantity - 1;
+      quantity = quantity <= 1 ? 1 : quantity - 1;
       console.log(quantity);
     } else {
       quantity = quantity + 1;
@@ -141,7 +123,8 @@ function Cart() {
                   <div className={cx('form-group', 'mt-3')}>
                     <div className={cx('d-flex', 'align-items-center', 'rounded-pill', 'border-quantity', 'px-2', 'mx-4')}>
                       <button className={cx('btn', 'font-weight-bold')} value={e.quantity} name="minus" onClick={(event) => { handleButtonChangeQuantity(event, e.product.id) }}>&minus;</button>
-                      <input type="number" name={e.product.id} id=""  className={cx("form-control", 'rounded-0', 'input-quantity', 'text-center')} onChange={handleChangeQuantity} min={1} defaultValue={e.quantity} />
+
+                      <input type="number" name={e.product.id} id="" className={cx("form-control", 'rounded-0', 'input-quantity', 'text-center')} disabled min={1} value={e.quantity} />
                       <button className={cx('btn', 'font-weight-bold')} value={e.quantity} name="plus" onClick={(event) => { handleButtonChangeQuantity(event, e.product.id) }}>&#43;</button>
                     </div>
                   </div>

@@ -87,7 +87,7 @@ function OrderDetails() {
                                                 </tr>
                                                 <tr>
                                                     <th>Shipper Information: </th>
-                                                    <td>{orderInfo.driver ? `${orderInfo.driver.userName} (${orderInfo.driver.phone})` : 'Null'}</td>
+                                                    <td>{orderInfo.driver ? `${orderInfo.driver.userName} (${orderInfo.driver.phone})` : 'Not Have Yet'}</td>
                                                 </tr>
                                             </table>
                                         </div>
