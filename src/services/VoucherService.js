@@ -11,6 +11,24 @@ export const getAllRestaurantByUser = async (userID) => {
     }
 }
 
+export const getAllVouchersname = async () => {
+    try {
+        const res = await http.get(`${urlAPI}/voucher/vouchers`);
+        return [res, null]
+    } catch (error) {
+        return [null, error]
+    }
+}
+
+export const getAllVouchersExceptOne = async (id) => {
+    try {
+        const res = await http.get(`${urlAPI}/voucher/vouchers/${id}`);
+        return [res, null]
+    } catch (error) {
+        return [null, error]
+    }
+}
+
 export const getVoucherByRestaurantId = async (resID) => {
     try {
         const res = await http.get(`${urlAPI}/voucher/restaurant/${resID}`);

@@ -30,13 +30,30 @@ function Information() {
   const userData = useSelector(selectUserData);
   const [profile, setProfile] = useState(initProfileState);
   const [postData, setPostData] = useState(initPostData);
+  const [allUserEmails, setAllUserEmails] = useState([])
+  const [allUserPhones, setAllUserPhones] = useState([])
   const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
-    userName: Yup.string().required("Please enter your user name"),
-    address: Yup.string(),
-    email: Yup.string().required('Please enter your email').email('Invalid type of email'),
-    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number')
+    userName: Yup.string().required('Please enter your username'),
+    email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(allUserEmails, "This email is already in use"),
+    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(allUserPhones, "This phone is already in use"),
+    avatar: Yup.mixed()
+      .required('Please upload a file')
+      .test('fileType', 'Invalid file format', (value) => {
+        // Ensure the file is not null
+        if (!value) {
+          return false;
+        }
+        // Get the file extension
+        const fileExtension = value.toString().split('.').pop().toLowerCase();
+        console.log(fileExtension);
+        // Define the allowed file extensions
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        // Check if the file extension is in the allowed extensions list
+        return allowedExtensions.includes(fileExtension);
+      }),
+    address: Yup.string().optional().min(10, "At Least 10 characters"),
   })
   const formik = useFormik({
     initialValues: initProfileState,
@@ -80,14 +97,14 @@ function Information() {
       navigate("/");
     }
     if (rej) {
-      console.log(rej);
       Swal.fire({
         position: 'top-end',
         icon: 'error',
-        title: 'Invalid Account',
+        title: 'Having Some Error When Updating Account Information',
         showConfirmButton: false,
         timer: 1500
       })
+      console.log(rej);
     }
   };
 
@@ -103,6 +120,26 @@ function Information() {
         console.log(error);
       }
     };
+    const getAllUserEmailsExeptedOne = async (userID) => {
+      const [data, error] = await UserService.getAllUserEmailsExeptedOne(userID);
+      if (data) {
+        setAllUserEmails(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    const getAllUserPhonesExeptedOne = async (userID) => {
+      const [data, error] = await UserService.getAllUserPhonesExeptedOne(userID);
+      if (data) {
+        setAllUserPhones(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    getAllUserEmailsExeptedOne(userData.user.subject);
+    getAllUserPhonesExeptedOne(userData.user.subject);
     getProfileData(userData.user.subject);
   }, [userData.user.subject]);
 
@@ -119,9 +156,10 @@ function Information() {
               <label htmlFor="">User name:</label>
               <input type="text" name="userName"
                 defaultValue={profile.userName}
-                onChange={(e) => { handleChangeValue(e) }} id="" className={cx("form-control", 'input-info')} placeholder="User name..." />
+                onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id=""
+                className={formik.errors.userName ? cx("form-control", "is-invalid") : cx("form-control")}
+                placeholder="User name..." />
               {formik.errors.userName && <small id="helpId" className="text-danger">{formik.errors.userName}</small>}
-              {/* <small id="helpId" className="text-muted">Help text</small> */}
             </div>
           </div>
           <div className={cx('col-6')}>
@@ -129,9 +167,10 @@ function Information() {
               <label htmlFor="">Phone number:</label>
               <input type="text" name="phone"
                 defaultValue={profile.phone}
-                onChange={(e) => { handleChangeValue(e) }} id="" className={cx("form-control", 'input-info')} placeholder="Phone num..." />
+                onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id=""
+                className={formik.errors.phone ? cx("form-control", "is-invalid") : cx("form-control")}
+                placeholder="Phone num..." />
               {formik.errors.phone && <small id="helpId" className="text-danger">{formik.errors.phone}</small>}
-              {/* <small id="helpId" className="text-muted">Help text</small> */}
             </div>
           </div>
           <div className={cx('col-12')}>
@@ -139,17 +178,20 @@ function Information() {
               <label htmlFor="">Email address:</label>
               <input type="text" name="email"
                 defaultValue={profile.email}
-                onChange={(e) => { handleChangeValue(e) }} id="" className={cx("form-control", 'input-info')} placeholder="Email..." />
+                onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id=""
+                className={formik.errors.email ? cx("form-control", "is-invalid") : cx("form-control")}
+                placeholder="Email..." />
               {formik.errors.email && <small id="helpId" className="text-danger">{formik.errors.email}</small>}
-              {/* <small id="helpId" className="text-muted">Help text</small> */}
             </div>
           </div>
           <div className={cx('col-12')}>
             <div className={cx("form-group")}>
               <label htmlFor="">Address:</label>
-              <textarea className={cx("form-control", 'input-info')} name="address"
+              <textarea className={formik.errors.address ? cx("form-control", "is-invalid") : cx("form-control")}
+                name="address"
                 defaultValue={profile.address}
-                onChange={(e) => { handleChangeValue(e) }} id="" rows="3" placeholder='district, city, country...'></textarea>
+                onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id="" rows="3"
+                placeholder='district, city, country...'></textarea>
               {formik.errors.address && <small id="helpId" className="text-danger">{formik.errors.address}</small>}
             </div>
           </div>

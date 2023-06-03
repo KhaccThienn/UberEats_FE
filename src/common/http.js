@@ -47,9 +47,7 @@ axiosInstance.interceptors.request.use(async (config) => {
       console.log('refresh..');
       const choose = await Swal.fire({
         title: "Session Has Expired, Please Login Again",
-        showDenyButton: true,
-        confirmButtonText: "Yes",
-        denyButtonText: "No",
+        confirmButtonText: "OK",
       });
       if (choose.isConfirmed) {
         await refreshtoken()

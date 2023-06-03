@@ -37,7 +37,8 @@ function ChangePassword() {
       await handleSubmitForm(e)
     }
   })
-  const handleSubmitForm = async (env) => {
+
+  const handleSubmitForm = async (e) => {
     console.log(password);
     const [res, rej] = await UserService.changePassword(userData.user.subject, password);
     if (res) {

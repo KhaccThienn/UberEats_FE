@@ -90,7 +90,7 @@ function ListVoucher() {
                 <h4 className="card-title">List Vouchers</h4>
               </div>
               <div className="iq-card-header-toolbar d-flex align-items-center">
-                <Link to={"/voucher/add"} className="btn btn-primary">
+                <Link to={"/voucher/add"} className="btn btn-primary rounded-0">
                   Add Voucher
                 </Link>
               </div>
@@ -100,7 +100,7 @@ function ListVoucher() {
                 <div className="row align-items-center">
                   <div className="form-group col-lg-3 m-0">
                     <select
-                      className="form-control"
+                      className="form-control rounded-0"
                       name="sort"
                       id=""
                       onChange={(e) => handleChange(e)}
@@ -116,8 +116,8 @@ function ListVoucher() {
                       </option>
                     </select>
                   </div>
-                  <div className="col-lg-3">
-                    <button className="btn btn-primary" onClick={handleSubmit}>
+                  <div className="col-lg-3 p-0">
+                    <button className="btn btn-primary rounded-0" onClick={handleSubmit}>
                       {" "}
                       Submit
                     </button>
@@ -145,7 +145,7 @@ function ListVoucher() {
                           <td>
                             <div className="dropdown">
                               <button
-                                className="btn btn-primary dropdown-toggle"
+                                className="btn btn-primary dropdown-toggle rounded-0"
                                 type="button"
                                 id="dropdownMenuButton"
                                 data-toggle="dropdown"
@@ -155,7 +155,7 @@ function ListVoucher() {
                                 Actions
                               </button>
                               <div
-                                className="dropdown-menu"
+                                className="dropdown-menu rounded-0"
                                 aria-labelledby="dropdownMenuButton"
                               >
                                 <Link

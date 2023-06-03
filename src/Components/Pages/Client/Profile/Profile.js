@@ -1,19 +1,21 @@
 import classNames from 'classnames/bind'
+import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
+import { useCookies } from 'react-cookie'
 import { FiEdit2 } from 'react-icons/fi'
-import { TiBackspaceOutline, TiTickOutline } from 'react-icons/ti'
-import styles from './profile.module.css'
+import { GrLogout } from "react-icons/gr"
 import { ImProfile } from "react-icons/im"
 import { MdOutlinePassword } from "react-icons/md"
-import { GrLogout } from "react-icons/gr"
+import { TiBackspaceOutline, TiTickOutline } from 'react-icons/ti'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { clearUser, reset, selectUserData } from '../../../../redux/reducers/users'
+import * as Yup from "yup"
+import { clearUser, selectUserData } from '../../../../redux/reducers/users'
 import * as UserService from "../../../../services/UserService"
 import Information from './Information'
 import Password from './Password'
-import { useCookies } from 'react-cookie'
+import styles from './profile.module.css'
 
 let cx = classNames.bind(styles)
 
@@ -37,17 +39,42 @@ function Profile() {
     const [profile, setProfile] = useState(initProfileState);
     const [cookies, setCookie, removeCookie] = useCookies(["user_data", "access_token", "refresh_token"]);
     const [postData, setPostData] = useState(initPostData);
-    const [selectedImage, setSelectedImage] = useState();
     const [reload, setReload] = useState(false);
     const [previewImage, setPreviewImage] = useState();
     const [child, setChild] = useState(<Information />);
     const navigate = useNavigate();
 
+    const validationSchema = Yup.object().shape({
+        avatar: Yup.mixed()
+            .required('Please upload a file')
+            .test('fileType', 'Invalid file format', (value) => {
+                // Ensure the file is not null
+                if (!value) {
+                    return false;
+                }
+                // Get the file extension
+                const fileExtension = value.toString().split('.').pop().toLowerCase();
+                console.log(fileExtension);
+                // Define the allowed file extensions
+                const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                // Check if the file extension is in the allowed extensions list
+                return allowedExtensions.includes(fileExtension);
+            }),
+
+    })
+    const formik = useFormik({
+        initialValues: initProfileState,
+        validationSchema,
+        onSubmit: async (e) => {
+            await handlePostData(e)
+        },
+    })
+
     const handleSelectImage = (e) => {
         setPreviewImage(e.target.files[0])
     }
+
     const handlePostData = async (e) => {
-        e.preventDefault();
         const formDataa = new FormData();
 
         formDataa.append("avatar", previewImage ? previewImage : {});
@@ -81,7 +108,7 @@ function Profile() {
             Swal.fire({
                 position: 'top-end',
                 icon: 'error',
-                title: 'Invalid Account',
+                title: 'Having Some Error When Updating Account Information',
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -158,23 +185,19 @@ function Profile() {
                         )}
                         <br />
                         <form onSubmit={(e) => {
-                            handlePostData(e);
+                            formik.handleSubmit(e);
                         }} method='POST' encType='multipart/form-data'>
                             {previewImage &&
                                 <button type='submit' className={cx('btn', 'btn-outline-success', 'rounded-circle', 'border-0', 'mx-1', 'btn-avatar')} ><TiTickOutline /></button>
                             }
                             <label htmlFor='image' className={cx('btn', 'btn-outline-info', 'rounded-pill', 'my-3', 'mx-1')}>Choose avatar <FiEdit2 /></label>
-                            <input type='file' name='avatar' id='image' onChange={(e) => handleSelectImage(e)} className={cx('hidden')} />
+                            <input type='file' name='avatar' id='image' onChange={(e) => { handleSelectImage(e); formik.handleChange(e) }} className={cx('hidden')} />
                             {previewImage &&
                                 <button type='button' className={cx('btn', 'btn-outline-danger', 'rounded-circle', 'border-0', 'mx-1', 'btn-avatar')} onClick={(e) => setPreviewImage(undefined)} ><TiBackspaceOutline /></button>
                             }
                         </form>
+                        {formik.errors.avatar && <p id="helpId" className="text-danger">{formik.errors.avatar}</p>}
                     </div>
-                    {/* <ul className="list-group">
-                        <li className="list-group-item text-muted">Activity</li>
-                        <li className="list-group-item text-right"><b className={cx('pull-left')}>Ordered</b>120</li>
-                        <li className="list-group-item text-right"><b className={cx('pull-left')}>Not received</b>22</li>
-                    </ul> */}
                 </div>
                 <div className={cx('col-9')}>
                     <ul className={cx("nav nav-tabs")}>

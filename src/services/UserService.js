@@ -10,17 +10,34 @@ const getCookie = (name) => {
 export const getAllUserEmails = async () => {
   try {
     const res = await http.get(`${urlAPI}/user/emails`);
-    return [res,null]
+    return [res, null]
   } catch (error) {
-    return [null,error];
+    return [null, error];
   }
 }
 export const getAllUserPhones = async () => {
   try {
     const res = await http.get(`${urlAPI}/user/phones`);
-    return [res,null]
+    return [res, null]
   } catch (error) {
-    return [null,error];
+    return [null, error];
+  }
+}
+
+export const getAllUserEmailsExeptedOne = async (id) => {
+  try {
+    const res = await http.get(`${urlAPI}/user/emails/${id}`);
+    return [res, null]
+  } catch (error) {
+    return [null, error];
+  }
+}
+export const getAllUserPhonesExeptedOne = async (id) => {
+  try {
+    const res = await http.get(`${urlAPI}/user/phones/${id}`);
+    return [res, null]
+  } catch (error) {
+    return [null, error];
   }
 }
 

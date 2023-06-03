@@ -210,34 +210,6 @@ function ListProduct() {
                     })}
                   </tbody>
                 </table>
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination justify-content-center">
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        aria-label="Previous"
-                        // onClick={(e) => handleChangePage(e)}
-                        name="previous"
-                      // disabled={currentPage === 1}
-                      >
-                        &laquo; Previous
-                      </button>
-                    </li>
-
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        href="#"
-                        aria-label="Next"
-                        // onClick={(e) => handleChangePage(e)}
-                        name="next"
-                      // disabled={currentPage === totalPages}
-                      >
-                        Next &raquo;
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>
