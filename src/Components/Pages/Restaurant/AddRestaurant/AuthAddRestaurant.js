@@ -69,6 +69,11 @@ function AuthAddRestaurant() {
           setPostData({ ...postData, [name]: value });
      };
 
+     const validationSchema = Yup.object().shape({
+          avatar: Yup.mixed().required("Please upload a valid avatar"),
+          name: Yup.string().required('Please enter your restaurant name')
+     })
+
 
      const handleSubmitForm = async (e) => {
           const formData = new FormData();

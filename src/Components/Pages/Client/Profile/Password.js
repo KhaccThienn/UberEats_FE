@@ -69,6 +69,7 @@ function Password() {
             showConfirmButton: false,
             timer: 1500
           })
+
           break;
       }
     }

@@ -54,6 +54,7 @@ function Information() {
         return allowedExtensions.includes(fileExtension);
       }),
     address: Yup.string().optional().min(10, "At Least 10 characters"),
+
   })
   const formik = useFormik({
     initialValues: initProfileState,
@@ -140,6 +141,7 @@ function Information() {
     }
     getAllUserEmailsExeptedOne(userData.user.subject);
     getAllUserPhonesExeptedOne(userData.user.subject);
+
     getProfileData(userData.user.subject);
   }, [userData.user.subject]);
 
@@ -156,10 +158,12 @@ function Information() {
               <label htmlFor="">User name:</label>
               <input type="text" name="userName"
                 defaultValue={profile.userName}
+
                 onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id=""
                 className={formik.errors.userName ? cx("form-control", "is-invalid") : cx("form-control")}
                 placeholder="User name..." />
               {formik.errors.userName && <small id="helpId" className="text-danger">{formik.errors.userName}</small>}
+
             </div>
           </div>
           <div className={cx('col-6')}>
@@ -171,6 +175,7 @@ function Information() {
                 className={formik.errors.phone ? cx("form-control", "is-invalid") : cx("form-control")}
                 placeholder="Phone num..." />
               {formik.errors.phone && <small id="helpId" className="text-danger">{formik.errors.phone}</small>}
+
             </div>
           </div>
           <div className={cx('col-12')}>
@@ -178,10 +183,12 @@ function Information() {
               <label htmlFor="">Email address:</label>
               <input type="text" name="email"
                 defaultValue={profile.email}
+
                 onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id=""
                 className={formik.errors.email ? cx("form-control", "is-invalid") : cx("form-control")}
                 placeholder="Email..." />
               {formik.errors.email && <small id="helpId" className="text-danger">{formik.errors.email}</small>}
+
             </div>
           </div>
           <div className={cx('col-12')}>
@@ -192,6 +199,7 @@ function Information() {
                 defaultValue={profile.address}
                 onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }} id="" rows="3"
                 placeholder='district, city, country...'></textarea>
+
               {formik.errors.address && <small id="helpId" className="text-danger">{formik.errors.address}</small>}
             </div>
           </div>

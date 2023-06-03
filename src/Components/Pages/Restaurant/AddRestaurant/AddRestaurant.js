@@ -68,8 +68,6 @@ function AddRestaurant() {
     setPostImage(e.target.files[0]);
   };
 
-
-
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     setPostData({ ...postData, [name]: value });
