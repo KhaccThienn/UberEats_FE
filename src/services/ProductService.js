@@ -2,6 +2,24 @@ import * as http from "../common/http";
 
 const urlAPI = process.env.REACT_APP_URL_API;
 
+export const getAllProductsName = async () => {
+    try {
+        const res = await http.get(`${urlAPI}/product/names`);
+        return [res, null]
+    } catch (error) {
+        return [null, error]
+    }
+}
+
+export const getAllProductsExceptOne = async (id) => {
+    try {
+        const res = await http.get(`${urlAPI}/product/prods/${id}`);
+        return [res, null]
+    } catch (error) {
+        return [null, error]
+    }
+}
+
 export const getAllRestaurantByUser = async (userID) => {
     try {
         const res = await http.get(`${urlAPI}/user/${userID}`);
@@ -20,7 +38,6 @@ export const getProductByName = async (name, params) => {
     }
 }
 
-// export const getAllShowedProduct = async ()
 
 export const getAllProduct = async (userId, params) => {
     try {

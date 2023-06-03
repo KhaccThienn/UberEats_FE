@@ -1,9 +1,11 @@
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import * as VoucherService from "../../../../services/VoucherService";
-import { selectUserData } from "../../../../redux/reducers/users";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import * as Yup from "yup"
+import { selectUserData } from "../../../../redux/reducers/users";
+import * as VoucherService from "../../../../services/VoucherService";
 
 function UpdateVoucher() {
   const { id } = useParams();
@@ -21,12 +23,28 @@ function UpdateVoucher() {
   const userData = useSelector(selectUserData);
   const [restaurants, setRestaurants] = useState([]);
   const [voucher, setVoucher] = useState(initVoucherState);
+  const [allVouchersName, setAllVouchersName] = useState([])
   const [postData, setPostData] = useState(initPostDataState);
   const navigate = useNavigate();
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Please enter voucher name').min(5, "At Least 5 characters").notOneOf(allVouchersName, "This Voucher Name is already in use"),
+    discount: Yup.number().required('Please enter discount percent').min(1, "Discount must be greater than 1").max(100, "Discount must be less than 100"),
+
+  })
+
+  const formik = useFormik({
+    initialValues: initPostDataState,
+    validationSchema,
+    onSubmit: async (e) => {
+      await handleSubmitForm(e)
+    }
+  })
 
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     console.log({ name, value });
+    formik.values[name] = value;
     setVoucher({ ...voucher, [name]: value });
     setPostData({ ...postData, [name]: value });
   };
@@ -47,20 +65,29 @@ function UpdateVoucher() {
     const getVoucher = async () => {
       const [data, error] = await VoucherService.getVoucherByID(id);
       if (data) {
-        // console.log(data);
         setVoucher(data);
+        formik.setValues(data);
       }
       if (error) {
         console.log(error);
       }
     };
 
+    const getAllVouchersExceptOneID = async (id) => {
+      const [data, error] = await VoucherService.getAllVouchersExceptOne(id);
+      if (data) {
+        setAllVouchersName(data)
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    getAllVouchersExceptOneID(id)
     getRestaurants();
     getVoucher();
   }, [id, userData.user.subject]);
 
   const handleSubmitForm = async (e) => {
-    e.preventDefault();
     console.log({ postData, voucher });
     const newVoucher = {
       name: postData.name ? postData.name : voucher.name,
@@ -71,16 +98,17 @@ function UpdateVoucher() {
     };
     const [result, error] = await VoucherService.updateVoucher(id, newVoucher);
     if (result) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Voucher updated successfully',
+        showConfirmButton: false,
+      })
       navigate("/voucher");
     }
     if (error) {
       console.log(error);
-      Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: 'All Fields Are Required',
-        showConfirmButton: false,
-      })
+
     };
   }
   return (
@@ -93,16 +121,22 @@ function UpdateVoucher() {
             </div>
           </div>
           <div className="iq-card-body">
-            <form method="POST">
+            <form method="POST" onSubmit={(e) => {
+              formik.handleSubmit(e);
+            }}>
               <div className="form-group">
                 <label>Voucher's Name:</label>
                 <input
                   type="text"
                   name="name"
-                  onChange={handleChangeValue}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                   defaultValue={voucher.name}
-                  className="form-control"
+                  className={formik.errors.name ? "form-control is-invalid" : "form-control"}
                 />
+                {
+                  formik.errors.name &&
+                  <small id="helpId" className="text-danger">{formik.errors.name}</small>
+                }
               </div>
 
               <div className="form-group">
@@ -110,18 +144,22 @@ function UpdateVoucher() {
                 <input
                   type="text"
                   name="discount"
-                  onChange={handleChangeValue}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                   defaultValue={voucher.discount}
-                  className="form-control"
+                  className={formik.errors.discount ? "form-control is-invalid" : "form-control"}
                 />
+                {
+                  formik.errors.discount &&
+                  <small id="helpId" className="text-danger">{formik.errors.discount}</small>
+                }
               </div>
               <div className="form-group">
                 <label htmlFor="">Restaurant ?</label>
                 <select
-                  className="form-control"
+                  className={formik.errors.restaurantId ? "form-control is-invalid" : "form-control"}
                   name="restaurantId"
                   id=""
-                  onChange={(e) => handleChangeValue(e)}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                 >
                   <option>Choose Restaurant...</option>
                   {restaurants.map((e, i) => {
@@ -136,15 +174,18 @@ function UpdateVoucher() {
                     );
                   })}
                 </select>
+                {
+                  formik.errors.restaurantId &&
+                  <small id="helpId" className="text-danger">{formik.errors.restaurantId}</small>
+                }
               </div>
               <button
                 type="submit"
-                onClick={(e) => handleSubmitForm(e)}
-                className="btn btn-primary"
+                className="btn btn-primary rounded-0"
               >
                 Submit
               </button>
-              <button type="reset" className="btn btn-danger">
+              <button type="reset" className="btn btn-danger rounded-0">
                 Back
               </button>
             </form>

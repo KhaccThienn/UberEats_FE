@@ -30,6 +30,36 @@ function AuthAddRestaurant() {
 
      const navigate = useNavigate();
 
+     const validationSchema = Yup.object().shape({
+          name: Yup.string().required('Please enter your restaurant name'),
+          email: Yup.string().required('Please enter your email').email('Invalid type of email'),
+          phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number'),
+          address: Yup.string().required('Please enter your address'),
+          avatar: Yup.mixed()
+               .required('Please upload a file')
+               .test('fileType', 'Invalid file format', (value) => {
+                    // Ensure the file is not null
+                    if (!value) {
+                         return false;
+                    }
+                    // Get the file extension
+                    const fileExtension = value.toString().split('.').pop().toLowerCase();
+                    console.log(fileExtension);
+                    // Define the allowed file extensions
+                    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                    // Check if the file extension is in the allowed extensions list
+                    return allowedExtensions.includes(fileExtension);
+               }),
+     })
+
+     const formik = useFormik({
+          initialValues: initPostData,
+          validationSchema,
+          onSubmit: async (e) => {
+               await handleSubmitForm(e)
+          }
+     })
+
      const handleChangeFile = (e) => {
           setPostImage(e.target.files[0]);
      };
@@ -46,8 +76,6 @@ function AuthAddRestaurant() {
 
 
      const handleSubmitForm = async (e) => {
-          e.preventDefault();
-
           const formData = new FormData();
           formData.append("avatar", postImage ? postImage : {});
           formData.append("name", postData.name ? postData.name : profile.name);
@@ -78,14 +106,14 @@ function AuthAddRestaurant() {
           <div className="iq-card">
                <div className="iq-card-header d-flex justify-content-between">
                     <div className="iq-header-title">
-                         <h4 className="card-title">Restaurant Profile</h4>
+                         <h4 className="card-title">Add New Restaurant</h4>
                     </div>
                </div>
                <div className="iq-card-body">
                     <form
                          method="POST"
                          onSubmit={(e) => {
-                              handleSubmitForm(e);
+                              formik.handleSubmit(e)
                          }}
                     >
                          <div className="form-group row align-items-center">
@@ -107,12 +135,14 @@ function AuthAddRestaurant() {
                                         <input
                                              onChange={(e) => {
                                                   handleChangeFile(e);
+                                                  formik.handleChange(e)
                                              }}
-                                             className="form-control"
+                                             className={formik.errors.avatar ? "form-control is-invalid" : "form-control"}
                                              type="file"
                                              accept="image/*"
                                              name="avatar"
                                         />
+                                        {formik.errors.avatar && <small id="helpId" className="text-danger">{formik.errors.avatar}</small>}
                                    </div>
                               </div>
                          </div>
@@ -121,45 +151,49 @@ function AuthAddRestaurant() {
                                    <label htmlFor="uname">Company Name:</label>
                                    <input
                                         type="text"
-                                        className="form-control"
+                                        className={formik.errors.name ? "form-control is-invalid" : "form-control"}
                                         id="name"
                                         defaultValue={profile.name}
-                                        onChange={handleChangeValue}
+                                        onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                                         name="name"
                                    />
+                                   {formik.errors.name && <small id="helpId" className="text-danger">{formik.errors.name}</small>}
                               </div>
                               <div className="form-group col-sm-6">
                                    <label htmlFor="cname">Phone:</label>
                                    <input
                                         type="text"
-                                        className="form-control"
+                                        className={formik.errors.phone ? "form-control is-invalid" : "form-control"}
                                         id="address"
                                         defaultValue={profile.phone}
-                                        onChange={handleChangeValue}
+                                        onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                                         name="phone"
                                    />
+                                   {formik.errors.phone && <small id="helpId" className="text-danger">{formik.errors.phone}</small>}
                               </div>
                               <div className="form-group col-sm-6">
                                    <label htmlFor="cname">Email:</label>
                                    <input
                                         type="text"
-                                        className="form-control"
+                                        className={formik.errors.email ? "form-control is-invalid" : "form-control"}
                                         id="email"
                                         defaultValue={profile.email}
-                                        onChange={handleChangeValue}
+                                        onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                                         name="email"
                                    />
+                                   {formik.errors.email && <small id="helpId" className="text-danger">{formik.errors.email}</small>}
                               </div>
 
                               <div className="form-group col-sm-12">
                                    <label>Address:</label>
                                    <textarea
-                                        className="form-control"
+                                        className={formik.errors.address ? "form-control is-invalid" : "form-control"}
                                         name="address"
                                         rows="5"
                                         defaultValue={profile.address}
-                                        onChange={handleChangeValue}
+                                        onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                                    ></textarea>
+                                   {formik.errors.address && <small id="helpId" className="text-danger">{formik.errors.address}</small>}
                               </div>
                          </div>
                          <button type="submit" className="btn btn-primary mr-2">
@@ -171,7 +205,6 @@ function AuthAddRestaurant() {
                     </form>
                </div>
           </div>
-
      )
 }
 

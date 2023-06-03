@@ -62,6 +62,14 @@ function Password() {
           setErrMsg(rej.response.data.error)
           break;
         default:
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Having Some Error When Updating Account Information',
+            showConfirmButton: false,
+            timer: 1500
+          })
+
           break;
       }
     }
@@ -73,7 +81,7 @@ function Password() {
           <div className={cx('col-12')}>
             <div className={cx("form-group")}>
               <label htmlFor="">Current password:</label>
-              <input type="password" name="old_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} id="" className={cx("form-control", 'input-info')} placeholder="Current password..." />
+              <input type="password" name="old_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} id="" className={(errMsg || formik.errors.old_password) ? cx("form-control", "is-invalid") : cx("form-control")} placeholder="Current password..." />
               {
                 errMsg && <small id="helpId" className="text-danger">{errMsg}</small>
               }
@@ -83,14 +91,14 @@ function Password() {
           <div className={cx('col-12')}>
             <div className={cx("form-group")}>
               <label htmlFor="">New password:</label>
-              <input type="password" name="new_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} id="" className={cx("form-control", 'input-info')} placeholder="New password..." />
+              <input type="password" name="new_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} id="" className={formik.errors.new_password ? cx("form-control", "is-invalid") : cx("form-control")} placeholder="New password..." />
               {formik.errors.new_password && <small id="helpId" className="text-danger">{formik.errors.new_password}</small>}
             </div>
           </div>
           <div className={cx('col-12')}>
             <div className={cx("form-group")}>
               <label htmlFor="">Confirm new password:</label>
-              <input type="password" name="confirm_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} id="" className={cx("form-control", 'input-info')} placeholder="Confirm..." />
+              <input type="password" name="confirm_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} id="" className={formik.errors.confirm_password ? cx("form-control", "is-invalid") : cx("form-control")} placeholder="Confirm..." />
               {formik.errors.confirm_password && <small id="helpId" className="text-danger">{formik.errors.confirm_password}</small>}
             </div>
           </div>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import { selectUserData } from "../../../../redux/reducers/users";
 import * as ProductService from "../../../../services/ProductService";
 import style from "./AddProduct.module.css";
@@ -34,18 +36,50 @@ function UpdateProduct() {
 
   const userData = useSelector(selectUserData);
   const [restaurants, setRestaurant] = useState([]);
+  const [prodNames, setProdNames] = useState([])
   const [product, setProduct] = useState(initProductState);
   const [postImage, setPostImage] = useState();
   const [postData, setPostData] = useState(initState);
   const navigate = useNavigate();
 
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Please enter name').min(5, "At Least 5 characters").notOneOf(prodNames, "This Prod Name is already in use"),
+    price: Yup.number().required('Please enter price').min(1, "Price must be greater than 1"),
+    sale_price: Yup.number().lessThan(Yup.ref("price"), "Sale Price must be less than sale price").optional(),
+    // restaurantId: Yup.string().required('Please choose the restaurant'),
+    description: Yup.string().required('Please enter description'),
+    image: Yup.mixed()
+      .required('Please upload a file')
+      .test('fileType', 'Invalid file format', (value) => {
+        // Ensure the file is not null
+        if (!value) {
+          return false;
+        }
+        // Get the file extension
+        const fileExtension = value.toString().split('.').pop().toLowerCase();
+        console.log(fileExtension);
+        // Define the allowed file extensions
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        // Check if the file extension is in the allowed extensions list
+        return allowedExtensions.includes(fileExtension);
+      }),
+  })
+
+  const formik = useFormik({
+    initialValues: initState,
+    validationSchema,
+    onSubmit: async (e) => {
+      await handleSubmitForm(e)
+    }
+  })
+
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
+    formik.values[name] = value
     setPostData({ ...postData, [name]: value });
   };
 
   const handleChangeFile = (e) => {
-    console.log(e.target.files[0]);
     setPostImage(e.target.files[0]);
   };
 
@@ -64,20 +98,28 @@ function UpdateProduct() {
         id.split("-")[0],
         id.split("-")[1]
       );
-
-      console.log(data);
       setProduct(data);
+      formik.setValues(data)
       setPostData(data);
-
       if (err) {
       }
     };
+    const getAllProdNameExcepted = async (id) => {
+      const [res, error] = await ProductService.getAllProductsExceptOne(
+        id
+      );
+      console.log(res);
+      setProdNames(res);
+      if (error) {
+        console.log(error);
+      }
+    }
     getRestaurantData();
     getAPIData(id);
+    getAllProdNameExcepted(id)
   }, [userData.user.subject, id]);
 
   const handleSubmitForm = async (e) => {
-    e.preventDefault();
     const formData = new FormData();
     formData.append("name", postData.name ? postData.name : product.name);
     formData.append("image", postImage ? postImage : {});
@@ -106,6 +148,13 @@ function UpdateProduct() {
       formData
     );
     if (result) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Update Product Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       navigate("/product");
     }
     if (error) {
@@ -132,7 +181,7 @@ function UpdateProduct() {
             <form
               method="POST"
               onSubmit={(e) => {
-                handleSubmitForm(e);
+                formik.handleSubmit(e);
               }}
               encType="multipart/form-data"
             >
@@ -140,21 +189,30 @@ function UpdateProduct() {
                 <label>Product's Name:</label>
                 <input
                   type="text"
-                  className="form-control"
-                  onChange={(e) => handleChangeValue(e)}
+                  className={formik.errors.name ? "form-control is-invalid" : "form-control"}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                   name="name"
                   defaultValue={product.name}
                 />
+                {
+                  formik.errors.name &&
+                  <small id="helpId" className="text-danger">{formik.errors.name}</small>
+                }
               </div>
               <div className="form-group">
                 <label>Product's Image:</label>
                 <div className="">
                   <input
                     type="file"
-                    className="form-control"
+                    className={formik.errors.image ? "form-control is-invalid" : "form-control"}
                     accept="image/png, image/jpeg, image/jpg"
-                    onChange={(e) => handleChangeFile(e)}
+                    name="image"
+                    onChange={(e) => { handleChangeFile(e); formik.handleChange(e) }}
                   />
+                  {
+                    formik.errors.image &&
+                    <small id="helpId" className="text-danger">{formik.errors.image}</small>
+                  }
                   <div className="w-25">
                     {postImage && (
                       <img
@@ -178,19 +236,23 @@ function UpdateProduct() {
                 <label>Product's Price:</label>
                 <input
                   type="text"
-                  className="form-control"
-                  onChange={(e) => handleChangeValue(e)}
+                  className={formik.errors.price ? "form-control is-invalid" : "form-control"}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                   name="price"
                   defaultValue={product.price}
                 />
+                {
+                  formik.errors.price &&
+                  <small id="helpId" className="text-danger">{formik.errors.price}</small>
+                }
               </div>
 
               <div className="form-group">
                 <label>Product's Sale Price:</label>
                 <input
                   type="text"
-                  className="form-control"
-                  onChange={(e) => handleChangeValue(e)}
+                  className={formik.errors.sale_price ? "form-control is-invalid" : "form-control"}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                   defaultValue={product.sale_price}
                   name="sale_price"
                 />
@@ -228,10 +290,10 @@ function UpdateProduct() {
               <div className="form-group">
                 <label htmlFor="">Restaurant ?</label>
                 <select
-                  className="form-control"
+                  className={formik.errors.restaurantId ? "form-control is-invalid" : "form-control"}
                   name="restaurantId"
                   id=""
-                  onChange={(e) => handleChangeValue(e)}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                 >
                   <option>Choose Restaurant...</option>
 
@@ -247,6 +309,10 @@ function UpdateProduct() {
                     );
                   })}
                 </select>
+                {
+                  formik.errors.restaurantId &&
+                  <small id="helpId" className="text-danger">{formik.errors.restaurantId}</small>
+                }
               </div>
               <div className="form-group">
                 <label>Product's Description:</label>
@@ -254,11 +320,15 @@ function UpdateProduct() {
                 <textarea
                   name="description"
                   id="inputdescription"
-                  className="form-control"
+                  className={formik.errors.description ? "form-control is-invalid" : "form-control"}
                   rows="3"
-                  onChange={(e) => handleChangeValue(e)}
+                  onChange={(e) => { handleChangeValue(e); formik.handleChange(e) }}
                   value={product.description}
                 ></textarea>
+                {
+                  formik.errors.description &&
+                  <small id="helpId" className="text-danger">{formik.errors.description}</small>
+                }
               </div>
 
               <button type="submit" className="btn btn-primary">
