@@ -69,7 +69,7 @@ function Dashboard() {
           if (data) {
 
                console.log(data);
-               const newListPendingOrdered = data.filter((item) => item.status === 2 || item.status === 3);
+               const newListPendingOrdered = data.filter((item) => (item.status === 2 || item.status === 3) && ((item.driver && (item.driver.id === userData.user.subject)) || item.driver === null));
                console.log(newListPendingOrdered);
                setListPendingOrders(newListPendingOrdered);
           }
@@ -78,6 +78,10 @@ function Dashboard() {
           }
      }
      socket.on("updateOrderStatusDeliver", (data) => {
+          data ? console.log(data) : console.log("hehe");
+          getListOrderedFromAPI()
+     })
+     socket.on("updateDeliver", (data) => {
           data ? console.log(data) : console.log("hehe");
           getListOrderedFromAPI()
      })

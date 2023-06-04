@@ -29,6 +29,11 @@ function AddRestaurant() {
   const userData = useSelector(selectUserData);
   const [profile, setProfile] = useState(initProfileState);
   const [reload, setReload] = useState(false)
+
+  const [allRestaurantPhone, setAllRestaurantPhones] = useState([])
+  const [allRestaurantEmail, setAllRestaurantEmails] = useState([])
+  const [allRestaurantAddress, setAllRestaurantAddress] = useState([])
+
   const [postImage, setPostImage] = useState();
   const [postData, setPostData] = useState(initPostData);
 
@@ -36,9 +41,8 @@ function AddRestaurant() {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Please enter your restaurant name'),
-    email: Yup.string().required('Please enter your email').email('Invalid type of email'),
-    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number'),
-    address: Yup.string().required('Please enter your address'),
+    email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(allRestaurantEmail, "This email is already in use"),
+    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(allRestaurantPhone, "This phone number is already in use"),
     avatar: Yup.mixed()
       .required('Please upload a file')
       .test('fileType', 'Invalid file format', (value) => {
@@ -54,6 +58,7 @@ function AddRestaurant() {
         // Check if the file extension is in the allowed extensions list
         return allowedExtensions.includes(fileExtension);
       }),
+    address: Yup.string().required('Please enter your address').min(10, "At Least 10 characters").notOneOf(allRestaurantAddress, "This address is already in use"),
   })
 
   const formik = useFormik({
@@ -77,7 +82,6 @@ function AddRestaurant() {
 
 
   const handleSubmitForm = async (e) => {
-    e.preventDefault();
 
     const formData = new FormData();
     formData.append("avatar", postImage ? postImage : {});
@@ -103,7 +107,39 @@ function AddRestaurant() {
     }
   };
   useEffect(() => {
-
+    const getAllRestaurantEmails = async () => {
+      const [data, error] = await RestaurantService.getAllRestaurantEmails();
+      if (data) {
+        console.log("setAllRestaurantEmails", data);
+        setAllRestaurantEmails(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    const getAllRestaurantPhones = async () => {
+      const [data, error] = await RestaurantService.getAllRestaurantPhone();
+      if (data) {
+        console.log("setAllRestaurantPhones", data);
+        setAllRestaurantPhones(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    const getAllRestaurantAddress = async () => {
+      const [data, error] = await RestaurantService.getAllRestaurantAddress();
+      if (data) {
+        console.log("setAllRestaurantAddress", data);
+        setAllRestaurantAddress(data);
+      }
+      if (error) {
+        console.log(error);
+      }
+    }
+    getAllRestaurantEmails();
+    getAllRestaurantPhones();
+    getAllRestaurantAddress();
   }, [reload])
   return (
     <div className="wrapper">

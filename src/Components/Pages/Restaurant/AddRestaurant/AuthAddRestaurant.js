@@ -25,6 +25,12 @@ function AuthAddRestaurant() {
      const userData = useSelector(selectUserData);
      const [profile, setProfile] = useState(initProfileState);
      const [reload, setReload] = useState(false)
+
+     const [allRestaurantPhone, setAllRestaurantPhones] = useState([])
+     const [allRestaurantEmail, setAllRestaurantEmails] = useState([])
+     const [allRestaurantAddress, setAllRestaurantAddress] = useState([])
+
+
      const [postImage, setPostImage] = useState();
      const [postData, setPostData] = useState(initPostData);
 
@@ -32,9 +38,9 @@ function AuthAddRestaurant() {
 
      const validationSchema = Yup.object().shape({
           name: Yup.string().required('Please enter your restaurant name'),
-          email: Yup.string().required('Please enter your email').email('Invalid type of email'),
-          phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number'),
-          address: Yup.string().required('Please enter your address'),
+          email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(allRestaurantEmail, "This email is already in use"),
+          phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(allRestaurantPhone, "This phone number is already in use"),
+          address: Yup.string().required('Please enter your address').min(10, "At Least 10 characters").notOneOf(allRestaurantAddress, "This address is already in use"),
           avatar: Yup.mixed()
                .required('Please upload a file')
                .test('fileType', 'Invalid file format', (value) => {
@@ -66,14 +72,9 @@ function AuthAddRestaurant() {
 
      const handleChangeValue = (e) => {
           const { name, value } = e.target;
+          formik.values[name] = value;
           setPostData({ ...postData, [name]: value });
      };
-
-     const validationSchema = Yup.object().shape({
-          avatar: Yup.mixed().required("Please upload a valid avatar"),
-          name: Yup.string().required('Please enter your restaurant name')
-     })
-
 
      const handleSubmitForm = async (e) => {
           const formData = new FormData();
@@ -91,7 +92,6 @@ function AuthAddRestaurant() {
                formData
           );
           if (res) {
-               setReload(!reload)
                console.log(res);
                navigate('/');
           }
@@ -100,8 +100,40 @@ function AuthAddRestaurant() {
           }
      };
      useEffect(() => {
-
-     }, [reload])
+          const getAllRestaurantsEmails = async () => {
+               const [data, error] = await RestaurantService.getAllRestaurantEmails();
+               if (data) {
+                    console.log("setAllRestaurantEmails", data);
+                    setAllRestaurantEmails(data);
+               }
+               if (error) {
+                    console.log(error);
+               }
+          }
+          const getAllRestaurantsPhones = async () => {
+               const [data, error] = await RestaurantService.getAllRestaurantPhone();
+               if (data) {
+                    console.log("setAllRestaurantPhones", data);
+                    setAllRestaurantPhones(data);
+               }
+               if (error) {
+                    console.log(error);
+               }
+          }
+          const getAllRestaurantsAddress = async () => {
+               const [data, error] = await RestaurantService.getAllRestaurantAddress();
+               if (data) {
+                    console.log("setAllRestaurantAddress", data);
+                    setAllRestaurantAddress(data);
+               }
+               if (error) {
+                    console.log(error);
+               }
+          }
+          getAllRestaurantsEmails();
+          getAllRestaurantsPhones();
+          getAllRestaurantsAddress();
+     }, [])
      return (
           <div className="iq-card">
                <div className="iq-card-header d-flex justify-content-between">

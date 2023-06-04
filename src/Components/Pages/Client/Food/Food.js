@@ -12,6 +12,7 @@ import img_food from '../../../../images/img-food.jpeg'
 import { selectUserData } from '../../../../redux/reducers/users'
 import * as CartService from "../../../../services/CartService"
 import * as HomePageService from "../../../../services/HomePageService"
+import * as RestaurantService from "../../../../services/RestaurantService"
 import styles from './food.module.css'
 import { addToCart } from '../../../../redux/reducers/cart'
 
@@ -153,12 +154,21 @@ function Food() {
         const getAllProductFromAPI = async () => {
             const [data, error] = await HomePageService.getProductByRestaurant(id.split('-')[0], id.split('-')[1], 1, queryParams);
             if (data) {
-                console.log(data.products);
-                setRestaurant(data);
+                console.log(data);
                 setAllProduct(data.products)
             }
             if (error) {
                 console.log(error);
+            }
+        };
+        const getRestaurantData = async (id) => {
+            const [data, err] = await RestaurantService.getRestaurantByID(id);
+            if (data) {
+                console.log("Restaurant Data: ", data);
+                setRestaurant(data);
+            }
+            if (err) {
+                console.log(err);
             }
         };
         const getCartFromAPI = async () => {
@@ -173,6 +183,7 @@ function Food() {
         }
         getCartFromAPI();
         getAllProductFromAPI();
+        getRestaurantData(id.split('-')[0]);
     }, [id, queryParams, userData.user.subject, reload]);
     return (
         <>
