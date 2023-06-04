@@ -186,7 +186,20 @@ function ListOrdered() {
                                                                  }
                                                                  {/* unavailable */}
                                                                  <td>{dateFormat(e.created_at)}</td>
-                                                                 <td>{e.estimated_time ? dateFormat(e.estimated_time) : "Unavailable"}</td>
+                                                                 {
+                                                                      e.status < 5 &&
+                                                                      <td>
+                                                                           {e.estimated_time ? dateFormat(e.estimated_time) : "Unavailable"}
+                                                                      </td>
+                                                                 }
+
+                                                                 {
+                                                                      e.status === 5 &&
+                                                                      <td>
+                                                                           Shipped At: {dateFormat(e.estimated_time)}
+                                                                      </td>
+                                                                 }
+
                                                                  <td>{e.driver ? e.driver?.userName : "Unavailable"}</td>
 
                                                                  <td>{formatPrice(e.total_price)}</td>
@@ -194,9 +207,11 @@ function ListOrdered() {
                                                                       <Link className='btn btn-success rounded-0' to={`/list_orderded/${e.id}`}>View Details</Link>
                                                                  </td>
                                                                  <td>
-                                                                      <button onClick={() => handleCancelOrdered(e.id)}
+                                                                      <button
+                                                                           onClick={() => handleCancelOrdered(e.id)}
                                                                            disabled={e.status !== 0}
-                                                                           className='btn btn-danger rounded-0'>
+                                                                           className={e.status !== 0 ? cx('btn btn-danger rounded-0', "cursor-disabled") : cx('btn btn-danger rounded-0')}
+                                                                      >
                                                                            Cancel Order
                                                                       </button>
                                                                  </td>

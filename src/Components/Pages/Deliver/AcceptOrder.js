@@ -26,7 +26,19 @@ const formatPrice = (price) => {
           minimumFractionDigits: 2,
      });
 };
-const currentDate = () => {
+const estimatedDate = (duration_hour, duration_minutes, duration_seconds) => {
+     const date = new Date();
+     const year = date.getFullYear();
+     const month = date.getMonth() + 1;
+     const day = date.getDate();
+
+     const hour = date.getHours() + 7 + duration_hour;
+     const minute = date.getMinutes() + duration_minutes;
+     const second = date.getSeconds() + duration_seconds;
+
+     return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+}
+const currentTime = () => {
      const date = new Date();
      const year = date.getFullYear();
      const month = date.getMonth() + 1;
@@ -65,24 +77,46 @@ function AcceptOrder({ orderId }) {
      const [profile, setProfile] = useState(initProfileState);
 
      const [orderDetail, setOrderDetail] = useState({});
-     const [reload, setReload] = useState(false)
+     const [reload, setReload] = useState(false);
+
      const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
-          console.log(dateFormat(duration));
+          const timeRegex = /(\d+)\s*hours?(\s*(\d+)\s*mins?)?(\s*(\d+)\s*seconds?)?/i; // Regular expression to match hours, minutes, and seconds
+
+          const matches = duration.match(timeRegex); // Extract hours, minutes, and seconds from the input string
+
+          let hours = 0;
+          let minutes = 0;
+          let seconds = 0;
+
+          if (matches) {
+               if (matches[1]) {
+                    hours = parseInt(matches[1], 10); // Parse hours as an integer
+               }
+
+               if (matches[3]) {
+                    minutes = parseInt(matches[3], 10); // Parse minutes as an integer
+               }
+
+               if (matches[5]) {
+                    seconds = parseInt(matches[5], 10); // Parse seconds as an integer
+               }
+          }
           const orderData = {
                status: currentStatus + 1,
-               estimated_time: date_now.getTime() + duration * 1000
+               estimated_time: estimatedDate(hours, minutes, seconds)
           }
           console.log(orderData);
-          // const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
-          // if (data) {
-          //      socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
-          //      setReload(!reload);
-          //      console.log(data);
-          // }
-          // if (error) {
-          //      console.log(error);
-          // }
+          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          if (data) {
+               socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
+               setReload(!reload);
+               console.log(data);
+          }
+          if (error) {
+               console.log(error);
+          }
      }
+
      const handleUpdateStatus = async (orderId, deliverId, currentStatus) => {
           const orderData = {
                status: currentStatus + 1
@@ -97,13 +131,15 @@ function AcceptOrder({ orderId }) {
                console.log(error);
           }
      }
+
      const handleShipped = async (orderId, deliverId, currentStatus) => {
           const orderData = {
-               status: currentStatus + 1
+               status: currentStatus + 1,
+               estimated_time: currentTime()
           }
           const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
           if (data) {
-               socket.emit("deliverShipped", { orderId, deliverId, orderData });
+               socket.emit("deliverShipped", { orderId, deliverId, orderData, shippedDate: currentTime() });
                setReload(!reload);
                console.log(data);
           }

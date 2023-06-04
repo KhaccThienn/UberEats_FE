@@ -168,8 +168,8 @@ function ListProduct() {
                               className="card-img"
                             />
                           </td>
-                          <td>{e.price}</td>
-                          <td>{e.sale_price}</td>
+                          <td>{formatPrice(e.price)}</td>
+                          <td>{formatPrice(e.sale_price)}</td>
                           <td>{e.status === 1 ? "Show" : "Hide"}</td>
                           <td>{e.description}</td>
                           <td>

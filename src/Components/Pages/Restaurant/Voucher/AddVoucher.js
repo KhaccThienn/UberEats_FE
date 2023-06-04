@@ -54,6 +54,7 @@ function AddVoucher() {
     const getAllVouchersNameFromAPI = async () => {
       const [data, error] = await VoucherService.getAllVouchersname();
       if (data) {
+        console.log(data);
         setAllVouchersName(data);
       }
       if (error) {

@@ -85,12 +85,12 @@ function MainLayout({ children }) {
         }
       })
   })
-  
+
   socket.on("deliverShippedOrder", (data) => {
     console.log("orderStatus Socket Data", data);
     data &&
       Swal.fire({
-        title: "Your order has been shipped, Thanks For using our service",
+        title: `Your order has been shipped at ${data.shippedDate}, Thanks For using our service`,
         showCancelButton: true,
         confirmButtonText: 'Accept',
       }).then((result) => {

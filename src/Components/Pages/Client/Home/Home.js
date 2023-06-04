@@ -1,14 +1,18 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import React, { useState } from 'react'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import classNames from 'classnames/bind'
-import styles from './home.module.css'
-import { Link, useNavigate } from 'react-router-dom'
-import Restaurant from '../Restaurant/Restaurant'
-import HomeFeature from '../HomeFeature/HomeFeature'
+import geolocation from 'geolocation'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { selectUserData } from '../../../../redux/reducers/users'
-import { useNavigateSearch } from './../../../../hooks/useNavigateSearch';
+import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { selectUserData } from '../../../../redux/reducers/users'
+import HomeFeature from '../HomeFeature/HomeFeature'
+import Restaurant from '../Restaurant/Restaurant'
+import { useNavigateSearch } from './../../../../hooks/useNavigateSearch'
+import styles from './home.module.css'
+import homeicon from "../../../../images/homeicon.png"
+
 
 let cx = classNames.bind(styles);
 
@@ -16,7 +20,7 @@ function Home() {
     const userData = useSelector(selectUserData);
     const [keyWord, setKeyWord] = useState('');
     const [filterValue, setFilterValue] = useState({});
-
+    const [center, setCenter] = useState({ lat: "", lng: "" });
     const navigate = useNavigate();
     const navigateSearch = useNavigateSearch();
 
@@ -41,6 +45,33 @@ function Home() {
         }
         console.log(keyWord);
         navigateSearch(`/search/${keyWord.keyWord}`);
+    }
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
+        libraries: ['places']
+    })
+
+    const [map, setMap] = useState(/**  @type google.maps.Map */(null));
+
+    useEffect(() => {
+        geolocation.getCurrentPosition((err, position) => {
+            if (err) {
+                console.error('Error retrieving location', err);
+            } else {
+                const { latitude, longitude } = position.coords;
+                setCenter({
+                    lat: latitude,
+                    lng: longitude
+                })
+                console.log('Current latitude:', latitude);
+                console.log('Current longitude:', longitude);
+                // Do something with the latitude and longitude values
+            }
+        });
+    }, [])
+
+    if (!isLoaded) {
+        return
     }
 
     return (
@@ -71,7 +102,28 @@ function Home() {
                 <p className={cx('h1', 'font-weight-bold', 'text-black')}>Cities near me</p>
                 <hr />
                 <div>
-                    <iframe className={cx('border-0')} src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6511991.84461928!2d-124.59543491876644!3d37.16022415957861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb9fe5f285e3d%3A0x8b5109a227086f55!2zQ2FsaWZvcm5pYSwgSG9hIEvhu7M!5e0!3m2!1svi!2s!4v1683791333511!5m2!1svi!2s" width='100%' height='450px' allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                    <GoogleMap
+                        center={center}
+                        zoom={20}
+                        mapContainerStyle={{ width: '100%', height: '85vh' }}
+                        options={{
+                            zoomControl: true,
+                            streetViewControl: true,
+                            mapTypeControl: true,
+                            fullscreenControl: true,
+
+                        }}
+                        onLoad={map => { setMap(map) }}
+                    >
+                        <Marker
+                            position={center}
+                            title='Your Current Location'
+                            cursor='pointer'
+                            /*  eslint-disable-next-line no-undef */
+                            icon={homeicon}
+                        />
+                    </GoogleMap>
+
                 </div>
             </div>
         </>

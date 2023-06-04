@@ -6,7 +6,6 @@ import { useFormik } from 'formik'
 import { selectUserData } from "../../../../../redux/reducers/users";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import { env } from 'react-dotenv';
 
 function ChangePassword() {
   const initPasswordState = {

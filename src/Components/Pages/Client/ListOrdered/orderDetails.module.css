@@ -1,3 +1,8 @@
-.text-head{
+.text-head {
     text-shadow: 2px 2px #999;
+}
+
+.cursor-disabled {
+    cursor: not-allowed !important;
+    pointer-events: all !important;
 }
