@@ -123,15 +123,15 @@ function AcceptOrder({ orderId }) {
                estimated_time: estimatedDate(hours, minutes, seconds)
           }
           console.log(orderData);
-          // const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
-          // if (data) {
-          //      socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
-          //      setReload(!reload);
-          //      console.log(data);
-          // }
-          // if (error) {
-          //      console.log(error);
-          // }
+          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          if (data) {
+               socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
+               setReload(!reload);
+               console.log(data);
+          }
+          if (error) {
+               console.log(error);
+          }
      }
 
      const handleUpdateStatus = async (orderId, deliverId, currentStatus) => {
