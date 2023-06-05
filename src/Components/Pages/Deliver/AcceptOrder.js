@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import dateFormat from 'dateformat';
-import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { useRef } from 'react';
 
 import { selectUserData } from '../../../redux/reducers/users';
@@ -61,6 +61,14 @@ function AcceptOrder({ orderId }) {
      const [directionsResponse, setDirectionsResponse] = useState(null)
      const [distance, setDistance] = useState('')
      const [duration, setDuration] = useState('')
+
+     const [estimated_time, setEstimatedTime] = useState({
+          hour: 0,
+          minutes: 0,
+          seconds: 0,
+     })
+
+     const [center, setCenter] = useState({ lat: "", lng: "" });
      /** @type React.MultableRefObject<HTMLInputElement> */
      const oriRef = useRef()
 
@@ -80,41 +88,50 @@ function AcceptOrder({ orderId }) {
      const [reload, setReload] = useState(false);
 
      const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
-          const timeRegex = /(\d+)\s*hours?(\s*(\d+)\s*mins?)?(\s*(\d+)\s*seconds?)?/i; // Regular expression to match hours, minutes, and seconds
+          const timeRegex = /(\d+)\s*hours?(\s*(\d+)\s*mins?)?(\s*(\d+)\s*seconds?)?/i; // Regular expression to match hours, minutes, and seconds 
 
           const matches = duration.match(timeRegex); // Extract hours, minutes, and seconds from the input string
 
-          let hours = 0;
-          let minutes = 0;
-          let seconds = 0;
+          var hours = 0;
+          var minutes = 0;
+          var seconds = 0;
 
           if (matches) {
+
                if (matches[1]) {
                     hours = parseInt(matches[1], 10); // Parse hours as an integer
+                    setEstimatedTime({
+                         hour: hours,
+                    })
                }
 
                if (matches[3]) {
                     minutes = parseInt(matches[3], 10); // Parse minutes as an integer
+                    setEstimatedTime({
+                         minutes: minutes
+                    })
                }
 
                if (matches[5]) {
                     seconds = parseInt(matches[5], 10); // Parse seconds as an integer
+                    setEstimatedTime({ seconds: seconds })
                }
           }
+          console.log(estimated_time);
           const orderData = {
                status: currentStatus + 1,
                estimated_time: estimatedDate(hours, minutes, seconds)
           }
           console.log(orderData);
-          const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
-          if (data) {
-               socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
-               setReload(!reload);
-               console.log(data);
-          }
-          if (error) {
-               console.log(error);
-          }
+          // const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+          // if (data) {
+          //      socket.emit("deliverPickupOrder", { orderId, deliverId, orderData, duration });
+          //      setReload(!reload);
+          //      console.log(data);
+          // }
+          // if (error) {
+          //      console.log(error);
+          // }
      }
 
      const handleUpdateStatus = async (orderId, deliverId, currentStatus) => {
@@ -150,7 +167,6 @@ function AcceptOrder({ orderId }) {
 
      console.log("OrderId: ", orderId);
      const calculateRoute = async (e) => {
-
           if (oriRef.current.value === '' || desRef.current.value === '') {
                return
           }
@@ -188,8 +204,47 @@ function AcceptOrder({ orderId }) {
                     console.log(error);
                }
           };
+
+          let watchId;
+
+          const successCallback = async (position) => {
+               const { latitude, longitude } = position.coords;
+               const currentLocation = {
+                    lat: latitude,
+                    lng: longitude
+               }
+               setCenter(currentLocation);
+               const orderData = {
+                    delivered_from: currentLocation
+               }
+               const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
+               if (data) {
+                    console.log(data);
+               }
+               if (error) {
+                    console.log(error);
+               }
+          };
+
+          const errorCallback = (error) => {
+               console.error(error);
+          };
+
+          if (navigator.geolocation) {
+               watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
+          } else {
+               console.error('Geolocation is not supported by this browser.');
+          }
+
+
           getProfileData(userData.user.subject);
           getOrderByOrderID();
+
+          return () => {
+               if (navigator.geolocation) {
+                    navigator.geolocation.clearWatch(watchId);
+               }
+          };
 
      }, [orderId, userData.user.subject, desRef, oriRef, reload]);
 
@@ -206,14 +261,21 @@ function AcceptOrder({ orderId }) {
                               zoom={12}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
-                                   zoomControl: false,
-                                   streetViewControl: false,
-                                   mapTypeControl: false,
-                                   fullscreenControl: false,
+                                   zoomControl: true,
+                                   streetViewControl: true,
+                                   mapTypeControl: true,
+                                   fullscreenControl: true,
+                                   panControl: true,
                               }}
                               onLoad={map => { setMap(map) }}
 
                          >
+                              <Marker
+                                   position={center}
+                                   title='Your Location'
+                                   cursor='pointer'
+                              /*  eslint-disable-next-line no-undef */
+                              />
                               {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
                          </GoogleMap>
                     </div>

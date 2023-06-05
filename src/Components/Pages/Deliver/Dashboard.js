@@ -56,11 +56,11 @@ function Dashboard() {
           }
      }
 
-
      const { isLoaded } = useJsApiLoader({
           googleMapsApiKey: process.env.REACT_APP_API_MAP_KEY,
           libraries: ['places']
      })
+
 
      const [map, setMap] = useState(/**  @type google.maps.Map */(null));
      // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,7 +69,7 @@ function Dashboard() {
           if (data) {
 
                console.log(data);
-               const newListPendingOrdered = data.filter((item) => (item.status === 2 || item.status === 3) && ((item.driver && (item.driver.id === userData.user.subject)) || item.driver === null));
+               const newListPendingOrdered = data.filter((item) => (item.status === 2 || item.status === 3 || item.status === 4) && ((item.driver && (item.driver.id === userData.user.subject)) || item.driver === null));
                console.log(newListPendingOrdered);
                setListPendingOrders(newListPendingOrdered);
           }
@@ -85,22 +85,34 @@ function Dashboard() {
           data ? console.log(data) : console.log("hehe");
           getListOrderedFromAPI()
      })
+
      useEffect(() => {
-          geolocation.getCurrentPosition((err, position) => {
-               if (err) {
-                    console.error('Error retrieving location', err);
-               } else {
-                    const { latitude, longitude } = position.coords;
-                    setCenter({
-                         lat: latitude,
-                         lng: longitude
-                    })
-                    console.log('Current latitude:', latitude);
-                    console.log('Current longitude:', longitude);
-                    // Do something with the latitude and longitude values
-               }
-          });
+          let watchId;
+
+          const successCallback = (position) => {
+               const { latitude, longitude } = position.coords;
+               setCenter({
+                    lat: latitude,
+                    lng: longitude
+               })
+          };
+
+          const errorCallback = (error) => {
+               console.error(error);
+          };
+
+          if (navigator.geolocation) {
+               watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
+          } else {
+               console.error('Geolocation is not supported by this browser.');
+          }
+
           getListOrderedFromAPI();
+          return () => {
+               if (navigator.geolocation) {
+                    navigator.geolocation.clearWatch(watchId);
+               }
+          };
      }, [userData.user.subject]);
 
      if (!isLoaded) {
@@ -117,11 +129,11 @@ function Dashboard() {
                               zoom={20}
                               mapContainerStyle={{ width: '100%', height: '85vh' }}
                               options={{
-                                   zoomControl: false,
-                                   streetViewControl: false,
-                                   mapTypeControl: false,
-                                   fullscreenControl: false,
-
+                                   zoomControl: true,
+                                   streetViewControl: true,
+                                   mapTypeControl: true,
+                                   fullscreenControl: true,
+                                   panControl: true,
                               }}
                               onLoad={map => { setMap(map) }}
                          >
@@ -162,12 +174,24 @@ function Dashboard() {
                                                                  <div className={cx('col-2')}>{formatPrice(e.total_price)}</div>
                                                                  <div className={cx('col')}>
                                                                       {
-                                                                           e.status === 2 && <button onClick={() => handleAccept(e.id, e.status)} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                           (e.status == 2 && e.driver == null) && <button onClick={() => handleAccept(e.id, e.status)} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
                                                                                 Accept challenge &rarr;
                                                                            </button>
                                                                       }
                                                                       {
-                                                                           e.status === 3 &&
+                                                                           (e.status == 2 && e.driver !== null) &&
+                                                                           <Link to={`/${e.id}`} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                                View Order &rarr;
+                                                                           </Link>
+                                                                      }
+                                                                      {
+                                                                           (e.status == 3 && e.driver !== null) &&
+                                                                           <Link to={`/${e.id}`} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
+                                                                                View Order &rarr;
+                                                                           </Link>
+                                                                      }
+                                                                      {
+                                                                           (e.status == 4 && e.driver !== null) &&
                                                                            <Link to={`/${e.id}`} className={cx('btn', 'btn-success', 'rounded-0', 'btn-sm')}>
                                                                                 View Order &rarr;
                                                                            </Link>

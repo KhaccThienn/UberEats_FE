@@ -54,20 +54,32 @@ function Home() {
     const [map, setMap] = useState(/**  @type google.maps.Map */(null));
 
     useEffect(() => {
-        geolocation.getCurrentPosition((err, position) => {
-            if (err) {
-                console.error('Error retrieving location', err);
-            } else {
-                const { latitude, longitude } = position.coords;
-                setCenter({
-                    lat: latitude,
-                    lng: longitude
-                })
-                console.log('Current latitude:', latitude);
-                console.log('Current longitude:', longitude);
-                // Do something with the latitude and longitude values
+        let watchId;
+
+        const successCallback = (position) => {
+            const { latitude, longitude } = position.coords;
+            setCenter({
+                lat: latitude,
+                lng: longitude
+            })
+        };
+
+        const errorCallback = (error) => {
+            console.error(error);
+        };
+
+        if (navigator.geolocation) {
+            watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+
+        return () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.clearWatch(watchId);
             }
-        });
+        };
+
     }, [])
 
     if (!isLoaded) {
@@ -104,14 +116,14 @@ function Home() {
                 <div>
                     <GoogleMap
                         center={center}
-                        zoom={20}
+                        zoom={15}
                         mapContainerStyle={{ width: '100%', height: '85vh' }}
                         options={{
                             zoomControl: true,
                             streetViewControl: true,
                             mapTypeControl: true,
                             fullscreenControl: true,
-
+                            panControl: true,
                         }}
                         onLoad={map => { setMap(map) }}
                     >

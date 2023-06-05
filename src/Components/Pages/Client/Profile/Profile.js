@@ -19,6 +19,11 @@ import styles from './profile.module.css'
 
 let cx = classNames.bind(styles)
 
+const getCookie = (name) => {
+    const cookieValue = document.cookie?.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)') || null;
+    return cookieValue ? cookieValue.pop() : null;
+}
+
 function Profile() {
     const initProfileState = {
         avatar: "",
