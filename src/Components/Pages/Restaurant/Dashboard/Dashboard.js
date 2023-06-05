@@ -5,15 +5,23 @@ import * as ProductService from "../../../../services/ProductService";
 import * as OrderService from "../../../../services/OrderService";
 import * as RestaurantService from "../../../../services/RestaurantService"
 import * as UserService from "../../../../services/UserService"
+import * as VoucherService from "../../../../services/VoucherService"
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+
+import { BsFillTicketPerforatedFill } from "react-icons/bs"
+import { RiShoppingCartLine } from "react-icons/ri"
+import { MdOutlineProductionQuantityLimits } from "react-icons/md"
+import { MdOutlinePending } from "react-icons/md"
+
 
 function Dashboard() {
   const userData = useSelector(selectUserData);
 
   const [restaurants, setRestaurants] = useState([]);
   const [users, setUsers] = useState([]);
+  const [allVouchers, setAllVouchers] = useState([]);
   const [allProd, setAllProd] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [pendingOrder, setPendingOrders] = useState([]);
@@ -57,11 +65,22 @@ function Dashboard() {
       console.log(error);
     }
   }
+  const getAllVouchersFromAPI = async () => {
+    const [data, error] = await VoucherService.getAllVouchers(userData.user.subject);
+    if (data) {
+      setAllVouchers(data)
+    }
+    if (error) {
+      console.log(error);
+    }
+  };
+  getAllProductFromAPI();
   useEffect(() => {
     getAllUserClient(1);
     getAllOrdersFromAPI()
     getAllProductFromAPI();
     getRestaurantByUserID();
+    getAllVouchersFromAPI();
   }, [userData.user.subject, restaurants.length])
   return (
     <div className="row">
@@ -72,13 +91,13 @@ function Dashboard() {
               <div className="iq-card-body">
                 <div className="d-flex align-items-center">
                   <div className="rounded-circle iq-card-icon bg-primary">
-                    <i className="ri-user-line"></i>
+                    <BsFillTicketPerforatedFill />
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
-                      <span className="counter">{users.length}</span>
+                      <span className="counter">{allVouchers.length}</span>
                     </h2>
-                    <h5 className="">Users</h5>
+                    <h5 className="">Vouchers</h5>
                   </div>
                 </div>
               </div>
@@ -89,7 +108,7 @@ function Dashboard() {
               <div className="iq-card-body">
                 <div className="d-flex align-items-center">
                   <div className="rounded-circle iq-card-icon bg-danger">
-                    <i className="ri-book-line"></i>
+                    <MdOutlineProductionQuantityLimits />
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
@@ -106,7 +125,7 @@ function Dashboard() {
               <div className="iq-card-body">
                 <div className="d-flex align-items-center">
                   <div className="rounded-circle iq-card-icon bg-warning">
-                    <i className="ri-shopping-cart-2-line"></i>
+                    <RiShoppingCartLine />
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
@@ -123,7 +142,7 @@ function Dashboard() {
               <div className="iq-card-body">
                 <div className="d-flex align-items-center">
                   <div className="rounded-circle iq-card-icon bg-info">
-                    <i className="ri-radar-line"></i>
+                    <MdOutlinePending />
                   </div>
                   <div className="text-left ml-3">
                     <h2 className="mb-0">
@@ -133,7 +152,7 @@ function Dashboard() {
                         }
                       </span>
                     </h2>
-                    <h5 className="">Pending</h5>
+                    <h5 className="">Orders Pending</h5>
                   </div>
                 </div>
               </div>

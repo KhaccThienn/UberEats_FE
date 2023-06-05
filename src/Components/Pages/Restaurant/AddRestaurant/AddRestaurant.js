@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import Footer from '../../../Layouts/RestaurantLayout/Footer/Footer';
 import AuthRestaurantSideBar from '../../../Layouts/RestaurantLayout/Sidebar/AuthRestaurantSideBar';
 import Header from '../../../Layouts/RestaurantLayout/Header/Header';
+import Swal from 'sweetalert2';
 
 function AddRestaurant() {
   const initProfileState = {
@@ -98,6 +99,13 @@ function AddRestaurant() {
       formData
     );
     if (res) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Register Restaurant Successfully !",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       setReload(!reload)
       console.log(res);
       navigate('/');

@@ -59,7 +59,7 @@ export const login = async (data) => {
   }
 };
 
-export const logout = async (config) => {
+export const logout = async () => {
   try {
     const res = await http.get(`${urlAPI}/auth/logout`, {
       headers: {

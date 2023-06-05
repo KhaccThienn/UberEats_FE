@@ -64,7 +64,7 @@ function OrderFix() {
      const [postData, setPostData] = useState(initPostCheckout)
      const navigate = useNavigate();
 
-     const handlePostCheckout = async () => {
+     const handlePostCheckout = async (e) => {
           const createOrder = {
                delivered_user: postData.userName ? postData.userName : userProfile.userName,
                delivered_address: postData.address ? postData.address : userProfile.address,
@@ -130,10 +130,10 @@ function OrderFix() {
           phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number')
      })
      const formik = useFormik({
-          initialValues: initProfileState,
+          initialValues: initPostCheckout,
           validationSchema,
           onSubmit: async (e) => {
-               await handlePostCheckout()
+               await handlePostCheckout(e)
           },
      })
 
@@ -223,7 +223,7 @@ function OrderFix() {
                                                        <label htmlFor="" className={cx("h5 text-black mb-1")}>Name<span className='text-danger'>(*)</span>: </label>
                                                        <input type="text"
                                                             defaultValue={userProfile.userName}
-                                                            onChange={(e) => { handleChangeProfile(e) }}
+                                                            onChange={(e) => { handleChangeProfile(e); formik.handleChange(e) }}
                                                             className={cx("form-control rounded-0 mt-1")}
                                                             name="userName" placeholder="Enter name..." />
                                                        {formik.errors.userName && <small id="helpId" className="text-danger">{formik.errors.userName}</small>}
@@ -231,7 +231,7 @@ function OrderFix() {
                                                   <div className={cx("form-group")}>
                                                        <label htmlFor="" className={cx("h5 text-black mb-1")}>Address<span className='text-danger'>(*)</span>: </label>
                                                        <input type="text"
-                                                            onChange={(e) => { handleChangeProfile(e) }}
+                                                            onChange={(e) => { handleChangeProfile(e); formik.handleChange(e) }}
                                                             defaultValue={userProfile.address}
                                                             className={cx("form-control rounded-0 mt-1")}
                                                             name="address" placeholder="Enter address..." />
@@ -240,7 +240,7 @@ function OrderFix() {
                                                   <div className={cx("form-group")}>
                                                        <label htmlFor="" className={cx("h5 text-black mb-1")}>Phone number<span className='text-danger'>(*)</span>: </label>
                                                        <input type="text"
-                                                            onChange={(e) => { handleChangeProfile(e) }}
+                                                            onChange={(e) => { handleChangeProfile(e); formik.handleChange(e) }}
                                                             defaultValue={userProfile.phone}
                                                             className={cx("form-control rounded-0 mt-1")}
                                                             name="phone" placeholder="Enter phone number..." />
