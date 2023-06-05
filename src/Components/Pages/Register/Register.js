@@ -8,15 +8,13 @@ import "sweetalert2/dist/sweetalert2.css";
 import style from "./register.module.css";
 import * as RegisterService from "../../../services/UserService";
 import Header from "../../Layouts/ClientLayout/Header/Header";
-import { useEffect } from "react";
 
 const cx = classNames.bind(style);
 
 
 function Register() {
   const [registerData, setRegisterData] = useState([]);
-  const [phones, setPhones] = useState([]);
-  const [emails, setEmails] = useState([]);
+  const [conflictErr, setConflictErr] = useState({});
   const initialValues = {
     userName: "",
     password: "",
@@ -28,32 +26,15 @@ function Register() {
     userName: Yup.string().required('Please enter your username'),
     password: Yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters'),
     confirmPassword: Yup.string().required('Please enter confirm password').oneOf([Yup.ref('password')], 'Confirm Password must be equal to your password'),
-    email: Yup.string().required('Please enter your email').email('Invalid type of email').notOneOf(emails, 'This email address is already in exists'),
-    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number').notOneOf(phones, 'This phone number is already exists'),
+    email: Yup.string().required('Please enter your email').email('Invalid type of email'),
+    phone: Yup.string().required('Please enter your phone number').matches((/(84|0[3|5|7|8|9])+([0-9]{8})\b/g), 'Invalid phone number')
   })
-  
+
   const navigate = useNavigate();
   const handleChange = async (e) => {
     const { name, value } = await e.target;
     setRegisterData({ ...registerData, [name]: value });
-  }
-  const getUserEmails = async () => {
-    const [data, error] = await RegisterService.getAllUserEmails();
-    if (data) {
-      setEmails(data)
-    }
-    if (error) {
-      console.log(error);
-    }
-  }
-  const getUserPhones = async () => {
-    const [data, error] = await RegisterService.getAllUserPhones();
-    if (data) {
-      setPhones(data)
-    }
-    if (error) {
-      console.log(error);
-    }
+    setConflictErr({})
   }
 
   const formik = useFormik({
@@ -72,12 +53,24 @@ function Register() {
         });
         navigate("/login");
       }
+      if (error.response.status === 409) {
+        switch (error.response.data.error) {
+          case 'Both email and phone are already exist':
+            setConflictErr({ mailErr: 'This email address is already exists', phoneErr: 'This phone number is already exists' })
+            break;
+          case 'This email address is already exists':
+            setConflictErr({ mailErr: 'This email address is already exists' })
+            break;
+          case 'This phone number is already exists':
+            setConflictErr({ phoneErr: 'This phone number is already exists' })
+            break;
+          default:
+            break;
+        }
+      }
+
     },
   })
-  useEffect(() => {
-    getUserEmails();
-    getUserPhones();
-  }, [])
   return (
     <>
       <Header />
@@ -174,6 +167,10 @@ function Register() {
                     formik.errors.email &&
                     <small id="helpId" className="text-danger">{formik.errors.email}</small>
                   }
+                  {
+                    conflictErr.mailErr &&
+                    <small id="helpId" className="text-danger">{conflictErr.mailErr}</small>
+                  }
                 </div>
                 <div className={cx("form-group")}>
                   <label htmlFor="">Phone number: </label>
@@ -194,6 +191,10 @@ function Register() {
                   {
                     formik.errors.phone &&
                     <small id="helpId" className="text-danger">{formik.errors.phone}</small>
+                  }
+                  {
+                    conflictErr.phoneErr &&
+                    <small id="helpId" className="text-danger">{conflictErr.phoneErr}</small>
                   }
                 </div>
                 <div className={cx("form-group")}>

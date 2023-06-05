@@ -1,5 +1,4 @@
 import * as http from "../common/http";
-import env from "react-dotenv";
 
 const urlAPI = process.env.REACT_APP_URL_API;
 
