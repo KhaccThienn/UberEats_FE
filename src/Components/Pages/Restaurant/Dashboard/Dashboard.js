@@ -152,7 +152,7 @@ function Dashboard() {
                         }
                       </span>
                     </h2>
-                    <h5 className="">Orders Pending</h5>
+                    <h5 className="">Pending Orders</h5>
                   </div>
                 </div>
               </div>
