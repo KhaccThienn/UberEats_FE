@@ -75,6 +75,7 @@ function Dashboard() {
                console.log(error);
           }
      }
+
      socket.on("updateOrderStatusDeliver", (data) => {
           data ? console.log(data) : console.log("hehe");
           getListOrderedFromAPI()
@@ -141,7 +142,7 @@ function Dashboard() {
                                    cursor='pointer'
                                    /*  eslint-disable-next-line no-undef */
                                    icon={homeicon}
-                                   options={{  }}
+                                   options={{}}
                               />
                               {listPendingOrders.map((e, i) => {
                                    return (
