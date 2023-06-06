@@ -181,11 +181,11 @@ function UpdateVoucher() {
               </div>
               <button
                 type="submit"
-                className="btn btn-primary rounded-0"
+                className="btn btn-primary mr-2"
               >
                 Submit
               </button>
-              <button type="reset" className="btn btn-danger rounded-0">
+              <button type="reset" className="btn btn-danger">
                 Back
               </button>
             </form>

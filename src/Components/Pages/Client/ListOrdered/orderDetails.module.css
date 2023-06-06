@@ -6,3 +6,6 @@
     cursor: not-allowed !important;
     pointer-events: all !important;
 }
+.w-15{
+    width: 15%;
+}

@@ -119,7 +119,7 @@ function ListProduct() {
             </div>
             <div className="iq-card-body">
               <div className="table-responsive">
-                <div className="row align-items-center">
+                <div className="row align-items-center my-2">
                   <div className="form-group col-lg-3 m-0">
                     <select
                       className="form-control rounded-0"
@@ -152,7 +152,7 @@ function ListProduct() {
                       <th>Sale Price</th>
                       <th>Status</th>
                       <th>Description</th>
-                      <th>Actions</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -172,37 +172,22 @@ function ListProduct() {
                           <td>{formatPrice(e.sale_price)}</td>
                           <td>{e.status === 1 ? "Show" : "Hide"}</td>
                           <td>{e.description}</td>
-                          <td>
+                          <td className="text-right">
                             <div className="dropdown">
+                              <Link
+                                className="btn btn-info rounded-0"
+                                to={`/product/update/${e.id}-${slugsGenerator(
+                                  e.name
+                                )}`}
+                              >
+                                Edit
+                              </Link>
                               <button
-                                className="btn btn-primary dropdown-toggle rounded-0"
-                                type="button"
-                                id="dropdownMenuButton"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
+                                className="btn btn-danger rounded-0 ml-2"
+                                onClick={() => handleDelete(e.id)}
                               >
-                                Actions
+                                Delete
                               </button>
-                              <div
-                                className="dropdown-menu rounded-0"
-                                aria-labelledby="dropdownMenuButton"
-                              >
-                                <Link
-                                  className="dropdown-item"
-                                  to={`/product/update/${e.id}-${slugsGenerator(
-                                    e.name
-                                  )}`}
-                                >
-                                  Update
-                                </Link>
-                                <button
-                                  className="dropdown-item"
-                                  onClick={() => handleDelete(e.id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
                             </div>
                           </td>
                         </tr>

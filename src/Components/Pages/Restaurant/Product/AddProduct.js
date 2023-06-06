@@ -276,7 +276,7 @@ function AddProduct() {
                 }
               </div>
 
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary mr-2">
                 Submit
               </button>
               <button type="reset" className="btn btn-danger">

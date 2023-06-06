@@ -76,7 +76,6 @@ function ChangePassword() {
             <form method="POST" onSubmit={(e) => {
               formik.handleSubmit(e)
             }}>
-              <p className="px-3">Change Password </p>
               <div className="form-group col-sm-12">
                 <label htmlFor="uname">Old Password:</label>
                 <input type="text" className={(formik.errors.old_password || errMsg) ? "form-control is-invalid " : "form-control"} id="name" name="old_password" onChange={(e) => { handleChangeInput(e); formik.handleChange(e) }} />
@@ -97,7 +96,7 @@ function ChangePassword() {
                   {formik.errors.confirm_password && <small id="helpId" className="text-danger">{formik.errors.confirm_password}</small>}
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary mr-2 rounded-0">
+              <button type="submit" className="btn btn-primary">
                 Submit
               </button>
             </form>

@@ -1,16 +1,18 @@
 import React from 'react'
-import styles from './orderDetails.module.css'
 import classNames from 'classnames/bind'
 import dateFormat from 'dateformat'
 import { GoPrimitiveDot } from 'react-icons/go'
+import { FaEye } from 'react-icons/fa'
+import { MdOutlineCancel } from 'react-icons/md'
 import { useSelector } from 'react-redux'
-import { selectUserData } from '../../../../redux/reducers/users'
-import * as OrderService from "../../../../services/OrderService"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2'
+import styles from './orderDetails.module.css'
+import { selectUserData } from '../../../../redux/reducers/users'
+import * as OrderService from "../../../../services/OrderService"
 
 const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
@@ -159,7 +161,6 @@ function ListOrdered() {
                                                   <th scope='col' className={cx('text-black')}>Estimated Date</th>
                                                   <th scope='col' className={cx('text-black')}>Shipper</th>
                                                   <th scope='col' className={cx('text-black')}>Total</th>
-                                                  <th scope='col' className={cx('text-black')}>View Details</th>
                                                   <th scope='col' className={cx('text-black')}></th>
                                              </tr>
                                         </thead>
@@ -203,17 +204,17 @@ function ListOrdered() {
                                                                  <td>{e.driver ? e.driver?.userName : "Unavailable"}</td>
 
                                                                  <td>{formatPrice(e.total_price)}</td>
-                                                                 <td>
-                                                                      <Link className='btn btn-success rounded-0' to={`/list_orderded/${e.id}`}>View Details</Link>
-                                                                 </td>
-                                                                 <td>
-                                                                      <button
-                                                                           onClick={() => handleCancelOrdered(e.id)}
-                                                                           disabled={e.status !== 0}
-                                                                           className={e.status !== 0 ? cx('btn btn-danger rounded-0', "cursor-disabled") : cx('btn btn-danger rounded-0')}
-                                                                      >
-                                                                           Cancel Order
-                                                                      </button>
+                                                                 <td className={cx('text-right','w-15')}>
+                                                                      <div className='d-flex justify-content-end'>
+                                                                           <Link className='btn btn-success rounded-0 mr-2' to={`/list_orderded/${e.id}`}><FaEye /> View</Link>
+                                                                           <button
+                                                                                onClick={() => handleCancelOrdered(e.id)}
+                                                                                disabled={e.status !== 0}
+                                                                                className={e.status !== 0 ? cx('btn btn-danger rounded-0', "cursor-disabled") : cx('btn btn-danger rounded-0')}
+                                                                           >
+                                                                                <MdOutlineCancel /> Cancel
+                                                                           </button>
+                                                                      </div>
                                                                  </td>
 
                                                             </tr>

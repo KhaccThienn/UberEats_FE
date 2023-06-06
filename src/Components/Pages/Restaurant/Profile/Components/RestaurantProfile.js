@@ -258,7 +258,7 @@ function RestaurantProfile({ resID }) {
               <button type="submit" className="btn btn-primary mr-2">
                 Submit
               </button>
-              <button type="reset" className="btn iq-bg-danger">
+              <button type="reset" className="btn btn-danger">
                 Reset
               </button>
             </form>
