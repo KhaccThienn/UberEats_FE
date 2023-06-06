@@ -1,16 +1,14 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
-import { selectUserData } from '../../../../redux/reducers/users';
-import * as RestaurantService from "./../../../../services/RestaurantService";
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import * as Yup from "yup"
 import { useFormik } from 'formik';
-import Footer from '../../../Layouts/RestaurantLayout/Footer/Footer';
-import AuthRestaurantSideBar from '../../../Layouts/RestaurantLayout/Sidebar/AuthRestaurantSideBar';
-import Header from '../../../Layouts/RestaurantLayout/Header/Header';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import * as Yup from "yup";
+import { selectUserData } from '../../../../redux/reducers/users';
+import Footer from '../../../Layouts/RestaurantLayout/Footer/Footer';
+import Header from '../../../Layouts/RestaurantLayout/Header/Header';
+import AuthRestaurantSideBar from '../../../Layouts/RestaurantLayout/Sidebar/AuthRestaurantSideBar';
+import * as RestaurantService from "./../../../../services/RestaurantService";
 
 function AddRestaurant() {
   const initProfileState = {

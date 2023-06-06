@@ -23,88 +23,94 @@ const socket = io(process.env.REACT_APP_URL_API);
 function ResMainLayout({ child }) {
   const navigate = useNavigate();
 
-  socket.on("handleCanceledOrder", (data) => {
-    console.log("orderStatus Socket Data", data);
-    data &&
-      Swal.fire({
-        title: `Order ${data.orderId} is already canceled by ${data.user.userName} !`,
-        showCancelButton: true,
-        confirmButtonText: 'Accept',
-        position: "center"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/order")
-        }
-      })
-  })
-
-  socket.on("createOrderClient", (data) => {
-    console.log("orderStatus Socket Data", data);
-    data &&
-      Swal.fire({
-        title: `You have a new order created at ${data.date}, do you want to view it ?`,
-        showCancelButton: true,
-        confirmButtonText: 'Accept',
-        position: "center"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/order")
-        }
-      })
-  })
-
-  socket.on("deliverUpdateOrderStatus", (data) => {
-    console.log("orderStatus Socket Data", data);
-    data &&
-      Swal.fire({
-        title: `Order #${data.orderId} has been picked up by ${data.deliver.userName}`,
-        showCancelButton: true,
-        confirmButtonText: 'Accept',
-        position: "center"
-
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/order")
-        }
-      })
-  })
-
-  socket.on("deliverShippingOrder", (data) => {
-    console.log("orderStatus Socket Data", data);
-    data &&
-      Swal.fire({
-        title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
-        showCancelButton: true,
-        confirmButtonText: 'Accept',
-        position: "center"
-
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/order")
-        }
-      })
-  })
-
-  socket.on("deliverShippedOrder", (data) => {
-    console.log("orderStatus Socket Data", data);
-    data &&
-      Swal.fire({
-        title: `Order #${data.orderId} has been shipped successfully by ${data.deliver.userName}`,
-        showCancelButton: true,
-        confirmButtonText: 'Accept',
-        position: "center"
-
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/")
-        }
-      })
-  })
-
   const userData = useSelector(selectUserData);
 
   const [restaurants, setRestaurants] = useState([]);
   const [reload, setReload] = useState(false);
+
+  if (userData.user?.subject) {
+    socket.on("handleCanceledOrder", (data) => {
+      console.log("orderStatus Socket Data", data);
+      data &&
+        Swal.fire({
+          title: `Order ${data.orderId} is already canceled by ${data.user.userName} !`,
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          position: "center"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/order")
+          }
+        })
+    })
+
+    socket.on("createOrderClient", (data) => {
+      console.log("orderStatus Socket Data", data);
+      data &&
+        Swal.fire({
+          title: `You have a new order created at ${data.date}, do you want to view it ?`,
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          position: "center"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/order")
+          }
+        })
+    })
+
+    socket.on("deliverUpdateOrderStatus", (data) => {
+      console.log("orderStatus Socket Data", data);
+      data &&
+        Swal.fire({
+          title: `Order #${data.orderId} has been picked up by ${data.deliver.userName}`,
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          position: "center"
+
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/order")
+          }
+        })
+    })
+
+    socket.on("deliverShippingOrder", (data) => {
+      console.log("orderStatus Socket Data", data);
+      data &&
+        Swal.fire({
+          title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          position: "center"
+
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/order")
+          }
+        })
+    })
+
+    socket.on("deliverShippedOrder", (data) => {
+      console.log("orderStatus Socket Data", data);
+      data &&
+        Swal.fire({
+          title: `Order #${data.orderId} has been shipped successfully by ${data.deliver.userName}`,
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          position: "center"
+
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/")
+          }
+        })
+    })
+  }
+
+
+
+
   useEffect(() => {
     const getRestaurantByUserID = async () => {
       const [data, error] = await RestaurantService.getAllRestaurantByUser(userData.user.subject);

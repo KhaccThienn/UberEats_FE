@@ -6,6 +6,7 @@ import { DirectionsRenderer, GoogleMap, useJsApiLoader } from "@react-google-map
 import classNames from "classnames/bind";
 import geocode from 'react-geocode';
 import styles from './order.module.css';
+import { GoPrimitiveDot } from "react-icons/go";
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,38 @@ function OrderDetails() {
         });
     };
     const { id } = useParams();
+    const statusArr = [
+        {
+            sttId: 0,
+            style: "text-warning",
+            text: "Pending"
+        },
+        {
+            sttId: 1,
+            style: "text-primary",
+            text: "Cooking"
+        },
+        {
+            sttId: 2,
+            style: "text-info",
+            text: "Cooked"
+        },
+        {
+            sttId: 3,
+            style: "text-dark",
+            text: "Picked"
+        },
+        {
+            sttId: 4,
+            style: "text-secondary",
+            text: "Shipping"
+        },
+        {
+            sttId: 5,
+            style: "text-success",
+            text: "Shipped"
+        },
+    ]
     const initOrderInfo = {
         delivered_address: '',
         delivered_phone: '',
@@ -95,7 +128,7 @@ function OrderDetails() {
         }
     }
     console.log(orderInfo.delivered_from);
-    if (orderInfo.delivered_from.lat) {
+    if (orderInfo.delivered_from?.lat) {
         getAddressData()
     }
 
@@ -196,11 +229,21 @@ function OrderDetails() {
 
                                                 <tr>
                                                     <th>Total Price </th>
-                                                    <td>{orderInfo.total_price}</td>
+                                                    <td>{formatPrice(orderInfo.total_price)}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Status </th>
-                                                    <td>{orderInfo.status}</td>
+                                                    {
+                                                        statusArr.map((status, index) => {
+                                                            if (status.sttId === orderInfo.status) {
+                                                                return (
+                                                                    <td className={status.style} key={index}>
+                                                                        <GoPrimitiveDot /> {status.text}
+                                                                    </td>
+                                                                )
+                                                            }
+                                                        })
+                                                    }
                                                 </tr>
                                                 <tr>
                                                     <th>Shipper Information: </th>
@@ -243,7 +286,7 @@ function OrderDetails() {
                     <div className="iq-card">
                         <div className="iq-card-header d-flex justify-content-between">
                             <div className="iq-header-title">
-                                <h4 className="card-title">List Products</h4>
+                                <h4 className="card-title">List Products In This Order</h4>
                             </div>
                         </div>
                         <div className="iq-card-body">

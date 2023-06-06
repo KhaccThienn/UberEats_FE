@@ -26,7 +26,7 @@ const formatPrice = (price) => {
           minimumFractionDigits: 2,
      });
 };
-const estimatedDate = (duration_hour, duration_minutes, duration_seconds) => {
+const estimatedDate = (duration_hour, duration_minutes) => {
      const date = new Date();
      const year = date.getFullYear();
      const month = date.getMonth() + 1;
@@ -34,7 +34,7 @@ const estimatedDate = (duration_hour, duration_minutes, duration_seconds) => {
 
      const hour = date.getHours() + 7 + duration_hour;
      const minute = date.getMinutes() + duration_minutes;
-     const second = date.getSeconds() + duration_seconds;
+     const second = date.getSeconds();
 
      return `${year}-${month}-${day} ${hour}:${minute}:${second}`
 }
@@ -69,11 +69,13 @@ function AcceptOrder({ orderId }) {
      })
 
      const [center, setCenter] = useState({ lat: "", lng: "" });
+
      /** @type React.MultableRefObject<HTMLInputElement> */
      const oriRef = useRef()
 
      /** @type React.MultableRefObject<HTMLInputElement> */
      const desRef = useRef()
+
      const userData = useSelector(selectUserData);
      const initProfileState = {
           avatar: "",
@@ -87,40 +89,35 @@ function AcceptOrder({ orderId }) {
      const [orderDetail, setOrderDetail] = useState({});
      const [reload, setReload] = useState(false);
 
-     const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
-          const timeRegex = /(\d+)\s*hours?(\s*(\d+)\s*mins?)?(\s*(\d+)\s*seconds?)?/i; // Regular expression to match hours, minutes, and seconds 
-
-          const matches = duration.match(timeRegex); // Extract hours, minutes, and seconds from the input string
-
-          var hours = 0;
-          var minutes = 0;
-          var seconds = 0;
-
-          if (matches) {
-
-               if (matches[1]) {
-                    hours = parseInt(matches[1], 10); // Parse hours as an integer
-                    setEstimatedTime({
-                         hour: hours,
-                    })
-               }
-
-               if (matches[3]) {
-                    minutes = parseInt(matches[3], 10); // Parse minutes as an integer
-                    setEstimatedTime({
-                         minutes: minutes
-                    })
-               }
-
-               if (matches[5]) {
-                    seconds = parseInt(matches[5], 10); // Parse seconds as an integer
-                    setEstimatedTime({ seconds: seconds })
-               }
+     function extractTimeComponents(input) {
+          const timeRegex = /(\d+)\s*hour[s]*\s*(\d+)\s*min[s]*/;
+          if (!input.toString().match(timeRegex)) {
+               input = "0 hour " + input
           }
-          console.log(estimated_time);
+          console.log(input);
+          const matches = input.match(timeRegex);
+          console.log(matches);
+          if (matches) {
+               const hours = parseInt(matches[1]);
+               const minutes = parseInt(matches[2]);
+
+               // Tính số giây
+
+               return {
+                    hours: hours,
+                    minutes: minutes,
+               };
+          }
+
+          return null; // Trả về null nếu không tìm thấy
+     }
+     const handlePickedUp = async (orderId, deliverId, currentStatus, duration) => {
+          // Hàm trích xuất số giờ, số phút và số giây từ dữ liệu đầu vào
+          const estimated_date = extractTimeComponents(duration);
+          console.log(estimated_date);
           const orderData = {
                status: currentStatus + 1,
-               estimated_time: estimatedDate(hours, minutes, seconds)
+               estimated_time: estimatedDate(estimated_date.hours, estimated_date.minutes)
           }
           console.log(orderData);
           const [data, error] = await OrderService.updateOrderStatus(orderId, orderData);
