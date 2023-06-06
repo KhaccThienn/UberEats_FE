@@ -130,7 +130,7 @@ function OrderDetail() {
                         </tr>
                         <tr>
                           <th>Driver:  </th>
-                          <td>{orderInfo.driver ? orderInfo.driver.userName : "Null"}</td>
+                          <td>{orderInfo.driver ? orderInfo.driver.userName : "Unavailable"}</td>
                         </tr>
                       </table>
                     </div>
@@ -138,7 +138,7 @@ function OrderDetail() {
                 </div>
                 <div className="col-lg-6">
                   <div className="iq-header-title">
-                    <h4 className="card-title">Shipment Details</h4>
+                    <h4 className="card-title">Customer information: </h4>
                   </div>
                   <div className="iq-card-body p-0">
                     <div className="table-responsive">

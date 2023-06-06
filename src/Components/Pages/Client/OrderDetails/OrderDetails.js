@@ -255,7 +255,7 @@ function OrderDetails() {
                                 </div>
                                 <div className="col-lg-6">
                                     <div className="iq-header-title">
-                                        <h4 className="card-title">Shipment Details</h4>
+                                        <h4 className="card-title">Customer information</h4>
                                     </div>
                                     <div className="iq-card-body p-0">
                                         <div className="table-responsive">

@@ -19,7 +19,7 @@ function MainLayout({ children }) {
       console.log("updateOrderStatusClient Socket Data", data);
       data &&
         Swal.fire({
-          title: `Your Order #${data.orderID} has been cooking !`,
+          title: `Your Order #${data.orderID} is cooking now!`,
           showCancelButton: true,
           confirmButtonText: 'OK',
           position: "center"
@@ -79,7 +79,7 @@ function MainLayout({ children }) {
       console.log("orderStatus Socket Data", data);
       data &&
         Swal.fire({
-          title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
+          title: `Order #${data.orderId} is shipping by ${data.deliver.userName}`,
           showCancelButton: true,
           confirmButtonText: 'OK',
           position: "center"
@@ -94,7 +94,7 @@ function MainLayout({ children }) {
       console.log("orderStatus Socket Data", data);
       data &&
         Swal.fire({
-          title: `Your order has been shipped at ${data.shippedDate}, Thanks For using our service`,
+          title: `Your order has been shipped at ${data.shippedDate}, Thanks for using our service`,
           showCancelButton: true,
           confirmButtonText: 'OK',
         }).then((result) => {

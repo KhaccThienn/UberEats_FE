@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import geolocation from 'geolocation';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
@@ -12,7 +11,6 @@ import * as OrderService from "../../../services/OrderService";
 import styles from './deliver.module.css';
 import GetMarker from './GetMarker';
 import homeicon from '../../../images/homeicon.png'
-
 
 const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
@@ -143,6 +141,7 @@ function Dashboard() {
                                    cursor='pointer'
                                    /*  eslint-disable-next-line no-undef */
                                    icon={homeicon}
+                                   options={{  }}
                               />
                               {listPendingOrders.map((e, i) => {
                                    return (
