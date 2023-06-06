@@ -1,16 +1,19 @@
 import React from 'react'
-import styles from './orderDetails.module.css'
 import classNames from 'classnames/bind'
 import dateFormat from 'dateformat'
 import { GoPrimitiveDot } from 'react-icons/go'
+import { FaEye } from 'react-icons/fa'
+import { MdOutlineCancel } from 'react-icons/md'
 import { useSelector } from 'react-redux'
-import { selectUserData } from '../../../../redux/reducers/users'
-import * as OrderService from "../../../../services/OrderService"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2'
+import styles from './orderDetails.module.css'
+import { selectUserData } from '../../../../redux/reducers/users'
+import * as OrderService from "../../../../services/OrderService"
+import { useNavigateSearch } from '../../../../hooks/useNavigateSearch'
 
 const socket = io(process.env.REACT_APP_URL_API);
 let cx = classNames.bind(styles)
@@ -55,8 +58,27 @@ function ListOrdered() {
                text: "Shipped"
           },
      ]
+     const navigateSearch = useNavigateSearch();
+     const initState = {};
+     const [filterValues, setFilterValues] = useState(initState);
      const [reload, setReload] = useState(false)
      const userData = useSelector(selectUserData);
+
+     const getQueryParams = () => {
+          return new URLSearchParams(window.location.search).toString();
+     };
+
+     const queryParams = getQueryParams();
+     const handleChange = async (e) => {
+          const { name, value } = await e.target;
+          setFilterValues({ ...filterValues, [name]: value });
+     };
+
+     const handleSubmit = () => {
+          console.log({ ...filterValues });
+          navigateSearch(`/list_orderded`, { ...filterValues });
+          setReload(!reload)
+     };
 
      const handleCancelOrdered = async (orderId) => {
           const choose = await Swal.fire({
@@ -92,10 +114,13 @@ function ListOrdered() {
      }
 
      const getAllProductFromAPI = async () => {
-          const [data, error] = await OrderService.getAllOrderByUserID(userData.user.subject);
+          const [data, error] = await OrderService.getAllOrderByUserID(userData.user.subject, queryParams);
           if (data) {
+               console.log(queryParams);
                console.log(data);
-               setAllOrders(data.sort((a, b) => b.id - a.id))
+               queryParams
+                    ? setAllOrders(data)
+                    : setAllOrders(data.sort((a, b) => b.id - a.id));
           }
           if (error) {
                console.log(error);
@@ -146,6 +171,24 @@ function ListOrdered() {
                                    <div className={cx("col-12")}>
                                         <p className={cx('h1', 'text-head', 'py-3', 'text-center')}>List <b>Orders</b></p>
                                    </div>
+
+                                   <div className="row align-items-center my-2">
+                                        <div className="form-group col-lg-10 m-0 pr-0">
+                                             <select className="form-control rounded-0 " name="sort" id="" onChange={(e) => handleChange(e)}>
+                                                  <option>Choose One</option>
+                                                  <option value="status-ASC">Status (Low - High)</option>
+                                                  <option value="status-DESC">Status (High - Low)</option>
+                                                  <option value="created_at-ASC">Date Created (Earlier - Later)</option>
+                                                  <option value="created_at-DESC">Date Created (Later - Earlier)</option>
+                                             </select>
+                                        </div>
+                                        <div className="col-lg-2 p-0">
+                                             <button className="btn btn-primary rounded-0" onClick={handleSubmit}>
+                                                  {" "}
+                                                  Submit
+                                             </button>
+                                        </div>
+                                   </div>
                                    <table className={cx("table", "table-striped", 'table-borderless')}>
                                         <thead>
                                              <tr>
@@ -159,7 +202,6 @@ function ListOrdered() {
                                                   <th scope='col' className={cx('text-black')}>Estimated Date</th>
                                                   <th scope='col' className={cx('text-black')}>Shipper</th>
                                                   <th scope='col' className={cx('text-black')}>Total</th>
-                                                  <th scope='col' className={cx('text-black')}>View Details</th>
                                                   <th scope='col' className={cx('text-black')}></th>
                                              </tr>
                                         </thead>
@@ -203,17 +245,17 @@ function ListOrdered() {
                                                                  <td>{e.driver ? e.driver?.userName : "Unavailable"}</td>
 
                                                                  <td>{formatPrice(e.total_price)}</td>
-                                                                 <td>
-                                                                      <Link className='btn btn-success rounded-0' to={`/list_orderded/${e.id}`}>View Details</Link>
-                                                                 </td>
-                                                                 <td>
-                                                                      <button
-                                                                           onClick={() => handleCancelOrdered(e.id)}
-                                                                           disabled={e.status !== 0}
-                                                                           className={e.status !== 0 ? cx('btn btn-danger rounded-0', "cursor-disabled") : cx('btn btn-danger rounded-0')}
-                                                                      >
-                                                                           Cancel Order
-                                                                      </button>
+                                                                 <td className={cx('text-right', 'w-15')}>
+                                                                      <div className='d-flex justify-content-end'>
+                                                                           <Link className='btn btn-success rounded-0 mr-2' to={`/list_orderded/${e.id}`}><FaEye /> View</Link>
+                                                                           <button
+                                                                                onClick={() => handleCancelOrdered(e.id)}
+                                                                                disabled={e.status !== 0}
+                                                                                className={e.status !== 0 ? cx('btn btn-danger rounded-0', "cursor-disabled") : cx('btn btn-danger rounded-0')}
+                                                                           >
+                                                                                <MdOutlineCancel /> Cancel
+                                                                           </button>
+                                                                      </div>
                                                                  </td>
 
                                                             </tr>

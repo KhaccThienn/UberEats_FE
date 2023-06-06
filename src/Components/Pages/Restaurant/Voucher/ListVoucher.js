@@ -97,7 +97,7 @@ function ListVoucher() {
             </div>
             <div className="iq-card-body">
               <div className="table-responsive">
-                <div className="row align-items-center">
+                <div className="row align-items-center my-2">
                   <div className="form-group col-lg-3 m-0">
                     <select
                       className="form-control rounded-0"
@@ -130,8 +130,8 @@ function ListVoucher() {
                       <th>No.</th>
                       <th>Name</th>
                       <th>Discount</th>
-                      <th>Restaurant ?</th>
-                      <th>Actions</th>
+                      <th>Restaurant</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -142,76 +142,27 @@ function ListVoucher() {
                           <td>{e.name}</td>
                           <td>{e.discount} %</td>
                           <td>{e.restaurant.name}</td>
-                          <td>
-                            <div className="dropdown">
-                              <button
-                                className="btn btn-primary dropdown-toggle rounded-0"
-                                type="button"
-                                id="dropdownMenuButton"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                Actions
-                              </button>
-                              <div
-                                className="dropdown-menu rounded-0"
-                                aria-labelledby="dropdownMenuButton"
-                              >
-                                <Link
-                                  className="dropdown-item"
-                                  to={`/voucher/update/${e.id}`}
-                                >
-                                  Update
-                                </Link>
-                                <button
-                                  onClick={() => {
-                                    handleDelete(e.id);
-                                  }}
-                                  className="dropdown-item"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
+                          <td className="text-right w-25">
+                            <Link
+                              className="btn btn-info rounded-0 mr-2"
+                              to={`/voucher/update/${e.id}`}
+                            >
+                              Edit
+                            </Link>
+                            <button
+                              onClick={() => {
+                                handleDelete(e.id);
+                              }}
+                              className="btn btn-danger rounded-0"
+                            >
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))}
                     {/* <PaginatedItems items={allVouchers} itemsPerPage={2}  /> */}
                   </tbody>
                 </table>
-
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination">
-                    <li className="page-item">
-                      <a className="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span className="sr-only">Previous</span>
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        2
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        3
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span className="sr-only">Next</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>

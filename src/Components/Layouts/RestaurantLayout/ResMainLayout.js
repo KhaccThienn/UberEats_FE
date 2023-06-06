@@ -33,7 +33,7 @@ function ResMainLayout({ child }) {
       console.log("orderStatus Socket Data", data);
       data &&
         Swal.fire({
-          title: `Order ${data.orderId} is already canceled by ${data.user.userName} !`,
+          title: `Order ${data.orderId} has already been canceled by ${data.user.userName} !`,
           showCancelButton: true,
           confirmButtonText: 'OK',
           position: "center"
@@ -79,7 +79,7 @@ function ResMainLayout({ child }) {
       console.log("orderStatus Socket Data", data);
       data &&
         Swal.fire({
-          title: `Order #${data.orderId} has been shipping by ${data.deliver.userName}`,
+          title: `Order #${data.orderId} is shipping by ${data.deliver.userName}`,
           showCancelButton: true,
           confirmButtonText: 'OK',
           position: "center"

@@ -4,11 +4,14 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import dateFormat from "dateformat";
+import { GoPrimitiveDot } from "react-icons/go";
+import { TiTickOutline } from "react-icons/ti";
+import { FaEye } from "react-icons/fa";
+import { FcAcceptDatabase } from "react-icons/fc";
+import { io } from "socket.io-client";
 import { selectUserData } from "../../../../redux/reducers/users";
 import { useNavigateSearch } from "../../../../hooks/useNavigateSearch";
 import * as OrderService from "../../../../services/OrderService";
-import { GoPrimitiveDot } from "react-icons/go";
-import { io } from "socket.io-client";
 
 const socket = io(process.env.REACT_APP_URL_API);
 
@@ -166,9 +169,9 @@ function Order() {
             </div>
             <div className="iq-card-body">
               <div className="table-responsive">
-                <div class="row align-items-center">
+                <div class="row align-items-center my-2">
                   <div class="form-group col-lg-3 m-0">
-                    <select class="form-control" name="sort" id="" onChange={(e) => handleChange(e)}>
+                    <select class="form-control rounded-0" name="sort" id="" onChange={(e) => handleChange(e)}>
                       <option>Choose One</option>
                       <option value="status-ASC">Status (Low - High)</option>
                       <option value="status-DESC">Status (High - Low)</option>
@@ -177,7 +180,7 @@ function Order() {
                     </select>
                   </div>
                   <div className="col-lg-3">
-                    <button className="btn btn-primary" onClick={handleSubmit}>
+                    <button className="btn btn-primary rounded-0" onClick={handleSubmit}>
                       {" "}
                       Submit
                     </button>
@@ -187,7 +190,7 @@ function Order() {
                 <table className="table table-striped table-bordered">
                   <thead>
                     <tr>
-                      <th>OrderID</th>
+                      <th>#</th>
                       <th>Customers</th>
                       <th>Delevery Address</th>
                       <th>Delevery Phone</th>
@@ -195,7 +198,7 @@ function Order() {
                       <th>Created At</th>
                       <th>Voucher</th>
                       <th>Total Price</th>
-                      <th>Actions</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -222,46 +225,30 @@ function Order() {
                             <td>{dateFormat(e.created_at)}</td>
                             <td>{e.vouchers ? <>{e.vouchers.name} - {e.vouchers.discount}</> : <>No voucher added yet</>}</td>
                             <td>{formatPrice(e.total_price)}</td>
-                            <td>
-                              <div className="dropdown rounded-0">
-                                <button
-                                  className="btn btn-primary dropdown-toggle rounded-0"
-                                  type="button"
-                                  id="dropdownMenuButton"
-                                  data-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
+                            <td className="text-right">
+                              <div className="d-flex">
+                                <Link
+                                  className="btn btn-info rounded-0 mr-2"
+                                  to={`/order/${e.id}`}
                                 >
-                                  Actions
-                                </button>
-                                <div
-                                  className="dropdown-menu rounded-0"
-                                  aria-labelledby="dropdownMenuButton"
-                                >
-                                  <Link
-                                    className="dropdown-item"
-                                    to={`/order/${e.id}`}
+                                  <FaEye />View
+                                </Link>
+                                {
+                                  e.status == 0 && <button
+                                    className="btn btn-success rounded-0"
+                                    onClick={() => handleUpdateStatus(e.id, e.status)}
                                   >
-                                    View Details
-                                  </Link>
-                                  {
-                                    e.status == 0 && <button
-                                      className="dropdown-item"
-                                      onClick={() => handleUpdateStatus(e.id, e.status)}
-                                    >
-                                      Accept Order
-                                    </button>
-                                  }
-                                  {
-                                    e.status == 1 && <button
-                                      className="dropdown-item"
-                                      onClick={() => handleUpdateStatus(e.id, e.status)}
-                                    >
-                                      Order Cooked
-                                    </button>
-                                  }
-
-                                </div>
+                                    <FcAcceptDatabase /> Accept
+                                  </button>
+                                }
+                                {
+                                  e.status == 1 && <button
+                                    className="btn btn-success rounded-0"
+                                    onClick={() => handleUpdateStatus(e.id, e.status)}
+                                  >
+                                    <TiTickOutline /> Cooked
+                                  </button>
+                                }
                               </div>
                             </td>
                           </tr>
@@ -271,37 +258,6 @@ function Order() {
 
                   </tbody>
                 </table>
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination">
-                    <li className="page-item">
-                      <a className="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span className="sr-only">Previous</span>
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        2
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        3
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span className="sr-only">Next</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>
